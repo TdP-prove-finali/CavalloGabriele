@@ -7,7 +7,7 @@ def test_calcolo_esempio():
         calcolo_esempio(2, 0)
 
 def test_connection():
-    conn = MongoDBConnector()
-    conn.ping()
+    client = MongoDBConnector.get_client()
+    MongoDBConnector.ping()
     print("Test connection")
-    conn.close()
+    MongoDBConnector.close()

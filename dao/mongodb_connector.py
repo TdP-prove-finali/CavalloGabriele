@@ -3,45 +3,60 @@ from pymongo import MongoClient
 from pymongo.database import Database
 
 class MongoDBConnector:
-    def __init__(self):
-        config = configparser.ConfigParser()
+    _client: MongoClient = None
+    _database: Database = None
 
-        if not config.read("../config/db.ini"):
-            raise FileNotFoundError(
-                f"Database configuration file not found"
+    def __init__(self):
+        raise NotImplementedError("This is a singleton")
+
+
+    @classmethod
+    def get_client(cls) -> MongoClient:
+        if cls._client is None:
+            config = configparser.ConfigParser()
+
+            if not config.read("../config/db.ini"):
+                raise FileNotFoundError(
+                    f"Database configuration file not found"
+                )
+
+            mongodb_config = config["mongodb"]
+
+            host = mongodb_config.get("host", "localhost")
+            port = mongodb_config.getint("port", 27017)
+            database_name = mongodb_config["database"]
+            username = mongodb_config.get("username") or None
+            password = mongodb_config.get("password") or None
+
+            max_pool_size = mongodb_config.getint(
+                "max_pool_size",
+                20,
             )
 
-        mongodb_config = config["mongodb"]
+            cls._client = MongoClient(
+                host=host,
+                port=port,
+                username=username,
+                password=password,
+                maxPoolSize=max_pool_size,
+                authSource=database_name
+            )
 
-        host = mongodb_config.get("host", "localhost")
-        port = mongodb_config.getint("port", 27017)
-        database_name = mongodb_config["database"]
-        username = mongodb_config.get("username") or None
-        password = mongodb_config.get("password") or None
+            cls._database = cls._client[database_name]
 
-        max_pool_size = mongodb_config.getint(
-            "max_pool_size",
-            20,
-        )
+        return cls._client
 
-        self._client = MongoClient(
-            host=host,
-            port=port,
-            username=username,
-            password=password,
-            maxPoolSize=max_pool_size,
-            authSource=database_name
-        )
+    @classmethod
+    def get_database(cls) -> Database:
+        if cls._database is None:
+            MongoDBConnector.get_client()
+        return cls._database
 
-        self._database = self._client[database_name]
-
-    @property
-    def database(self) -> Database:
-        return self._database
-
-    def ping(self) -> bool:
-        self._client.admin.command("ping")
+    @classmethod
+    def ping(cls) -> bool:
+        cls._client.admin.command("ping")
         return True
 
-    def close(self) -> None:
-        self._client.close()
+    @classmethod
+    def close(cls) -> None:
+        cls._client.close()
