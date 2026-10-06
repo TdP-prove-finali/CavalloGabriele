@@ -55,3 +55,18 @@ vengono anche scritti degli unit-test per assicurare il funzionamento anche in e
 Pacchetto python per utilizzare Qt
 Qt Design Studio per generare il Qt-Quick
 Posso usarlo sia in modo imperativo che con il qt-quick (vogliono che usi quello imperativo come con flet o posso usare la declarative UI con QML)
+
+# Creazione del progetto e stack
+Il progetto python creato su PyCharm ha un venv locale, creato con 
+`python3 -m venv .venv` e attivato con `source .venv/bin/activate`. All'interno del venv viene installato pyside-6
+
+Aggiornamento di pip
+`python -m pip install --upgrade pip`
+
+Installazione pyside6
+`pip install PySide6`
+
+Configurazione dell'interprete su PyCharm selezionando quello locale dentro la cartella venv
+
+Verifica dell'installazione di Qt e Python
+`python -c "import PySide6; print(PySide6.__version__)"` deve stampare la versione del pacchetto installata
