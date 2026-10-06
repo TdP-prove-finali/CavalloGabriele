@@ -4,13 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d1f57556-a68b-4407-9511-95d58864d413" name="Changes" comment="Struttura base PyQt con PySide6 e finestra funzionante">
-      <change afterPath="$PROJECT_DIR$/app/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/ui_generated/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/windows/mainwindow.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/caratt-aida.md" beforeDir="false" afterPath="$PROJECT_DIR$/caratt-aida.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/company-overview.ui" beforeDir="false" afterPath="$PROJECT_DIR$/ui/main_window.ui" afterDir="false" />
+    <list default="true" id="d1f57556-a68b-4407-9511-95d58864d413" name="Changes" comment="Finestra base con .ui compilato in python e slot">
+      <change afterPath="$PROJECT_DIR$/compile-ui.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -63,6 +59,7 @@
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "SHELLCHECK.PATH": "/Users/gabrielecavallo/Library/Application Support/JetBrains/PyCharm2025.3/plugins/Shell Script/shellcheck",
     "ai.playground.ignore.import.keys.banner.in.settings": "true",
     "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
     "git-widget-placeholder": "main",
@@ -133,7 +130,7 @@
       <updated>1790240604396</updated>
       <workItem from="1790240605544" duration="11083000" />
       <workItem from="1791272676394" duration="784000" />
-      <workItem from="1791273475018" duration="1781000" />
+      <workItem from="1791273475018" duration="2421000" />
     </task>
     <task id="LOCAL-00001" summary="Test commit">
       <option name="closed" value="true" />
@@ -191,7 +188,15 @@
       <option name="project" value="LOCAL" />
       <updated>1791273898663</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="Finestra base con .ui compilato in python e slot">
+      <option name="closed" value="true" />
+      <created>1791275417890</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1791275417890</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -205,9 +210,10 @@
     <MESSAGE value="Started UI creation" />
     <MESSAGE value="Gitignore" />
     <MESSAGE value="Struttura base PyQt con PySide6 e finestra funzionante" />
-    <option name="LAST_COMMIT_MESSAGE" value="Struttura base PyQt con PySide6 e finestra funzionante" />
+    <MESSAGE value="Finestra base con .ui compilato in python e slot" />
+    <option name="LAST_COMMIT_MESSAGE" value="Finestra base con .ui compilato in python e slot" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/CavalloGabriele$main.coverage" NAME="main Coverage Results" MODIFIED="1791275089135" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/CavalloGabriele$main.coverage" NAME="main Coverage Results" MODIFIED="1791275384280" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
