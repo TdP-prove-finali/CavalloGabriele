@@ -1,0 +1,9 @@
+[mongodb]
+host = localhost
+port = 27017
+database = business_scenario_lab
+
+username =
+password =
+
+max_pool_size = 20
