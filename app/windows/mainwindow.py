@@ -22,3 +22,7 @@ class MainWindow(QMainWindow):
     @controller.setter
     def controller(self, controller):
         self._controller = controller
+
+    def closeEvent(self, event, /):
+        if self._controller is not None:
+            self._controller.handleClose(event)

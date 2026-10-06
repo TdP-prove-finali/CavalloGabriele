@@ -13,7 +13,7 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = MainWindow()
     window.show()
-    ctrl = MainController(None, window)
+    ctrl = MainController(None, window, app)
     window.controller = ctrl
 
     sys.exit(app.exec())

@@ -1,10 +1,12 @@
 import configparser
+from pathlib import Path
+
 from pymongo import MongoClient
 from pymongo.database import Database
 
 class MongoDBConnector:
-    _client: MongoClient = None
-    _database: Database = None
+    _client: MongoClient | None = None
+    _database: Database | None = None
 
     def __init__(self):
         raise NotImplementedError("This is a singleton")
@@ -14,8 +16,9 @@ class MongoDBConnector:
     def get_client(cls) -> MongoClient:
         if cls._client is None:
             config = configparser.ConfigParser()
-
-            if not config.read("../config/db.ini"):
+            project_root = Path(__file__).resolve().parent.parent
+            config_path = project_root / "config" / "db.ini"
+            if not config.read(config_path):
                 raise FileNotFoundError(
                     f"Database configuration file not found"
                 )
@@ -59,4 +62,7 @@ class MongoDBConnector:
 
     @classmethod
     def close(cls) -> None:
-        cls._client.close()
+        if cls._client is not None:
+            cls._client.close()
+            cls._client = None
+            cls._database = None

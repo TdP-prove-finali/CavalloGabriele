@@ -4,8 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d1f57556-a68b-4407-9511-95d58864d413" name="Changes" comment="Migliora pattern db">
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+    <list default="true" id="d1f57556-a68b-4407-9511-95d58864d413" name="Changes" comment="Installa scipy per statistica">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/windows/mainwindow.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/windows/mainwindow.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controller/main_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/controller/main_controller.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dao/mongodb_connector.py" beforeDir="false" afterPath="$PROJECT_DIR$/dao/mongodb_connector.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -89,7 +93,7 @@
       <recent name="$PROJECT_DIR$/dataset/test" />
     </key>
   </component>
-  <component name="RunManager" selected="Python tests.Python tests for test_main.test_connection">
+  <component name="RunManager" selected="Python.main">
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="CavalloGabriele" />
       <option name="ENV_FILES" value="" />
@@ -172,7 +176,7 @@
       <updated>1790240604396</updated>
       <workItem from="1790240605544" duration="11083000" />
       <workItem from="1791272676394" duration="784000" />
-      <workItem from="1791273475018" duration="13365000" />
+      <workItem from="1791273475018" duration="14677000" />
     </task>
     <task id="LOCAL-00001" summary="Test commit">
       <option name="closed" value="true" />
@@ -310,7 +314,15 @@
       <option name="project" value="LOCAL" />
       <updated>1791301121144</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="Installa scipy per statistica">
+      <option name="closed" value="true" />
+      <created>1791301606140</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1791301606140</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -334,10 +346,11 @@
     <MESSAGE value="Update gitignore" />
     <MESSAGE value="Configurazione DB e codice per connessione" />
     <MESSAGE value="Migliora pattern db" />
-    <option name="LAST_COMMIT_MESSAGE" value="Migliora pattern db" />
+    <MESSAGE value="Installa scipy per statistica" />
+    <option name="LAST_COMMIT_MESSAGE" value="Installa scipy per statistica" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/CavalloGabriele$.coverage" NAME=" Coverage Results" MODIFIED="1791301108364" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
-    <SUITE FILE_PATH="coverage/CavalloGabriele$main.coverage" NAME="main Coverage Results" MODIFIED="1791300602629" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/CavalloGabriele$main.coverage" NAME="main Coverage Results" MODIFIED="1791302914402" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
