@@ -70,3 +70,8 @@ Configurazione dell'interprete su PyCharm selezionando quello locale dentro la c
 
 Verifica dell'installazione di Qt e Python
 `python -c "import PySide6; print(PySide6.__version__)"` deve stampare la versione del pacchetto installata
+
+Il flusso di lavoro è: 
+* Creo la .ui con Qt Creator e li metto nella cartella `ui`
+* Compilo il .ui in uno script python con pyside6-uic, messi automaticamente nella cartella `ui_generated`. Il comando è `pyside6-uic ui/main_window.ui -o app/ui_generated/ui_main_window.py`
+* Lavoro su PyCharm

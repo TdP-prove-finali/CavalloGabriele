@@ -1,13 +1,8 @@
 import sys
 
-from PySide6.QtWidgets import QApplication, QMainWindow
+from PySide6.QtWidgets import QApplication
 
-class MainWindow(QMainWindow):
-    def __init__(self):
-        super().__init__()
-
-        self.setWindowTitle("Test PySide6")
-        self.resize(800, 600)
+from app.windows.mainwindow import MainWindow
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
