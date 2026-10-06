@@ -1,5 +1,5 @@
 from PySide6.QtCore import Slot
-from PySide6.QtWidgets import QMainWindow
+from PySide6.QtWidgets import QMainWindow, QMessageBox
 from app.ui_generated.ui_main_window import Ui_MainWindow
 
 class MainWindow(QMainWindow):
@@ -12,4 +12,6 @@ class MainWindow(QMainWindow):
     @Slot()
     def on_pushBtnClick(self):
         print("Ciao " + self.ui.nameInput.text())
-
+        msgBox = QMessageBox(self)
+        msgBox.setText("Ciao " + self.ui.nameInput.text())
+        msgBox.exec()
