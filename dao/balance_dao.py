@@ -50,9 +50,14 @@ class CompanyBalanceImporter:
 
         return self.__get_cell()
 
+    def __has_av_cols(self):
+        return self.cursor_column < self.max_col
+
     def __move_to_next_sechead(self) -> Cell:   # Sposta orizzontalmente il cursore fino alla prossima intestazione di campo (valore in grassetto blu)
-        self.__next_column()
-        while self.__get_cell() is None or not self.__get_cell().font.bold:
+        while self.__get_cell() is None or self.__get_cell().font is None or not self.__get_cell().font.bold:
+            if not self.__has_av_cols():
+                raise Exception("Ricerca di una sezione orizzontale non trovata")
+
             self.__next_column()
 
         return self.__get_cell()
@@ -74,8 +79,26 @@ class CompanyBalanceImporter:
                 and self.__get_cell().fill is not None
                 and self.__get_cell().fill.start_color.value == 'FFB2CBEA')
 
+    def __is_vsec_start(self) -> bool:      # Controlla se è l'inizio di una sezione verticale
+        content = self.__get_cell().value
+        return (content is not None and self.__get_cell().font is not None
+                and self.__get_cell().font.bold
+                and self.__get_cell().font.color.value == 'FF333333'
+                and self.__get_cell().fill is not None
+                and self.__get_cell().fill.start_color.value == 'FFD1D6DC')
+
+    def __down_vertically(self):        # Non riporta il cursore a sinistra, va solo giù verticalmente
+        self.cursor_row += 1
+
     def __has_av_rows(self) -> bool:
         return self.cursor_row < self.max_row
+
+    def __snap_cursor(self) -> tuple[int, int]:
+        return tuple([self.cursor_column, self.cursor_row])
+
+    def __restore_snap(self, curs: tuple):
+        self.cursor_column = curs[0]
+        self.cursor_row = curs[1]
 
     # TODO: Sistema di cursori globali nella classe e metodi che li spostano in un certo modo
     # Spostamento in riga alla ricerca di coppia campo-valore
@@ -109,11 +132,93 @@ class CompanyBalanceImporter:
             self.company.sections.append(s)
             self.data = {}
 
-        print("Carico i dati dal foglio ")
+        while self.__has_av_rows():
+            if self.__is_section_start():
+                sectionName = self.__get_field_name(self.__get_cell().value)
+                secVal = None
+                if sectionName == "anagrafica":
+                    self.__next_row()
+                    secVal = self.__load_anagrafica_section()
+                else:
+                    print("Sezione non riconosciuta " + sectionName)
+
+                if secVal is not None:
+                    self.company.sections.append(secVal)
+                self.data = {}
+
+            self.__next_row()
+
+        wb.close()
         return self.company
 
     def __get_field_name(self, cellContent) -> str:
         return cellContent.lower().replace(" ", "_")
+
+    def __concat_vertically(self) -> str:       # Concatena i valori delle celle scendendo in verticale fino a quando non trova una cella vuota, un'intestazione di sotto-sezione o di sezione
+        cont = ""
+        while (self.__get_cell() is not None and
+                self.__get_cell().value is not None and
+               not self.__is_vsec_start() and
+               not self.__is_section_start() and self.__has_av_rows()):
+            cont += " " + self.__get_cell().value
+            self.__down_vertically()
+
+        return cont
+
+    def __load_hsection(self)->tuple[str, ...]:
+        self.__move_to_next_sechead()
+        sec_name = self.__get_field_name(self.__get_cell().value)
+        sec_value = self.__move_to_next_value().value
+
+        return (sec_name, sec_value)
+
+    def __load_anagrafica_section(self) -> Section:
+        content_rows = 0
+
+        while self.__has_av_rows() and not self.__is_section_start():
+            if not self.__check_empty_row():
+                content_rows += 1
+                self.__return_to_rstart()
+
+                if content_rows == 1 and self.__is_vsec_start():
+                    subSecName = self.__get_field_name(self.__get_cell().value)
+                    content = ""
+                    curSnap = self.__snap_cursor()  # Salvo la posizione da cui parto, poi scendo verticalmente e concateno i valori
+                    self.__down_vertically()
+                    while not self.__is_vsec_start():
+                        if self.__get_cell().value is not None:
+                            content += " "+ self.__get_cell().value
+                        self.__down_vertically()
+
+                    self.data[subSecName] = content
+                    self.__restore_snap(curSnap)    # Ripristino la posizione del cursore
+                elif content_rows == 2:
+                    self.__return_to_rstart()
+                    self.__move_to_next_value()     # Ignoro il valore già letto
+                    sec = self.__load_hsection()
+                    self.data[sec[0]] = sec[1]
+                elif content_rows == 3 or content_rows == 4:
+                    pass        # Ignoro i valori già utilizzati
+                elif content_rows == 5:
+                    if self.__is_vsec_start():
+                        subSecName = self.__get_field_name(self.__get_cell().value)
+                        curSnap = self.__snap_cursor()
+                        self.__down_vertically()
+                        value = self.__concat_vertically()
+                        self.data[subSecName] = value
+                        self.__restore_snap(curSnap)
+                elif content_rows == 6:
+                    self.__return_to_rstart()
+                    self.__move_to_next_value()
+                    sec = self.__load_hsection()
+                    self.data[sec[0]] = sec[1]
+
+            self.__next_row()
+
+        return Section(
+            name="anagrafica",
+            data=self.data.copy()
+        )
 
     def __load_general_info_sec(self) -> Section:
         content_rows = 0
@@ -137,6 +242,10 @@ class CompanyBalanceImporter:
                     field_value = self.__move_to_next_value().value
 
                     self.data[field_name] = field_value
+                elif content_rows == 3:
+                    self.data["tipo_societa"] = self.__get_cell().value
+                elif content_rows == 4:
+                    self.data["controllante"] = self.__get_cell().value
 
         return Section(
             name="general_info",
