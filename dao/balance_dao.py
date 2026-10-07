@@ -4,8 +4,7 @@ from openpyxl.utils import get_column_letter
 from model.Company import Company
 from openpyxl import load_workbook
 
-from model.Section import GeneralInfoSection, Section
-
+from model.Section import Section
 
 class CompanyBalanceImporter:
 
@@ -45,7 +44,11 @@ class CompanyBalanceImporter:
 
     def __move_to_next_value(self) -> Cell: # Sposta il cursore a destra fino a quando non trova un valore in una cella
         self.__next_column()
-        while self.__get_cell() is not None and self.__get_cell().value is None:
+        while (self.__get_cell() is not None
+               and self.__get_cell().value is None):
+            if not self.__has_av_cols():
+                raise Exception("Non è stato possibile trovare un valore successivo sulla riga " + str(self.cursor_row))
+
             self.__next_column()
 
         return self.__get_cell()
@@ -56,7 +59,7 @@ class CompanyBalanceImporter:
     def __move_to_next_sechead(self) -> Cell:   # Sposta orizzontalmente il cursore fino alla prossima intestazione di campo (valore in grassetto blu)
         while self.__get_cell() is None or self.__get_cell().font is None or not self.__get_cell().font.bold:
             if not self.__has_av_cols():
-                raise Exception("Ricerca di una sezione orizzontale non trovata")
+                raise Exception("Ricerca di una sezione orizzontale non trovata sulla riga " + str(self.cursor_row))
 
             self.__next_column()
 
@@ -64,7 +67,7 @@ class CompanyBalanceImporter:
 
     def __check_empty_row(self) -> bool:        # Controlla se la riga è vuota
         self.cursor_column = 1
-        for i in range(self.max_col):
+        for i in range(int(self.max_col / 3)):
             if self.__get_cell().value is not None:
                 return False
             self.__next_column()
@@ -87,6 +90,12 @@ class CompanyBalanceImporter:
                 and self.__get_cell().fill is not None
                 and self.__get_cell().fill.start_color.value == 'FFD1D6DC')
 
+    def __is_company_head(self) -> bool:        # Restituisce true se la cella corrente è l'intestazione del foglio
+        v = self.__get_cell()
+        bold = v.font.bold
+        content = v.value
+        return bold and content is not None and v.font.color.value == 'FF003366'
+
     def __down_vertically(self):        # Non riporta il cursore a sinistra, va solo giù verticalmente
         self.cursor_row += 1
 
@@ -99,10 +108,6 @@ class CompanyBalanceImporter:
     def __restore_snap(self, curs: tuple):
         self.cursor_column = curs[0]
         self.cursor_row = curs[1]
-
-    # TODO: Sistema di cursori globali nella classe e metodi che li spostano in un certo modo
-    # Spostamento in riga alla ricerca di coppia campo-valore
-    # Spostamento in colonna alla ricerca di campo-tuplavalori
 
     def import_from_excel(self) -> Company:
         # aprire il file
@@ -123,11 +128,8 @@ class CompanyBalanceImporter:
         self.__set_cursor(2, 1) # B1
         self.company = Company()
 
-        v = self.__get_cell()
-        bold = v.font.bold
-        content = v.value
-        if bold and content is not None and v.font.color.value == 'FF003366':
-            self.data["company_name"] = content
+        if self.__is_company_head():
+            self.data["company_name"] = self.__get_cell().value
             s = self.__load_general_info_sec()
             self.company.sections.append(s)
             self.data = {}
@@ -182,14 +184,9 @@ class CompanyBalanceImporter:
 
                 if content_rows == 1 and self.__is_vsec_start():
                     subSecName = self.__get_field_name(self.__get_cell().value)
-                    content = ""
                     curSnap = self.__snap_cursor()  # Salvo la posizione da cui parto, poi scendo verticalmente e concateno i valori
                     self.__down_vertically()
-                    while not self.__is_vsec_start():
-                        if self.__get_cell().value is not None:
-                            content += " "+ self.__get_cell().value
-                        self.__down_vertically()
-
+                    content = self.__concat_vertically()
                     self.data[subSecName] = content
                     self.__restore_snap(curSnap)    # Ripristino la posizione del cursore
                 elif content_rows == 2:
