@@ -7,6 +7,9 @@ from openpyxl import load_workbook
 
 from model.Section import Section
 
+# TODO: Gestione dei "di cui" in SP
+# TODO: Gestione sotto-sezioni passivo
+# TODO: Migliorare gestione valute (classe valuta, migliaia, operazioni)
 class CompanyBalanceImporter:
 
     def __init__(self, path):
@@ -124,7 +127,7 @@ class CompanyBalanceImporter:
             self.__next_column()
             cell = self.__get_cell()
             if cell.value is not None:
-                values.append(cell.value)
+                values.append(self.__get_field_value(cell.value))
 
         return values.copy()
 
@@ -183,6 +186,10 @@ class CompanyBalanceImporter:
                     self.__next_row()
                     secVal = self.__load_finance_profile_section()
                     self.__prev_row()
+                elif sectionName == "stato_patrimoniale":
+                    self.__next_row()
+                    secVal = self.__load_sp_section()
+                    self.__prev_row()
                 else:
                     print("Sezione non riconosciuta " + sectionName)
 
@@ -194,6 +201,53 @@ class CompanyBalanceImporter:
 
         wb.close()
         return self.company
+
+    def __load_sp_section(self) -> Section:
+        content_rows = 0
+        sub_sections = []
+
+        while self.__has_av_rows() and not self.__is_vsec_start():
+            if not self.__check_empty_row():
+                content_rows += 1
+                self.__return_to_rstart()
+
+                if content_rows <= 3:  # Le prime 3 righe non hanno un'intestazione
+                    if content_rows == 1:
+                        row_name = "data"
+                        self.__next_column()
+                    elif content_rows == 2:
+                        row_name = "moneta"
+                    elif content_rows == 3:
+                        row_name = "periodo"
+
+                    row_values = self.__load_all_hvalues()
+                    self.data[row_name] = row_values.copy()
+
+            self.__next_row()
+
+        while self.__has_av_rows() and not self.__is_section_start():
+            secName = self.__get_cell().value
+            self.__next_row()
+            sub_sections.append(self.__load_sp_subsection(
+                self.__get_field_name(secName)))
+
+        self.data["subsections"] = sub_sections.copy()
+        return Section(
+            name="stato_patrimoniale",
+            data=self.data.copy()
+        )
+
+    def __load_sp_subsection(self, name) -> Section:
+        s = Section(name, {})
+        while self.__has_av_rows() and not self.__is_section_start() and not self.__is_vsec_start():
+            if not self.__check_empty_row():
+                row_name = self.__get_field_name(self.__get_cell().value)
+                row_values = self.__load_all_hvalues()
+                s.data[row_name] = row_values.copy()
+
+            self.__next_row()
+
+        return s
 
     def __load_finance_profile_section(self):
         content_rows = 0
@@ -301,7 +355,16 @@ class CompanyBalanceImporter:
                 .replace(")", "_").replace("/", "_frac_")
                               .replace("'", "")
                               .replace("°", "")
+                              .replace(",", "")
+                              .replace(":", "")
                               )
+
+    def __get_field_value(self, cellcontent):
+        if type(cellcontent) == str and cellcontent == "n.d.":
+            return None
+
+        return cellcontent
+
 
     def __concat_vertically(self) -> str:       # Concatena i valori delle celle scendendo in verticale fino a quando non trova una cella vuota, un'intestazione di sotto-sezione o di sezione
         cont = ""
