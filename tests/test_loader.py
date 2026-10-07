@@ -1,21 +1,20 @@
-from dao.balance_dao import BalanceDao
+from dao.balance_dao import CompanyBalanceImporter
 from model.Company import Company
-from model.Section import GeneralInfoSection
+from model.Section import GeneralInfoSection, Section
 
 company = Company(
     sections=[
-        GeneralInfoSection(
-            name="General-info",
-            nome_azienda="PARAMOUNT GLOBAL ITALIA S.R.L.",
-            sede="20122 Milano",
-            codice_fiscale="07237600965",
-            numero_cciaa="MI1945654",
-            descrizione=
-                "The Global Ultimate Owner of this controlled subsidiary is DAVID ELLISON FAMILY"
+        Section(
+            name="general_info",
+            data={"company_name": "PARAMOUNT GLOBAL ITALIA S.R.L.",
+                  "sede": "20122 Milano",
+                "codice_fiscale": "07237600965",
+                "numero_cciaa":"MI1945654"}
         )
     ]
 )
 
 def test_loader():
-    c = BalanceDao.import_from_excel("../dataset/sample-aida-single.xlsx")
-    assert c == company
+    c = CompanyBalanceImporter("../dataset/sample-aida-single.xlsx")
+    c.import_from_excel()
+    assert c.company == company
