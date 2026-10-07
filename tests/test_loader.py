@@ -38,7 +38,24 @@ company = Company(
                 "bilanci_disponibili": 'Bilancio non consolidato',
                 "ultimo_modello_di_contabilità___bilancio": 'Dettagliato'
             }
-        )
+        ),
+Section(name='dimensioni_e_gruppo',
+                          data={'capitale_sociale__2024_': '1.010\xa0migl EUR',
+                                'dipendenti__2024_': '122',
+                                "indicatore_d'indipendenza_bvd": 'D',
+                                'no_of_companies_in_corporate_group': 1081,
+                                'n°_partecipate_registrate': 0,
+                                'principale_borsa': 'Non quotata',
+                                'ricavi_del_vendite__2024_': '51.425.537\xa0'
+                                                             'EUR',
+                                'totale_attività__2024_': '254.218.368\xa0EUR',
+                                'utile_netto__2024_': '2.127.024\xa0EUR'}),
+Section(name='gruppo_dei_pari',
+                          data={'descrizione': 'Attività di produzione '
+                                               'cinematografica, di video e di '
+                                               'programmi televisivi',
+                                'dimensione': '862 società',
+                                'nome': '591 VL (Aziende Molto Grandi)'})
     ]
 )
 

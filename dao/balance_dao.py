@@ -44,14 +44,16 @@ class CompanyBalanceImporter:
 
     def __move_to_next_value(self) -> Cell: # Sposta il cursore a destra fino a quando non trova un valore in una cella
         self.__next_column()
-        while (self.__get_cell() is not None
-               and self.__get_cell().value is None):
+        cell = self.__get_cell()
+        while (cell is not None
+               and cell.value is None):
             if not self.__has_av_cols():
                 raise Exception("Non è stato possibile trovare un valore successivo sulla riga " + str(self.cursor_row))
 
             self.__next_column()
+            cell = self.__get_cell()
 
-        return self.__get_cell()
+        return cell
 
     def __has_av_cols(self):
         return self.cursor_column < self.max_col
@@ -151,6 +153,16 @@ class CompanyBalanceImporter:
                     self.__next_row()
                     secVal = self.__load_infcomleg_section()
                     self.__prev_row()
+                elif sectionName == "informazioni_su_dimensione_e_gruppo":
+                    self.__next_row()
+                    secVal = self.__load_dimgroup_section()
+                    self.__prev_row()
+                elif sectionName == "classificazione_merceologica":
+                    pass
+                elif sectionName == "gruppo_dei_pari":
+                    self.__next_row()
+                    secVal = self.__load_parigroup_section()
+                    self.__prev_row()
                 else:
                     print("Sezione non riconosciuta " + sectionName)
 
@@ -163,8 +175,55 @@ class CompanyBalanceImporter:
         wb.close()
         return self.company
 
+    def __load_parigroup_section(self):
+        content_rows = 0
+
+        while self.__has_av_rows() and not self.__is_section_start():
+            if not self.__check_empty_row():
+                content_rows += 1
+                self.__return_to_rstart()
+
+                if 0 < content_rows <= 3:
+                    self.__return_to_rstart()
+                    sec = self.__load_hsection()
+                    self.data[sec[0]] = sec[1]
+
+            self.__next_row()
+
+        return Section(
+            name="gruppo_dei_pari",
+            data=self.data.copy()
+        )
+
+    def __load_dimgroup_section(self):
+        content_rows = 0
+
+        while self.__has_av_rows() and not self.__is_section_start():
+            if not self.__check_empty_row():
+                content_rows += 1
+                self.__return_to_rstart()
+
+                if content_rows == 1:
+                    self.__return_to_rstart()
+                    f1 = self.__load_hsection()
+                    self.__next_column()
+                    f2 = self.__load_hsection()
+                    self.data[f1[0]] = f1[1]
+                    self.data[f2[0]] = f2[1]
+                elif content_rows != 6 and content_rows > 0:
+                    self.__return_to_rstart()
+                    sec = self.__load_hsection()
+                    self.data[sec[0]] = sec[1]
+
+            self.__next_row()
+
+        return Section(
+            name="dimensioni_e_gruppo",
+            data=self.data.copy()
+        )
+
     def __get_field_name(self, cellContent) -> str:
-        return cellContent.lower().replace(" ", "_").replace("-", "_")
+        return cellContent.lower().replace(" ", "_").replace("-", "_").replace("(", "_").replace(")", "_")
 
     def __concat_vertically(self) -> str:       # Concatena i valori delle celle scendendo in verticale fino a quando non trova una cella vuota, un'intestazione di sotto-sezione o di sezione
         cont = ""
