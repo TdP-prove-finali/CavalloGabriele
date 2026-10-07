@@ -99,6 +99,11 @@ class CompanyBalanceImporter:
     def __down_vertically(self):        # Non riporta il cursore a sinistra, va solo giù verticalmente
         self.cursor_row += 1
 
+    def __prev_row(self):
+        if self.cursor_row > 0:
+            self.cursor_row -= 1
+            self.cursor_column = 1
+
     def __has_av_rows(self) -> bool:
         return self.cursor_row < self.max_row
 
@@ -141,6 +146,11 @@ class CompanyBalanceImporter:
                 if sectionName == "anagrafica":
                     self.__next_row()
                     secVal = self.__load_anagrafica_section()
+                    self.__prev_row()
+                elif sectionName == "informazioni_commerciali_e_legali":
+                    self.__next_row()
+                    secVal = self.__load_infcomleg_section()
+                    self.__prev_row()
                 else:
                     print("Sezione non riconosciuta " + sectionName)
 
@@ -154,7 +164,7 @@ class CompanyBalanceImporter:
         return self.company
 
     def __get_field_name(self, cellContent) -> str:
-        return cellContent.lower().replace(" ", "_")
+        return cellContent.lower().replace(" ", "_").replace("-", "_")
 
     def __concat_vertically(self) -> str:       # Concatena i valori delle celle scendendo in verticale fino a quando non trova una cella vuota, un'intestazione di sotto-sezione o di sezione
         cont = ""
@@ -246,5 +256,32 @@ class CompanyBalanceImporter:
 
         return Section(
             name="general_info",
+            data=self.data.copy()
+        )
+
+    def __load_infcomleg_section(self) -> Section:
+        content_rows = 0
+
+        while self.__has_av_rows() and not self.__is_section_start():
+
+            if not self.__check_empty_row():
+                content_rows += 1
+                self.__return_to_rstart()
+
+                if content_rows == 5:      # Entrambe le righe hanno due campi
+                    f1 = self.__load_hsection()
+                    self.__next_column()
+                    f2 = self.__load_hsection()
+                    self.data[f1[0]] = f1[1]
+                    self.data[f2[0]] = f2[1]
+                elif content_rows >= 6:
+                    f1 = self.__load_hsection()
+                    self.__next_column()
+                    self.data[f1[0]] = f1[1]
+
+            self.__next_row()
+
+        return Section(
+            name="informazioni_commerciali_e_legali",
             data=self.data.copy()
         )
