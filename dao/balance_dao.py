@@ -1,6 +1,7 @@
 from openpyxl.cell import Cell
 from openpyxl.utils import get_column_letter
 
+from dao.util import remove_accents
 from model.Company import Company
 from openpyxl import load_workbook
 
@@ -116,6 +117,17 @@ class CompanyBalanceImporter:
         self.cursor_column = curs[0]
         self.cursor_row = curs[1]
 
+    def __load_all_hvalues(self) -> list:       # Restituisce una lista con tutti i valori presenti sulla riga corrente, a partire dalla cella attuale
+        values = []
+
+        while self.__has_av_cols() and self.__get_cell() is not None:
+            self.__next_column()
+            cell = self.__get_cell()
+            if cell.value is not None:
+                values.append(cell.value)
+
+        return values.copy()
+
     def import_from_excel(self) -> Company:
         # aprire il file
         # parti dalla prima cella della prima riga
@@ -167,6 +179,10 @@ class CompanyBalanceImporter:
                     self.__next_row()
                     secVal = self.__load_overview()
                     self.__prev_row()
+                elif sectionName == "profilo_finanziario_e_dipendenti":
+                    self.__next_row()
+                    secVal = self.__load_finance_profile_section()
+                    self.__prev_row()
                 else:
                     print("Sezione non riconosciuta " + sectionName)
 
@@ -178,6 +194,38 @@ class CompanyBalanceImporter:
 
         wb.close()
         return self.company
+
+    def __load_finance_profile_section(self):
+        content_rows = 0
+
+        while self.__has_av_rows() and not self.__is_section_start():
+            if not self.__check_empty_row():
+                content_rows += 1
+                self.__return_to_rstart()
+
+                if content_rows <= 3:       # Le prime 3 righe non hanno un'intestazione
+                    if content_rows == 1:
+                        row_name = "data"
+                        self.__next_column()
+                    elif content_rows == 2:
+                        row_name = "moneta"
+                    elif content_rows == 3:
+                        row_name = "periodo"
+
+                    row_values = self.__load_all_hvalues()
+                    self.data[row_name] = row_values.copy()
+                elif content_rows >= 6:
+                    row_name = self.__get_field_name(self.__get_cell().value)
+                    self.__next_column()
+                    row_values = self.__load_all_hvalues()
+                    self.data[row_name] = row_values.copy()
+
+            self.__next_row()
+
+        return Section(
+            name="profilo_finanziario",
+            data=self.data.copy()
+        )
 
     def __load_overview(self):
         content_rows = 0
@@ -246,7 +294,14 @@ class CompanyBalanceImporter:
         )
 
     def __get_field_name(self, cellContent) -> str:
-        return cellContent.lower().replace(" ", "_").replace("-", "_").replace("(", "_").replace(")", "_")
+        return remove_accents(cellContent.lower().lstrip().rstrip().replace(" ", "_")
+                .replace("-", "_").replace(".", "")
+                .replace("(%)", "_perc_")
+                .replace("(", "_")
+                .replace(")", "_").replace("/", "_frac_")
+                              .replace("'", "")
+                              .replace("°", "")
+                              )
 
     def __concat_vertically(self) -> str:       # Concatena i valori delle celle scendendo in verticale fino a quando non trova una cella vuota, un'intestazione di sotto-sezione o di sezione
         cont = ""
