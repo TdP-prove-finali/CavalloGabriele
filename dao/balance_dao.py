@@ -163,6 +163,10 @@ class CompanyBalanceImporter:
                     self.__next_row()
                     secVal = self.__load_parigroup_section()
                     self.__prev_row()
+                elif sectionName == "overview_completa":
+                    self.__next_row()
+                    secVal = self.__load_overview()
+                    self.__prev_row()
                 else:
                     print("Sezione non riconosciuta " + sectionName)
 
@@ -174,6 +178,25 @@ class CompanyBalanceImporter:
 
         wb.close()
         return self.company
+
+    def __load_overview(self):
+        content_rows = 0
+        content = ""
+
+        while self.__has_av_rows() and not self.__is_section_start():
+            if not self.__check_empty_row():
+                content_rows += 1
+                self.__return_to_rstart()
+                content += self.__get_cell().value
+
+            self.__next_row()
+
+        return Section(
+            name="overview_completa",
+            data={
+                "overview": content
+            }
+        )
 
     def __load_parigroup_section(self):
         content_rows = 0

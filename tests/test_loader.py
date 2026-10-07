@@ -55,7 +55,32 @@ Section(name='gruppo_dei_pari',
                                                'cinematografica, di video e di '
                                                'programmi televisivi',
                                 'dimensione': '862 società',
-                                'nome': '591 VL (Aziende Molto Grandi)'})
+                                'nome': '591 VL (Aziende Molto Grandi)'}),
+Section(name='overview_completa',
+                          data={'overview': 'This company, which is based in '
+                                            'Italy, is engaged in the '
+                                            'provision of television '
+                                            'broadcasting services. It was '
+                                            'incorporated in 2010 and has its '
+                                            'registered business address '
+                                            'located in Milano. It operates '
+                                            'its business primarily in the '
+                                            'domestic market.The company is '
+                                            'involved in the operation of '
+                                            'television broadcasting studios '
+                                            'and facilities for the '
+                                            'programming and transmission of '
+                                            'programs to the public. It also '
+                                            'produces and transmits visual '
+                                            'programming to affiliated '
+                                            'broadcast television stations, '
+                                            'which in turn broadcast the '
+                                            'programs to the public on a '
+                                            'predetermined schedule. The '
+                                            "company's programming may "
+                                            'originate in their own studio, '
+                                            'from an affiliated network, or '
+                                            'from other external sources.'})
     ]
 )
 
