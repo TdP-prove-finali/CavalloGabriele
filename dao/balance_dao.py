@@ -123,7 +123,7 @@ class CompanyBalanceImporter:
         # Ha qualcosa? Il testo è in grassetto? Lo sfondo è blu? Crea una nuova sezione general info
         # Parsifica la sezione
         # Ripeti
-        wb = load_workbook(filename=self.path, read_only=True, data_only=True)
+        wb = load_workbook(filename=self.path, read_only=False, data_only=True)
 
         if len(wb.sheetnames) == 0:
             raise Exception("Il file non ha fogli da cui caricare i dati")
