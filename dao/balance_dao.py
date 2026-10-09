@@ -148,7 +148,6 @@ class CompanyBalanceImporter:
         self.worksheet = firstSheet
         self.max_row = firstSheet.max_row
         self.max_col = firstSheet.max_column
-        print(firstSheet["A245"])
         self.__set_cursor(2, 1) # B1
         self.company = Company()
 
@@ -201,7 +200,7 @@ class CompanyBalanceImporter:
                     secVal = self.__load_indices_section()
                     self.__prev_row()
                 else:
-                    print("Sezione non riconosciuta " + sectionName)
+                    print("WARNING: Sezione " + sectionName + " non utilizzata")
 
                 if secVal is not None:
                     self.company.sections.append(secVal)

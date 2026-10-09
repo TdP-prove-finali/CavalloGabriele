@@ -1,5 +1,4 @@
 from dataclasses import dataclass, field
-
 from model.Section import Section
 
 @dataclass
