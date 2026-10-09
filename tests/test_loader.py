@@ -2,7 +2,8 @@ import datetime
 
 from dao.balance_dao import CompanyBalanceImporter
 from dao.company_dao import CompanyDAO
-from model.Company import Company
+from dao.mongodb_connector import MongoDBConnector
+from model.Company import Company, CompanyReader
 from model.Section import Section
 
 company = Company(sections=[Section(name='general_info',
@@ -3256,3 +3257,16 @@ def test_company_mongodb_roundtrip():
     assert loaded_company == company, (
         "La Company caricata differisce da quella originale"
     )
+
+def test_company_brief():
+    database = MongoDBConnector.get_database()
+    collection = database["companies"]
+    collection.drop()
+    CompanyDAO.save_company(company)
+    assert collection.count_documents({}) == 1
+
+    brief = CompanyDAO.find_all_companies()
+    company_reader = CompanyReader(company)
+    assert len(brief) == 1
+    assert brief[0].codice_fiscale == company_reader.general_info.data["codice_fiscale"]
+    assert brief[0].nome == company_reader.general_info.data["company_name"]

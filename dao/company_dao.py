@@ -1,7 +1,7 @@
 from pymongo.synchronous.collection import Collection
 
 from dao.mongodb_connector import MongoDBConnector
-from model.Company import Company
+from model.Company import Company, CompanyBrief
 
 from datetime import datetime
 from typing import Any
@@ -134,7 +134,49 @@ class CompanyDAO:
         return result.deleted_count > 0
 
     @staticmethod
-    def importCompany(company: Company):
-        client = MongoDBConnector.get_client()
-        database = client["business_scenario_lab"]
-        collection: Collection[Company] = database["companies"]
+    def find_all_companies() -> list[CompanyBrief]:
+        database = MongoDBConnector.get_database()
+        collection = database["companies"]
+
+        # Utilizzo un'aggregation pipeline per pre-processare ogni documento e caricare solo le informazioni che voglio
+        # Il primo step modifica la forma del documento e prende solo la sezione general_info
+        # Il secondo estrae i dati utili dalla sezione
+        pipeline = [
+            {
+                "$project": {
+                    "general_info": {
+                        "$arrayElemAt": [
+                            {
+                                "$filter": {
+                                    "input": "$sections",
+                                    "as": "section",
+                                    "cond": {
+                                        "$eq": [
+                                            "$$section.name",
+                                            "general_info"
+                                        ]
+                                    }
+                                }
+                            },
+                            0
+                        ]
+                    }
+                }
+            },
+            {
+                "$project": {
+                    "_id": 0,
+                    "nome": "$general_info.data.company_name",
+                    "codice_fiscale": "$_id"
+                }
+            }
+        ]
+        results = collection.aggregate(pipeline)
+
+        return [
+            CompanyBrief(
+                nome=doc["nome"],
+                codice_fiscale=doc["codice_fiscale"]
+            )
+            for doc in results
+        ]

@@ -4,11 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d1f57556-a68b-4407-9511-95d58864d413" name="Changes" comment="Termina caricamento CE e indici e introduce traduzione campi">
-      <change afterPath="$PROJECT_DIR$/dao/company_dao.py" afterDir="false" />
+    <list default="true" id="d1f57556-a68b-4407-9511-95d58864d413" name="Changes" comment="Implementa caricamento company su MongoDB e test">
+      <change afterPath="$PROJECT_DIR$/app/dialogs/importdialog.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/resources/connected.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/resources/data-ok.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/config/paths.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ui/import_dialog.ui" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/windows/mainwindow.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/windows/mainwindow.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/controller/main_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/controller/main_controller.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dao/balance_dao.py" beforeDir="false" afterPath="$PROJECT_DIR$/dao/balance_dao.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dao/company_dao.py" beforeDir="false" afterPath="$PROJECT_DIR$/dao/company_dao.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/model/Company.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/Company.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tests/test_loader.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_loader.py" afterDir="false" />
     </list>
@@ -58,13 +63,14 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Python tests.Python tests for test_loader.test_company_brief.executor": "Run",
     "Python tests.Python tests for test_loader.test_company_mongodb_roundtrip.executor": "Debug",
     "Python tests.Python tests for test_loader.test_loader.executor": "Run",
     "Python tests.Python tests for test_loader.test_serialization.executor": "Run",
     "Python tests.Python tests for test_main.test_connection.executor": "Run",
     "Python tests.Python tests for tests.test_main.test_calcolo_esempio.executor": "Run",
     "Python tests.Python tests in test_loader.py.executor": "Run",
-    "Python.main.executor": "Debug",
+    "Python.main.executor": "Run",
     "RunOnceActivity.MCP Project settings loaded": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
@@ -76,7 +82,7 @@
     "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
     "git-widget-placeholder": "main",
     "junie.onboarding.icon.badge.shown": "true",
-    "last_opened_file_path": "/Users/gabrielecavallo/PycharmProjects/CavalloGabriele/screens",
+    "last_opened_file_path": "/Users/gabrielecavallo/PycharmProjects/CavalloGabriele/app/resources",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -89,6 +95,7 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/app/resources" />
       <recent name="$PROJECT_DIR$/screens" />
       <recent name="$PROJECT_DIR$/ui" />
       <recent name="$PROJECT_DIR$/dataset/prod" />
@@ -99,7 +106,7 @@
       <recent name="$PROJECT_DIR$/dataset/test" />
     </key>
   </component>
-  <component name="RunManager" selected="Python tests.Python tests for test_loader.test_company_mongodb_roundtrip">
+  <component name="RunManager" selected="Python.main">
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="CavalloGabriele" />
       <option name="ENV_FILES" value="" />
@@ -122,6 +129,23 @@
       <option name="MODULE_MODE" value="false" />
       <option name="REDIRECT_INPUT" value="false" />
       <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Python tests for test_loader.test_company_brief" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+      <module name="CavalloGabriele" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="RUN_TOOL" value="" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;test_loader.test_company_brief&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
     <configuration name="Python tests for test_loader.test_company_mongodb_roundtrip" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
@@ -175,23 +199,6 @@
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
-    <configuration name="Python tests for test_main.test_connection" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
-      <module name="CavalloGabriele" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="RUN_TOOL" value="" />
-      <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;test_main.test_connection&quot;" />
-      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
-      <method v="2" />
-    </configuration>
     <configuration name="Python tests in test_loader.py" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
       <module name="CavalloGabriele" />
       <option name="ENV_FILES" value="" />
@@ -211,11 +218,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python tests.Python tests for test_loader.test_company_mongodb_roundtrip" />
         <item itemvalue="Python tests.Python tests in test_loader.py" />
+        <item itemvalue="Python tests.Python tests for test_loader.test_company_brief" />
+        <item itemvalue="Python tests.Python tests for test_loader.test_company_mongodb_roundtrip" />
         <item itemvalue="Python tests.Python tests for test_loader.test_loader" />
         <item itemvalue="Python tests.Python tests for test_loader.test_serialization" />
-        <item itemvalue="Python tests.Python tests for test_main.test_connection" />
       </list>
     </recent_temporary>
   </component>
@@ -239,7 +246,7 @@
       <workItem from="1791273475018" duration="22328000" />
       <workItem from="1791363251877" duration="11688000" />
       <workItem from="1791393743611" duration="8962000" />
-      <workItem from="1791557012295" duration="13129000" />
+      <workItem from="1791557012295" duration="21375000" />
     </task>
     <task id="LOCAL-00001" summary="Test commit">
       <option name="closed" value="true" />
@@ -513,14 +520,21 @@
       <option name="project" value="LOCAL" />
       <updated>1791566732229</updated>
     </task>
-    <option name="localTasksCounter" value="35" />
+    <task id="LOCAL-00035" summary="Implementa caricamento company su MongoDB e test">
+      <option name="closed" value="true" />
+      <created>1791570247586</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1791570247586</updated>
+    </task>
+    <option name="localTasksCounter" value="36" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Script di deploy semplice" />
     <MESSAGE value="Configurazione di deploy" />
     <MESSAGE value="Configurazione unit-test" />
     <MESSAGE value="Config pattern MVC" />
@@ -545,25 +559,16 @@
     <MESSAGE value="Bug fixes" />
     <MESSAGE value="Caricamento conto economico" />
     <MESSAGE value="Termina caricamento CE e indici e introduce traduzione campi" />
-    <option name="LAST_COMMIT_MESSAGE" value="Termina caricamento CE e indici e introduce traduzione campi" />
+    <MESSAGE value="Implementa caricamento company su MongoDB e test" />
+    <option name="LAST_COMMIT_MESSAGE" value="Implementa caricamento company su MongoDB e test" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/controller/main_controller.py</url>
-          <line>57</line>
-          <option name="timeStamp" value="35" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/tests/test_loader.py</url>
-          <line>3235</line>
-          <option name="timeStamp" value="36" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/tests/test_loader.py</url>
-          <line>3242</line>
-          <option name="timeStamp" value="37" />
+          <line>3261</line>
+          <option name="timeStamp" value="40" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
@@ -581,7 +586,7 @@
     </watches-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/CavalloGabriele$.coverage" NAME=" Coverage Results" MODIFIED="1791570190155" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
-    <SUITE FILE_PATH="coverage/CavalloGabriele$main.coverage" NAME="main Coverage Results" MODIFIED="1791569113183" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/CavalloGabriele$.coverage" NAME=" Coverage Results" MODIFIED="1791577752565" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
+    <SUITE FILE_PATH="coverage/CavalloGabriele$main.coverage" NAME="main Coverage Results" MODIFIED="1791580626323" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
