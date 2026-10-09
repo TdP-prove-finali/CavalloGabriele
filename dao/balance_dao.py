@@ -196,6 +196,10 @@ class CompanyBalanceImporter:
                     self.__next_row()
                     secVal = self.__load_ce_section()
                     self.__prev_row()
+                elif sectionName == "indici":
+                    self.__next_row()
+                    secVal = self.__load_indices_section()
+                    self.__prev_row()
                 else:
                     print("Sezione non riconosciuta " + sectionName)
 
@@ -207,6 +211,56 @@ class CompanyBalanceImporter:
 
         wb.close()
         return self.company
+
+    def __load_indices_section(self) -> Section:
+        s = Section("indici", {})
+        content_rows = 0
+        sub_sections = []
+
+        while self.__has_av_rows() and content_rows < 5:
+            if not self.__check_empty_row():
+                content_rows += 1
+                self.__return_to_rstart()
+
+                if content_rows <= 3:  # Le prime 3 righe non hanno un'intestazione
+                    if content_rows == 1:
+                        row_name = "data"
+                        self.__next_column()
+                    elif content_rows == 2:
+                        row_name = "moneta"
+                    elif content_rows == 3:
+                        row_name = "periodo"
+
+                    row_values = self.__load_all_hvalues()
+                    s.append_row(row_name, row_values.copy())
+
+            self.__next_row()
+
+        while self.__has_av_rows() and not self.__is_section_start():  # L'ultima sotto-sezione caricata dello SP lascia il cursore sull'intestazione del Conto Economico
+            if not self.__check_empty_row():
+                secName = self.__get_cell().value
+                self.__next_row()
+                sub_sections.append(self.__load_indices_subsection(
+                    self.__get_field_name(secName)))
+            else:
+                self.__next_row()
+
+        s.data["subsections"] = sub_sections.copy()
+        return s
+
+    def __load_indices_subsection(self, secName) -> Section:
+        s = Section(secName, {})
+        sub_sections = []
+        while self.__has_av_rows() and not self.__is_section_start() and not self.__is_vsec_start():
+            if not self.__check_empty_row():
+                    row_name = self.__get_field_name(self.__get_cell().value)
+                    row_values = self.__load_all_hvalues()
+                    s.append_row(row_name, row_values.copy())
+
+            self.__next_row()
+
+        s.data["subsections"] = sub_sections.copy()
+        return s
 
     def __load_ce_section(self) -> Section:
         s = Section("conto_economico", {})

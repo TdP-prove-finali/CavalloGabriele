@@ -1,0 +1,51 @@
+"""Traduzione delle chiavi semantiche della sezione indici."""
+
+CAMPI_INDICI = {
+    # 1. Indicatori finanziari
+    '__indice_di_liquidita': '- Indice di liquidità',
+    '__indice_corrente': '- Indice corrente',
+    '__indice_di_indebitam_a_breve': '- Indice di indebitam. a breve',
+    '__indice_di_indebitam_a_lungo': '- Indice di indebitam. a lungo',
+    '__indice_di_copertura_delle_immob__patrimoniale_': '- Indice di copertura delle immob. (patrimoniale)',
+    '__grado_di_ammortamento': '- Grado di ammortamento',
+    '__rapporto_di_indebitamento': '- Rapporto di indebitamento',
+    '__indice_di_copertura_delle_immob__finanziario_': '- Indice di copertura delle immob. (finanziario)',
+    '__debiti_v_frac_banche_su_fatt': '- Debiti v/banche su fatt.',
+    '__costo_denaro_a_prestito': '- Costo denaro a prestito',
+    '__grado_di_copertura_degli_interessi_passivi': '- Grado di copertura degli interessi passivi',
+    '__oneri_finanz_su_fatt': '- Oneri finanz. su fatt.',
+    '__indice_di_indip_finanz': '- Indice di indip. Finanz.',
+    '__grado_di_indip_da_terzi': '- Grado di indip. da terzi',
+    '__posizione_finanziaria_netta': '- Posizione finanziaria netta',
+    '__debt_frac_equity_ratio': '- Debt/Equity ratio',
+    '__debt_frac_ebitda_ratio': '- Debt/EBITDA ratio',
+    # 2. Indici della gestione corrente
+    '__rotaz_cap_investito__volte_': '- Rotaz. cap. investito (volte)',
+    '__rotaz_cap_cir_lordo__volte_': '- Rotaz. cap. cir. lordo (volte)',
+    '__incidenza_circolante_operativo': '- Incidenza circolante operativo',
+    '__giac_media_delle_scorte__gg_': '- Giac. media delle scorte (gg)',
+    '__giorni_copertura_scorte__gg_': '- Giorni copertura scorte (gg)',
+    '__durata_media_dei_crediti_al_lordo_iva__gg_': '- Durata media dei crediti al lordo IVA (gg)',
+    '__durata_media_dei_debiti_al_lordo_iva__gg_': '- Durata media dei debiti al lordo IVA (gg)',
+    '__durata_ciclo_commerciale__gg_': '- Durata Ciclo Commerciale (gg)',
+    # 3. Indici di redditività
+    '__ebitda': '- EBITDA',
+    '__ebitda_frac_vendite': '- EBITDA/Vendite',
+    '__redditivita_del_totale_attivo__roa_': '- Redditività del totale attivo (ROA)',
+    '__redditivita_di_tutto_il_capitale_investito__roi_': '- Redditività di tutto il capitale investito (ROI)',
+    '__redditivita_delle_vendite__ros_': '- Redditività delle vendite (ROS)',
+    '__redditivita_del_capitale_proprio__roe_': '- Redditività del capitale proprio (ROE)',
+    '__incid_oneri_frac_proventi_extrag__perc_': '- Incid. oneri/Proventi extrag. (%)',
+    # 4. Indici di produttività
+    '__dipendenti': '- Dipendenti',
+    '__ricavi_pro_capite': '- Ricavi pro-capite',
+    '__valore_aggiunto_pro_capite': '- Valore aggiunto pro-capite',
+    '__costo_lavoro_per_addetto': '- Costo lavoro per addetto',
+    '__rendimento_dipendenti': '- Rendimento dipendenti',
+    # 5. Dati significativi
+    '__capitale_circolante_netto': '- Capitale circolante netto',
+    '__margine_sui_consumi': '- Margine sui consumi',
+    '__margine_di_tesoreria': '- Margine di tesoreria',
+    '__margine_di_struttura': '- Margine di struttura',
+    '__flusso_di_cassa_di_gestione': '- Flusso di cassa di gestione',
+}
