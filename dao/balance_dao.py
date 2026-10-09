@@ -380,6 +380,8 @@ class CompanyBalanceImporter:
                               .replace("°", "")
                               .replace(",", "")
                               .replace(":", "")
+                              .replace("+", "plus")
+                              .replace("-", "minus")
                               )
 
     def __get_field_value(self, cellcontent):
