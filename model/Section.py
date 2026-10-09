@@ -6,6 +6,16 @@ from dataclasses import dataclass
 class Section:
     name: str
     data: dict
+    __last__row__name = None        # Nome dell'ultima riga che ho aggiunto
+
+    def append_row(self, rowName, values):
+        self.data[rowName] = values
+        self.__last__row__name = rowName
+
+    @property
+    def last_added_row_name(self):
+        return self.__last__row__name
+
 
 @dataclass
 class GeneralInfoSection(Section):

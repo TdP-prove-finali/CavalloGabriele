@@ -1,14 +1,14 @@
 from openpyxl.cell import Cell
 from openpyxl.utils import get_column_letter
-
 from dao.util import remove_accents
 from model.Company import Company
 from openpyxl import load_workbook
-
 from model.Section import Section
 
-# TODO: Gestione dei "di cui" in SP
 class CompanyBalanceImporter:
+    """
+    Classe per gestire l'importazione delle informazioni di un'azienda presenti in un file excel
+    """
 
     def __init__(self, path):
         self.path = path
@@ -261,8 +261,11 @@ class CompanyBalanceImporter:
                     break
                 else:
                     row_name = self.__get_field_name(self.__get_cell().value)
+                    if self.__get_cell().value.find("di cui:") >= 0:           # Per i campi di dettaglio (di cui) aggiunge il nome completo del campo a cui fanno riferimento
+                        row_name = s.last_added_row_name + "__" + row_name
+
                     row_values = self.__load_all_hvalues()
-                    s.data[row_name] = row_values.copy()
+                    s.append_row(row_name, row_values.copy())
 
             self.__next_row()
 
