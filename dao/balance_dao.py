@@ -8,8 +8,6 @@ from openpyxl import load_workbook
 from model.Section import Section
 
 # TODO: Gestione dei "di cui" in SP
-# TODO: Gestione sotto-sezioni passivo
-# TODO: Migliorare gestione valute (classe valuta, migliaia, operazioni)
 class CompanyBalanceImporter:
 
     def __init__(self, path):
@@ -131,6 +129,14 @@ class CompanyBalanceImporter:
 
         return values.copy()
 
+    def __is_vsubsec2_start(self):
+        content = self.__get_cell().value
+        return (content is not None and self.__get_cell().font is not None
+                and self.__get_cell().font.bold
+                and self.__get_cell().font.color.value == 'FF333333'
+                and self.__get_cell().fill is not None
+                and self.__get_cell().fill.start_color.value == 'FFE4ECF6')
+
     def import_from_excel(self) -> Company:
         # aprire il file
         # parti dalla prima cella della prima riga
@@ -147,6 +153,7 @@ class CompanyBalanceImporter:
         self.worksheet = firstSheet
         self.max_row = firstSheet.max_row
         self.max_col = firstSheet.max_column
+        print(firstSheet["A245"])
         self.__set_cursor(2, 1) # B1
         self.company = Company()
 
@@ -225,11 +232,11 @@ class CompanyBalanceImporter:
 
             self.__next_row()
 
-        while self.__has_av_rows() and not self.__is_section_start():
+        while self.__has_av_rows() and not self.__is_section_start():       # L'ultima sotto-sezione caricata dello SP lascia il cursore sull'intestazione del Conto Economico
             secName = self.__get_cell().value
             self.__next_row()
             sub_sections.append(self.__load_sp_subsection(
-                self.__get_field_name(secName)))
+                self.__get_field_name(secName), False))
 
         self.data["subsections"] = sub_sections.copy()
         return Section(
@@ -237,16 +244,29 @@ class CompanyBalanceImporter:
             data=self.data.copy()
         )
 
-    def __load_sp_subsection(self, name) -> Section:
+    def __load_sp_subsection(self, name, sub: bool) -> Section:
         s = Section(name, {})
+        sub_sections = []
         while self.__has_av_rows() and not self.__is_section_start() and not self.__is_vsec_start():
             if not self.__check_empty_row():
-                row_name = self.__get_field_name(self.__get_cell().value)
-                row_values = self.__load_all_hvalues()
-                s.data[row_name] = row_values.copy()
+                if self.__is_vsubsec2_start() and sub == False:
+                    sub_sec_name = self.__get_field_name(self.__get_cell().value)
+                    self.__next_row()
+                    sub_sec = self.__load_sp_subsection(sub_sec_name, True)
+                    sub_sections.append(sub_sec)
+                    if self.__is_section_start():   # Lo spostamento manuale del cursore potrebbe aver portato sopra ad una cella di fine sezione
+                        break
+                elif self.__is_vsubsec2_start() and sub:        # Evita che la struttura dati divendi una cascata e mantiene tutto su 1 livello
+                    self.__prev_row()                           # Torna indietro di una riga, ferma la subsection e ri-esegui il ciclo che creerà una nuova subsection ma a livello superiore e non un nuovo figlio
+                    break
+                else:
+                    row_name = self.__get_field_name(self.__get_cell().value)
+                    row_values = self.__load_all_hvalues()
+                    s.data[row_name] = row_values.copy()
 
             self.__next_row()
 
+        s.data["subsections"] = sub_sections.copy()
         return s
 
     def __load_finance_profile_section(self):

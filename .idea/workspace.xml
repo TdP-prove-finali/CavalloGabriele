@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d1f57556-a68b-4407-9511-95d58864d413" name="Changes" comment="Caricamento profilo finanziario e miglioramento stabilità">
+    <list default="true" id="d1f57556-a68b-4407-9511-95d58864d413" name="Changes" comment="Caricamento stato patrimoniale">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dao/balance_dao.py" beforeDir="false" afterPath="$PROJECT_DIR$/dao/balance_dao.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dataset/sample-aida-single.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/dataset/sample-aida-single.xlsx" afterDir="false" />
@@ -16,7 +16,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="134" />
+    <option name="cachedIndexableFilesCount" value="135" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -197,7 +197,8 @@
       <workItem from="1791272676394" duration="784000" />
       <workItem from="1791273475018" duration="22328000" />
       <workItem from="1791363251877" duration="11688000" />
-      <workItem from="1791393743611" duration="8760000" />
+      <workItem from="1791393743611" duration="8962000" />
+      <workItem from="1791557012295" duration="4248000" />
     </task>
     <task id="LOCAL-00001" summary="Test commit">
       <option name="closed" value="true" />
@@ -423,14 +424,21 @@
       <option name="project" value="LOCAL" />
       <updated>1791399545601</updated>
     </task>
-    <option name="localTasksCounter" value="29" />
+    <task id="LOCAL-00029" summary="Caricamento stato patrimoniale">
+      <option name="closed" value="true" />
+      <created>1791407380206</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1791407380206</updated>
+    </task>
+    <option name="localTasksCounter" value="30" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Dataset prod e test" />
     <MESSAGE value="Started UI creation" />
     <MESSAGE value="Gitignore" />
     <MESSAGE value="Struttura base PyQt con PySide6 e finestra funzionante" />
@@ -455,15 +463,26 @@
     <MESSAGE value="Sezione overview" />
     <MESSAGE value="Miglioramento performance" />
     <MESSAGE value="Caricamento profilo finanziario e miglioramento stabilità" />
-    <option name="LAST_COMMIT_MESSAGE" value="Caricamento profilo finanziario e miglioramento stabilità" />
+    <MESSAGE value="Caricamento stato patrimoniale" />
+    <option name="LAST_COMMIT_MESSAGE" value="Caricamento stato patrimoniale" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dao/balance_dao.py</url>
-          <line>227</line>
-          <option name="timeStamp" value="11" />
+          <line>247</line>
+          <option name="timeStamp" value="14" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/dao/balance_dao.py</url>
+          <line>234</line>
+          <option name="timeStamp" value="17" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/dao/balance_dao.py</url>
+          <line>268</line>
+          <option name="timeStamp" value="18" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
@@ -481,7 +500,7 @@
     </watches-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/CavalloGabriele$.coverage" NAME=" Coverage Results" MODIFIED="1791407189096" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
+    <SUITE FILE_PATH="coverage/CavalloGabriele$.coverage" NAME=" Coverage Results" MODIFIED="1791561250338" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/CavalloGabriele$main.coverage" NAME="main Coverage Results" MODIFIED="1791302947438" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
