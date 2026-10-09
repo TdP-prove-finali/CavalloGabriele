@@ -138,12 +138,7 @@ class CompanyBalanceImporter:
                 and self.__get_cell().fill.start_color.value == 'FFE4ECF6')
 
     def import_from_excel(self) -> Company:
-        # aprire il file
-        # parti dalla prima cella della prima riga
-        # e' vuota? Passa alla successiva
-        # Ha qualcosa? Il testo è in grassetto? Lo sfondo è blu? Crea una nuova sezione general info
-        # Parsifica la sezione
-        # Ripeti
+        """Funzione per avviare il caricamento delle informazioni dal file"""
         wb = load_workbook(filename=self.path, read_only=False, data_only=True)
 
         if len(wb.sheetnames) == 0:
@@ -197,6 +192,10 @@ class CompanyBalanceImporter:
                     self.__next_row()
                     secVal = self.__load_sp_section()
                     self.__prev_row()
+                elif sectionName == "conto_economico":
+                    self.__next_row()
+                    secVal = self.__load_ce_section()
+                    self.__prev_row()
                 else:
                     print("Sezione non riconosciuta " + sectionName)
 
@@ -208,6 +207,44 @@ class CompanyBalanceImporter:
 
         wb.close()
         return self.company
+
+    def __load_ce_section(self) -> Section:
+        s = Section("conto_economico", {})
+        content_rows = 0
+
+        while self.__has_av_rows() and content_rows < 5:
+            if not self.__check_empty_row():
+                content_rows += 1
+                self.__return_to_rstart()
+
+                if content_rows <= 3:  # Le prime 3 righe non hanno un'intestazione
+                    if content_rows == 1:
+                        row_name = "data"
+                        self.__next_column()
+                    elif content_rows == 2:
+                        row_name = "moneta"
+                    elif content_rows == 3:
+                        row_name = "periodo"
+
+                    row_values = self.__load_all_hvalues()
+                    s.append_row(row_name, row_values.copy())
+
+            self.__next_row()
+
+        while self.__has_av_rows() and not self.__is_section_start():       # L'ultima sotto-sezione caricata dello SP lascia il cursore sull'intestazione del Conto Economico
+            if not self.__check_empty_row():
+                content_rows += 1
+                row_name = self.__get_field_name(self.__get_cell().value)
+                if self.__get_cell().value.find(
+                        "di cui:") >= 0:  # Per i campi di dettaglio (di cui) aggiunge il nome completo del campo a cui fanno riferimento
+                    row_name = s.last_added_row_name + "__" + row_name
+
+                row_values = self.__load_all_hvalues()
+                s.append_row(row_name, row_values.copy())
+
+            self.__next_row()
+
+        return s
 
     def __load_sp_section(self) -> Section:
         content_rows = 0
@@ -389,7 +426,6 @@ class CompanyBalanceImporter:
             return None
 
         return cellcontent
-
 
     def __concat_vertically(self) -> str:       # Concatena i valori delle celle scendendo in verticale fino a quando non trova una cella vuota, un'intestazione di sotto-sezione o di sezione
         cont = ""

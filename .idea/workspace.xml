@@ -4,10 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d1f57556-a68b-4407-9511-95d58864d413" name="Changes" comment="Caricamento stato patrimoniale">
+    <list default="true" id="d1f57556-a68b-4407-9511-95d58864d413" name="Changes" comment="Bug fixes">
+      <change afterPath="$PROJECT_DIR$/config/voci_sp_readable.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dao/balance_dao.py" beforeDir="false" afterPath="$PROJECT_DIR$/dao/balance_dao.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dataset/sample-aida-single.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/dataset/sample-aida-single.xlsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tests/test_loader.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_loader.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -198,7 +198,7 @@
       <workItem from="1791273475018" duration="22328000" />
       <workItem from="1791363251877" duration="11688000" />
       <workItem from="1791393743611" duration="8962000" />
-      <workItem from="1791557012295" duration="4248000" />
+      <workItem from="1791557012295" duration="8059000" />
     </task>
     <task id="LOCAL-00001" summary="Test commit">
       <option name="closed" value="true" />
@@ -432,16 +432,37 @@
       <option name="project" value="LOCAL" />
       <updated>1791407380206</updated>
     </task>
-    <option name="localTasksCounter" value="30" />
+    <task id="LOCAL-00030" summary="Sotto-sezioni passivo SP">
+      <option name="closed" value="true" />
+      <created>1791561298937</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1791561298937</updated>
+    </task>
+    <task id="LOCAL-00031" summary="Completa caricam. SP">
+      <option name="closed" value="true" />
+      <created>1791562103642</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1791562103642</updated>
+    </task>
+    <task id="LOCAL-00032" summary="Bug fixes">
+      <option name="closed" value="true" />
+      <created>1791563852240</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1791563852240</updated>
+    </task>
+    <option name="localTasksCounter" value="33" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Started UI creation" />
-    <MESSAGE value="Gitignore" />
-    <MESSAGE value="Struttura base PyQt con PySide6 e finestra funzionante" />
     <MESSAGE value="Finestra base con .ui compilato in python e slot" />
     <MESSAGE value="Script per ricompilare l'interfaccia automaticamente" />
     <MESSAGE value="Script di deploy semplice" />
@@ -464,25 +485,23 @@
     <MESSAGE value="Miglioramento performance" />
     <MESSAGE value="Caricamento profilo finanziario e miglioramento stabilità" />
     <MESSAGE value="Caricamento stato patrimoniale" />
-    <option name="LAST_COMMIT_MESSAGE" value="Caricamento stato patrimoniale" />
+    <MESSAGE value="Sotto-sezioni passivo SP" />
+    <MESSAGE value="Completa caricam. SP" />
+    <MESSAGE value="Bug fixes" />
+    <option name="LAST_COMMIT_MESSAGE" value="Bug fixes" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dao/balance_dao.py</url>
-          <line>247</line>
-          <option name="timeStamp" value="14" />
+          <line>212</line>
+          <option name="timeStamp" value="25" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dao/balance_dao.py</url>
-          <line>234</line>
-          <option name="timeStamp" value="17" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/dao/balance_dao.py</url>
-          <line>268</line>
-          <option name="timeStamp" value="18" />
+          <line>246</line>
+          <option name="timeStamp" value="27" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
@@ -500,7 +519,7 @@
     </watches-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/CavalloGabriele$.coverage" NAME=" Coverage Results" MODIFIED="1791561250338" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
+    <SUITE FILE_PATH="coverage/CavalloGabriele$.coverage" NAME=" Coverage Results" MODIFIED="1791565098977" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/CavalloGabriele$main.coverage" NAME="main Coverage Results" MODIFIED="1791302947438" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
