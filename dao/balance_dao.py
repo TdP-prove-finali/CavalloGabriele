@@ -1,3 +1,5 @@
+import keyword
+
 from openpyxl.cell import Cell
 from openpyxl.utils import get_column_letter
 from dao.util import remove_accents
@@ -44,13 +46,15 @@ class CompanyBalanceImporter:
     def __get_cell(self) -> Cell:   # Restituisce la cella a cui sta puntando adesso il cursore
         return self.worksheet[get_column_letter(self.cursor_column) + str(self.cursor_row)]
 
-    def __move_to_next_value(self) -> Cell: # Sposta il cursore a destra fino a quando non trova un valore in una cella
+    def __move_to_next_value(self, suppressable = False) -> Cell | None: # Sposta il cursore a destra fino a quando non trova un valore in una cella
         self.__next_column()
         cell = self.__get_cell()
         while (cell is not None
                and cell.value is None):
-            if not self.__has_av_cols():
+            if not self.__has_av_cols() and not suppressable:
                 raise Exception("Non è stato possibile trovare un valore successivo sulla riga " + str(self.cursor_row))
+            elif not self.__has_av_cols():
+                return None
 
             self.__next_column()
             cell = self.__get_cell()
@@ -60,10 +64,14 @@ class CompanyBalanceImporter:
     def __has_av_cols(self):
         return self.cursor_column < self.max_col
 
-    def __move_to_next_sechead(self) -> Cell:   # Sposta orizzontalmente il cursore fino alla prossima intestazione di campo (valore in grassetto blu)
+    def __move_to_next_sechead(self, suppressable = False) -> Cell | None:
+        f""" Sposta orizzontalmente il cursore fino alla prossima intestazione di campo (valore in grassetto blu). 
+         Nel caso in cui non venga trovata, se il parametro {suppressable} non è specificato, lancia un'eccezione, altrimenti restituisce None. """
         while self.__get_cell() is None or self.__get_cell().font is None or not self.__get_cell().font.bold:
-            if not self.__has_av_cols():
+            if not self.__has_av_cols() and not suppressable:
                 raise Exception("Ricerca di una sezione orizzontale non trovata sulla riga " + str(self.cursor_row))
+            elif not self.__has_av_cols():
+                return None
 
             self.__next_column()
 
@@ -461,7 +469,7 @@ class CompanyBalanceImporter:
         )
 
     def __get_field_name(self, cellContent) -> str:
-        return remove_accents(cellContent.lower().lstrip().rstrip().replace(" ", "_")
+        field_name = remove_accents(cellContent.lower().lstrip().rstrip().replace(" ", "_")
                 .replace("-", "_").replace(".", "")
                 .replace("(%)", "_perc_")
                 .replace("(", "_")
@@ -473,6 +481,21 @@ class CompanyBalanceImporter:
                               .replace("+", "plus")
                               .replace("-", "minus")
                               )
+        # Evita identificatori che iniziano con una cifra
+        if field_name and field_name[0].isdigit():
+            field_name = f"_{field_name}"
+
+        # Evita parole riservate di Python
+        if keyword.iskeyword(field_name):
+            field_name = f"{field_name}_"
+
+        # Verifica finale
+        if not field_name.isidentifier():
+            raise ValueError(
+                f"Nome campo non valido: {cellContent!r} -> {field_name!r}"
+            )
+
+        return field_name
 
     def __get_field_value(self, cellcontent):
         if type(cellcontent) == str and cellcontent == "n.d.":
@@ -491,12 +514,22 @@ class CompanyBalanceImporter:
 
         return cont
 
-    def __load_hsection(self)->tuple[str, ...]:
-        self.__move_to_next_sechead()
-        sec_name = self.__get_field_name(self.__get_cell().value)
-        sec_value = self.__move_to_next_value().value
-
-        return (sec_name, sec_value)
+    def __load_hsection(self, suppressable=False)-> tuple[str, ...] | None:
+        """
+        Carica una sezione orizzontale identificata da una cella di heading (nome del campo) e una di valore.
+        :param suppressable: Indica se lanciare un'eccezione nel caso in cui la sezione non venga trovata o se semplicemente restituire None
+        :return: Cella in cui inizia la sezione oppure None
+        """
+        res = self.__move_to_next_sechead(suppressable)
+        if res is not None:
+            sec_name = self.__get_field_name(self.__get_cell().value)
+            sec_value = self.__move_to_next_value(suppressable)
+            if sec_value is not None:
+                return (sec_name, sec_value.value)
+            else:
+                return None
+        else:
+            return None
 
     def __load_anagrafica_section(self) -> Section:
         content_rows = 0
@@ -577,21 +610,20 @@ class CompanyBalanceImporter:
         content_rows = 0
 
         while self.__has_av_rows() and not self.__is_section_start():
-
             if not self.__check_empty_row():
                 content_rows += 1
                 self.__return_to_rstart()
+                # Siccome tra i diversi file ci sono differenze, per ogni riga guarda se ci sono 2 campi o uno solo
+                # Il primo è obbligatorio, il secondo no
+                f1 = self.__load_hsection(suppressable=True)
+                if f1 is not None:
+                    self.__next_column()
+                    self.data[f1[0]] = f1[1]
 
-                if content_rows == 5:      # Entrambe le righe hanno due campi
-                    f1 = self.__load_hsection()
-                    self.__next_column()
-                    f2 = self.__load_hsection()
-                    self.data[f1[0]] = f1[1]
-                    self.data[f2[0]] = f2[1]
-                elif content_rows >= 6:
-                    f1 = self.__load_hsection()
-                    self.__next_column()
-                    self.data[f1[0]] = f1[1]
+                    f2 = self.__load_hsection(suppressable=True)  # Seconda sezione opzionale
+                    if f2 is not None:
+                        self.data[f2[0]] = f2[1]
+
 
             self.__next_row()
 
