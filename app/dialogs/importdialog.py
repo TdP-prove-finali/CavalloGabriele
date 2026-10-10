@@ -25,9 +25,15 @@ class ImportDialog(QDialog):
     @Slot()
     def on_chose_file(self):
         print("Scegli file")
-        res = QFileDialog.getOpenFileName(
-            self,
-            caption="Seleziona il file da importare"
-        )
-        if res[0] != '':
-            self.ui.selectedPathEdit.setText(res[0])
+        fileDialog = QFileDialog()
+        fileDialog.setWindowTitle("Seleziona un file o una cartella")
+        fileDialog.setNameFilters([
+            "Excel (*.xlsx *.xls)"
+        ])
+        fileDialog.setFileMode(QFileDialog.FileMode.ExistingFile)
+        fileDialog.setDirectory(project_rooted("dataset").__str__())
+
+        res = fileDialog.exec()
+
+        if res:
+            self.ui.selectedPathEdit.setText(fileDialog.selectedFiles()[0])

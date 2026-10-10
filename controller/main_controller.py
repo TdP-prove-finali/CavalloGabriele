@@ -1,6 +1,4 @@
 import sys
-from pathlib import Path
-
 from PySide6.QtGui import QCloseEvent, QIcon, QPixmap
 from PySide6.QtWidgets import *
 from pymongo.errors import ConnectionFailure
@@ -38,14 +36,8 @@ class MainController:
             msgBox.setInformativeText("I dati devono essere importati nel database locale per essere utilizzati e fare simulazioni. ")
             msgBox.addButton("Importa dati", QMessageBox.ButtonRole.ActionRole)
             msgBox.exec()
-            # Mostro un messaggio e apro una finestra di importazione
-            importDialog = ImportDialog()
-            res = importDialog.exec()
 
-            if res:
-                selectedPath = importDialog.ui.selectedPathEdit.text()
-                self.handleImportData(selectedPath)
-                self.checkDataImport()
+            self.handleImportDialog()
         else:
             status_bar = self._view.statusBar()
             widget = QWidget()
@@ -55,6 +47,16 @@ class MainController:
             layout.addWidget(icn)
             layout.addWidget(QLabel("Dati importati"))
             status_bar.addPermanentWidget(widget)
+
+    def handleImportDialog(self):
+        # Mostro un messaggio e apro una finestra di importazione
+        importDialog = ImportDialog()
+        res = importDialog.exec()
+
+        if res:
+            selectedPath = importDialog.ui.selectedPathEdit.text()
+            self.__handleImportData__(selectedPath)
+            self.checkDataImport()
 
     def handleSayHelloButtonClick(self):
         print("Ciao " + self._view.ui.nameInput.text())
@@ -98,18 +100,26 @@ class MainController:
         event.accept()
         sys.exit(-1)
 
-    def handleImportData(self, path):
+    def __handleImportData__(self, path):
+        if path is None or path == "":
+            msgBox = QMessageBox()
+            msgBox.setText("Nessun file selezionato")
+            msgBox.setInformativeText("Non hai selezionato nessun file da importare. ")
+            msgBox.setIcon(QMessageBox.Icon.Critical)
+            msgBox.exec()
+            return
+
         try:
             c = CompanyBalanceImporter(path)
             c.import_from_excel()
             company = c.company
 
             CompanyDAO.save_company(company)
-        except:
+        except Exception as e:
+            print("WARNING: Eccezione durante l'importazione: " + e.__str__())
             msgBox = QMessageBox(self._view)
             msgBox.setText("Impossibile caricare il file")
             msgBox.setInformativeText(
-                "Non è stato possibile caricare il file che hai richiesto. ")
+                "Non è stato possibile caricare il file che hai richiesto. Controlla che esista e che non ci siano errori di battitura. Si accettano file Excel (.xlsx). Controlla inoltre che la struttura interna rispetti quella richiesta. ")
             msgBox.setIcon(QMessageBox.Icon.Critical)
             msgBox.exec()
-            self._view.close()

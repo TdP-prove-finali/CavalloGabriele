@@ -8,7 +8,12 @@ class MainWindow(QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.ui.sayHelloBtn.clicked.connect(self.on_pushBtnClick)
+        self.ui.actionImportazione.triggered.connect(self.on_import_trigger)
         self._controller = None
+
+    @Slot()
+    def on_import_trigger(self):
+        self.controller.handleImportDialog()
 
     @Slot()
     def on_pushBtnClick(self):

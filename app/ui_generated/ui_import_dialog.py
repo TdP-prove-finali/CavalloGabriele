@@ -33,17 +33,19 @@ class Ui_import_dialog(object):
         font.setPointSize(19)
         font.setBold(True)
         self.label.setFont(font)
+        self.label.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.verticalLayout.addWidget(self.label)
 
         self.label_2 = QLabel(import_dialog)
         self.label_2.setObjectName(u"label_2")
-        sizePolicy = QSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Expanding)
+        sizePolicy = QSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label_2.sizePolicy().hasHeightForWidth())
         self.label_2.setSizePolicy(sizePolicy)
-        self.label_2.setMaximumSize(QSize(300, 16777215))
+        self.label_2.setMinimumSize(QSize(300, 0))
+        self.label_2.setMaximumSize(QSize(300000, 16777215))
         self.label_2.setWordWrap(True)
 
         self.verticalLayout.addWidget(self.label_2)
