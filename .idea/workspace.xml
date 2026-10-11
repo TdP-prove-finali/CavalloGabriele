@@ -4,21 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d1f57556-a68b-4407-9511-95d58864d413" name="Changes" comment="Migliora la struttura dati della company rendendola più maneggiabile">
-      <change afterPath="$PROJECT_DIR$/dao/data_import/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dao/translations/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dao/translations/translation_dao.py" afterDir="false" />
+    <list default="true" id="d1f57556-a68b-4407-9511-95d58864d413" name="Changes" comment="Implementa traduzioni campo-descrizione automatiche">
+      <change afterPath="$PROJECT_DIR$/app/resources/business_scenario_lab_icon.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/resources/business_scenario_lab_icon_512.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/resources/business_scenario_lab_logo.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/windows/startupwindow.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ui/startupwindow.ui" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/windows/mainwindow.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/windows/mainwindow.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/indicies_readable.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/voci_ce_readable.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/voci_sp_readable.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/ui_generated/ui_import_dialog.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/ui_generated/ui_import_dialog.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/controller/main_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/controller/main_controller.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dao/CompanyImportDAO.py" beforeDir="false" afterPath="$PROJECT_DIR$/dao/data_import/CompanyImportDAO.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dao/balance_dao.py" beforeDir="false" afterPath="$PROJECT_DIR$/dao/data_import/balance_dao.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dao/comp_preproc_dao.py" beforeDir="false" afterPath="$PROJECT_DIR$/dao/data_import/comp_preproc_dao.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_loader.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_loader.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/import_dialog.ui" beforeDir="false" afterPath="$PROJECT_DIR$/ui/import_dialog.ui" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -68,7 +63,7 @@
   "keyToString": {
     "Python tests.Python tests for test_loader.test_company_brief.executor": "Debug",
     "Python tests.Python tests for test_loader.test_company_mongodb_roundtrip.executor": "Run",
-    "Python tests.Python tests for test_loader.test_complete.executor": "Debug",
+    "Python tests.Python tests for test_loader.test_complete.executor": "Run",
     "Python tests.Python tests for test_loader.test_loader.executor": "Run",
     "Python tests.Python tests for test_loader.test_loader2.executor": "Run",
     "Python tests.Python tests for test_loader.test_loader_cross.executor": "Run",
@@ -89,7 +84,7 @@
     "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
     "git-widget-placeholder": "main",
     "junie.onboarding.icon.badge.shown": "true",
-    "last_opened_file_path": "/Users/gabrielecavallo/PycharmProjects/CavalloGabriele/dataset",
+    "last_opened_file_path": "/Users/gabrielecavallo/PycharmProjects/CavalloGabriele/app/resources",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -102,8 +97,8 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/dataset" />
       <recent name="$PROJECT_DIR$/app/resources" />
+      <recent name="$PROJECT_DIR$/dataset" />
       <recent name="$PROJECT_DIR$/screens" />
       <recent name="$PROJECT_DIR$/ui" />
       <recent name="$PROJECT_DIR$/dataset/prod" />
@@ -114,7 +109,7 @@
       <recent name="$PROJECT_DIR$/dataset/test" />
     </key>
   </component>
-  <component name="RunManager" selected="Python tests.Python tests for test_loader.test_complete">
+  <component name="RunManager" selected="Python.main">
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="CavalloGabriele" />
       <option name="ENV_FILES" value="" />
@@ -257,7 +252,7 @@
       <workItem from="1791557012295" duration="21536000" />
       <workItem from="1791644146663" duration="5859000" />
       <workItem from="1791652420981" duration="1699000" />
-      <workItem from="1791726913468" duration="5457000" />
+      <workItem from="1791726913468" duration="9176000" />
     </task>
     <task id="LOCAL-00001" summary="Test commit">
       <option name="closed" value="true" />
@@ -587,14 +582,21 @@
       <option name="project" value="LOCAL" />
       <updated>1791730853511</updated>
     </task>
-    <option name="localTasksCounter" value="42" />
+    <task id="LOCAL-00042" summary="Implementa traduzioni campo-descrizione automatiche">
+      <option name="closed" value="true" />
+      <created>1791732543935</created>
+      <option name="number" value="00042" />
+      <option name="presentableId" value="LOCAL-00042" />
+      <option name="project" value="LOCAL" />
+      <updated>1791732543935</updated>
+    </task>
+    <option name="localTasksCounter" value="43" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Migliora pattern db" />
     <MESSAGE value="Installa scipy per statistica" />
     <MESSAGE value="Implem. controllo connessione startup" />
     <MESSAGE value="Inizia impl caricam da excel in MongoDB" />
@@ -619,7 +621,8 @@
     <MESSAGE value="Solidifica algoritmo importazione per supportare strutture diverse" />
     <MESSAGE value="Avvia implementazione traduzione campi" />
     <MESSAGE value="Migliora la struttura dati della company rendendola più maneggiabile" />
-    <option name="LAST_COMMIT_MESSAGE" value="Migliora la struttura dati della company rendendola più maneggiabile" />
+    <MESSAGE value="Implementa traduzioni campo-descrizione automatiche" />
+    <option name="LAST_COMMIT_MESSAGE" value="Implementa traduzioni campo-descrizione automatiche" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -644,11 +647,6 @@
           <line>109</line>
           <option name="timeStamp" value="47" />
         </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/dao/translations/translation_dao.py</url>
-          <line>88</line>
-          <option name="timeStamp" value="48" />
-        </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
         <breakpoint type="python-exception">
@@ -665,7 +663,7 @@
     </watches-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/CavalloGabriele$.coverage" NAME=" Coverage Results" MODIFIED="1791732352105" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
-    <SUITE FILE_PATH="coverage/CavalloGabriele$main.coverage" NAME="main Coverage Results" MODIFIED="1791731072539" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/CavalloGabriele$.coverage" NAME=" Coverage Results" MODIFIED="1791732482863" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
+    <SUITE FILE_PATH="coverage/CavalloGabriele$main.coverage" NAME="main Coverage Results" MODIFIED="1791736806726" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

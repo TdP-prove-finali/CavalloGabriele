@@ -1,10 +1,14 @@
 import sys
+from pathlib import Path
+
+import PySide6
 from PySide6.QtGui import QCloseEvent, QPixmap
 from PySide6.QtWidgets import *
 from pymongo.errors import ConnectionFailure
 
 from app.dialogs.importdialog import ImportDialog
 from app.windows.mainwindow import MainWindow
+from app.windows.startupwindow import StartupWindow
 from config.paths import project_rooted
 from dao.data_import.CompanyImportDAO import CompanyImportDAO
 from dao.company_dao import CompanyDAO
@@ -12,18 +16,35 @@ from dao.mongodb_connector import MongoDBConnector
 
 
 class MainController:
-    def __init__(self, model, view: MainWindow, app):
+    def __init__(self, model, view: StartupWindow, app):
         self._model = model
-        self._view: MainWindow = view
+        self._view: StartupWindow = view
         self._app = app
 
         # Codice da eseguire all'avvio dell'applicazione
         self.__startup__code()
 
-
     def __startup__code(self):
         self.dbconnectionTest()
         self.checkDataImport()
+        self.__resize_logo__()
+
+        pixMap = QPixmap((project_rooted("app") / "resources" / "business_scenario_lab_icon.png").__str__())
+        self._view.ui.centralwidget.setWindowIcon(
+            pixMap.scaled(
+                50,
+                50,
+                PySide6.QtCore.Qt.AspectRatioMode.KeepAspectRatio
+            )
+        )
+
+    def __resize_logo__(self):
+        pixMap = QPixmap((project_rooted("app") / "resources" / "business_scenario_lab_logo.png").__str__())
+        self._view.ui.pictureBox.setPixmap(pixMap.scaled(
+            self._view.ui.pictureBox.width(),
+            self._view.ui.pictureBox.height(),
+            PySide6.QtCore.Qt.AspectRatioMode.KeepAspectRatio
+        ))
 
     def checkDataImport(self):
         """Controlla che i dati per l'applicazione siano stati correttamente importati"""
@@ -61,12 +82,6 @@ class MainController:
             selectedPath = importDialog.ui.selectedPathEdit.text()
             self.__handleImportData__(selectedPath)
             self.checkDataImport()
-
-    def handleSayHelloButtonClick(self):
-        print("Ciao " + self._view.ui.nameInput.text())
-        msgBox = QMessageBox(self._view)
-        msgBox.setText("Ciao " + self._view.ui.nameInput.text())
-        msgBox.exec()
 
     def dbconnectionTest(self):
         try:

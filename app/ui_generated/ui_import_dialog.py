@@ -39,12 +39,12 @@ class Ui_import_dialog(object):
 
         self.label_2 = QLabel(import_dialog)
         self.label_2.setObjectName(u"label_2")
-        sizePolicy = QSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+        sizePolicy = QSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label_2.sizePolicy().hasHeightForWidth())
         self.label_2.setSizePolicy(sizePolicy)
-        self.label_2.setMinimumSize(QSize(300, 0))
+        self.label_2.setMinimumSize(QSize(350, 150))
         self.label_2.setMaximumSize(QSize(300000, 16777215))
         self.label_2.setWordWrap(True)
 
