@@ -8,10 +8,11 @@ from openpyxl import load_workbook
 from model.Section import Section
 
 class CompanyBalanceImporter:
+    __translations__ = {}       # Traduzioni condivise di tutti gli identificatori di campo con il corrispettivo descrittore completo
+
     """
     Classe per gestire l'importazione delle informazioni di un'azienda presenti in un file excel
     """
-
     def __init__(self, path):
         self.path = path
         self.cursor_column = 1
@@ -21,6 +22,10 @@ class CompanyBalanceImporter:
         self.max_col = None
         self.max_row = None
         self.company = None
+
+    @classmethod
+    def get_translations(cls):
+        return CompanyBalanceImporter.__translations__
 
     def __set_cursor(self, column: int, row: int):
         if column > self.max_col or row > self.max_row:
@@ -469,6 +474,13 @@ class CompanyBalanceImporter:
         )
 
     def __get_field_name(self, cellContent) -> str:
+        """
+        Restituisce un nome di campo valido per una voce dell'excel, verificando che possa essere utilizzato come identificatore
+        python in un dizionario.
+        Inoltre, salva la corrispondenza Descrizione - nomecampo per permettere la traduzione sull'interfaccia
+        :param cellContent:
+        :return:
+        """
         field_name = remove_accents(cellContent.lower().lstrip().rstrip().replace(" ", "_")
                 .replace("-", "_").replace(".", "")
                 .replace("(%)", "_perc_")
@@ -495,6 +507,7 @@ class CompanyBalanceImporter:
                 f"Nome campo non valido: {cellContent!r} -> {field_name!r}"
             )
 
+        self.__translations__[field_name] = cellContent
         return field_name
 
     def __get_field_value(self, cellcontent):
