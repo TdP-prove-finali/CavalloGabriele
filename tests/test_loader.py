@@ -1,41 +1,50 @@
-import datetime
-
-from dao.balance_dao import CompanyBalanceImporter
+from dao.CompanyImportDAO import CompanyImportDAO
+from dao.balance_dao import RawCompanyBalanceImporter
+from dao.comp_preproc_dao import CompanyPreprocessorDAO
 from dao.company_dao import CompanyDAO
 from dao.mongodb_connector import MongoDBConnector
-from model.Company import Company, CompanyReader
-from model.Section import Section
-from test_data import company, company2
-
+from test_data import raw_company_paramount, raw_company_eni, complete_company_1
 
 def test_loader():
-    c = CompanyBalanceImporter("../dataset/sample-aida-single.xlsx")
+    RawCompanyBalanceImporter.clear_translations()
+    c = RawCompanyBalanceImporter("../dataset/sample-aida-single.xlsx")
+    translations = RawCompanyBalanceImporter.get_translations()
     c.import_from_excel()
-    assert c.company == company
+    assert c.company == raw_company_paramount
+    assert len(translations.keys()) > 0
 
 def test_loader2():
-    c = CompanyBalanceImporter("../dataset/sample-aida-single2.xlsx")
+    RawCompanyBalanceImporter.clear_translations()
+    c = RawCompanyBalanceImporter("../dataset/sample-aida-single2.xlsx")
     c.import_from_excel()
-    assert c.company == company2
+    assert c.company == raw_company_eni
+    RawCompanyBalanceImporter.clear_translations()
 
-def test_serialization():
-    document = CompanyDAO.company_to_document(company)
-    company_ricostruita = CompanyDAO.document_to_company(document)
+def test_loader_cross():
+    RawCompanyBalanceImporter.clear_translations()
+    assert len(RawCompanyBalanceImporter.get_translations().keys()) == 0
+    c1 = RawCompanyBalanceImporter("../dataset/sample-aida-single.xlsx")
+    translations = RawCompanyBalanceImporter.get_translations()
+    c1.import_from_excel()
 
-    assert company_ricostruita == company
+    assert c1.company == raw_company_paramount
+    assert len(translations.keys()) > 0
+    l1 = len(RawCompanyBalanceImporter.get_translations().keys())
+    assert l1 > 0
+    c = RawCompanyBalanceImporter("../dataset/sample-aida-single2.xlsx")
+    c.import_from_excel()
+    assert c.company == raw_company_eni
+    assert len(RawCompanyBalanceImporter.get_translations().keys()) > l1
+    RawCompanyBalanceImporter.clear_translations()
 
 def test_company_mongodb_roundtrip():
     """
     Verifica che una Company salvata e ricaricata
     da MongoDB mantenga esattamente tutti i dati.
     """
-    codice_fiscale = next(
-        section.data["codice_fiscale"]
-        for section in company.sections
-        if section.name == "general_info"
-    )
+    codice_fiscale = complete_company_1.fiscal_code
     CompanyDAO.deleteCompany(codice_fiscale)
-    CompanyDAO.save_company(company)
+    CompanyDAO.save_company(complete_company_1)
     loaded_company = CompanyDAO.load_company(codice_fiscale)
 
     # 5. Verifica che sia stata caricata
@@ -44,24 +53,51 @@ def test_company_mongodb_roundtrip():
     )
 
     # 6. Verifica che il tipo sia identico
-    assert type(loaded_company) is type(company), (
+    assert type(loaded_company) is type(complete_company_1), (
         "La classe dell'oggetto caricato è diversa"
     )
 
     # 7. Confronta tutti i dati ricorsivamente
-    assert loaded_company == company, (
+    assert loaded_company == complete_company_1, (
         "La Company caricata differisce da quella originale"
     )
 
 def test_company_brief():
+    RawCompanyBalanceImporter.clear_translations()
     database = MongoDBConnector.get_database()
     collection = database["companies"]
     collection.drop()
-    CompanyDAO.save_company(company)
+    CompanyDAO.save_company(complete_company_1)
     assert collection.count_documents({}) == 1
 
     brief = CompanyDAO.find_all_companies()
-    company_reader = CompanyReader(company)
     assert len(brief) == 1
-    assert brief[0].codice_fiscale == company_reader.general_info.data["codice_fiscale"]
-    assert brief[0].nome == company_reader.general_info.data["company_name"]
+    assert brief[0].fiscal_code == complete_company_1.fiscal_code
+    assert brief[0].company_name == complete_company_1.company_name
+    RawCompanyBalanceImporter.clear_translations()
+
+def test_preproc_company():
+    RawCompanyBalanceImporter.clear_translations()
+    c = RawCompanyBalanceImporter("../dataset/sample-aida-single.xlsx")
+    translations = RawCompanyBalanceImporter.get_translations()
+    c.import_from_excel()
+    raw_company = c.company
+    assert raw_company == raw_company
+    complete_company = CompanyPreprocessorDAO.process_company_data(raw_company)
+    assert complete_company.fiscal_code == "07237600965"
+    assert complete_company == complete_company_1
+
+    document = CompanyDAO.company_to_document(complete_company)
+    company_ricostruita = CompanyDAO.document_to_company(document)
+
+    assert company_ricostruita == complete_company
+    RawCompanyBalanceImporter.clear_translations()
+
+def test_complete():
+    RawCompanyBalanceImporter.clear_translations()
+    imp = CompanyImportDAO("../dataset/sample-aida-single.xlsx")
+    imp.import_company()
+
+    assert imp.company == complete_company_1
+    assert imp.translations is not None
+    RawCompanyBalanceImporter.clear_translations()

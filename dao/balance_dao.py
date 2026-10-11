@@ -3,11 +3,11 @@ import keyword
 from openpyxl.cell import Cell
 from openpyxl.utils import get_column_letter
 from dao.util import remove_accents
-from model.Company import Company
+from model.RawCompanyData import RawCompanyData
 from openpyxl import load_workbook
 from model.Section import Section
 
-class CompanyBalanceImporter:
+class RawCompanyBalanceImporter:
     __translations__ = {}       # Traduzioni condivise di tutti gli identificatori di campo con il corrispettivo descrittore completo
 
     """
@@ -21,11 +21,16 @@ class CompanyBalanceImporter:
         self.worksheet = None
         self.max_col = None
         self.max_row = None
-        self.company = None
+        self.company: RawCompanyData | None = None
 
     @classmethod
     def get_translations(cls):
-        return CompanyBalanceImporter.__translations__
+        return RawCompanyBalanceImporter.__translations__
+
+    @classmethod
+    def clear_translations(cls):
+        """Rimuove tutte le traduzioni automatiche già generate da runtime precedenti"""
+        cls.__translations__ = {}
 
     def __set_cursor(self, column: int, row: int):
         if column > self.max_col or row > self.max_row:
@@ -150,7 +155,7 @@ class CompanyBalanceImporter:
                 and self.__get_cell().fill is not None
                 and self.__get_cell().fill.start_color.value == 'FFE4ECF6')
 
-    def import_from_excel(self) -> Company:
+    def import_from_excel(self) -> RawCompanyData:
         """Funzione per avviare il caricamento delle informazioni dal file"""
         wb = load_workbook(filename=self.path, read_only=False, data_only=True)
 
@@ -162,7 +167,7 @@ class CompanyBalanceImporter:
         self.max_row = firstSheet.max_row
         self.max_col = firstSheet.max_column
         self.__set_cursor(2, 1) # B1
-        self.company = Company()
+        self.company = RawCompanyData()
 
         if self.__is_company_head():
             self.data["company_name"] = self.__get_cell().value

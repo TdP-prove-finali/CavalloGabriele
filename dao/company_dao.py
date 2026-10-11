@@ -1,7 +1,9 @@
+from dataclasses import asdict
+
 from pymongo.synchronous.collection import Collection
 
 from dao.mongodb_connector import MongoDBConnector
-from model.Company import Company, CompanyBrief
+from model.RawCompanyData import RawCompanyData, CompanyBrief, CompanyData
 
 from datetime import datetime
 from typing import Any
@@ -13,13 +15,8 @@ class CompanyDAO:
     def _serialize(value: Any) -> Any:
         """Converte ricorsivamente i modelli in valori BSON compatibili."""
 
-        if isinstance(value, Company):
-            return {
-                "sections": [
-                    CompanyDAO._serialize(section)
-                    for section in value.sections
-                ]
-            }
+        if isinstance(value, CompanyData):
+            return asdict(value)
 
         if isinstance(value, Section):
             return {
@@ -52,33 +49,16 @@ class CompanyDAO:
         )
 
     @staticmethod
-    def _deserialize_section(document: dict) -> Section:
-        """Ricostruisce una Section, comprese le sottosezioni."""
+    def company_to_document(company: CompanyData) -> dict:
+        """Converte CompanyData in un documento MongoDB."""
 
-        data = dict(document["data"])
-
-        if "subsections" in data:
-            data["subsections"] = [
-                CompanyDAO._deserialize_section(subsection)
-                for subsection in data["subsections"]
-            ]
-
-        return Section(
-            name=document["name"],
-            data=data,
-        )
-
-    @staticmethod
-    def company_to_document(company: Company) -> dict:
-        """Converte Company in un documento MongoDB."""
-
-        if not isinstance(company, Company):
+        if not isinstance(company, CompanyData):
             raise TypeError("È richiesta un'istanza Company")
 
         return CompanyDAO._serialize(company)
 
     @staticmethod
-    def load_company(codice_fiscale: str) -> Company | None:
+    def load_company(codice_fiscale: str) -> CompanyData | None:
         client = MongoDBConnector.get_client()
         collection = client["business_scenario_lab"]["companies"]
         document = collection.find_one({"_id": codice_fiscale})
@@ -91,28 +71,24 @@ class CompanyDAO:
         return CompanyDAO.document_to_company(document)
 
     @staticmethod
-    def document_to_company(document: dict) -> Company:
+    def document_to_company(document: dict) -> CompanyData:
         """Ricostruisce Company da un documento MongoDB."""
+        data = {
+            key: value
+            for key, value in document.items()
+            if key != "_id"
+        }
 
-        return Company(
-            sections=[
-                CompanyDAO._deserialize_section(section)
-                for section in document["sections"]
-            ]
-        )
+        return CompanyData(**data)
 
     @staticmethod
-    def save_company(company: Company) -> str:
+    def save_company(company: CompanyData) -> str:
         client = MongoDBConnector.get_client()
         collection = client["business_scenario_lab"]["companies"]
 
         document = CompanyDAO.company_to_document(company)
 
-        codice_fiscale = next(
-            section.data["codice_fiscale"]
-            for section in company.sections
-            if section.name == "general_info"
-        )
+        codice_fiscale = company.fiscal_code
 
         document["_id"] = codice_fiscale
 
@@ -138,45 +114,18 @@ class CompanyDAO:
         database = MongoDBConnector.get_database()
         collection = database["companies"]
 
-        # Utilizzo un'aggregation pipeline per pre-processare ogni documento e caricare solo le informazioni che voglio
-        # Il primo step modifica la forma del documento e prende solo la sezione general_info
-        # Il secondo estrae i dati utili dalla sezione
-        pipeline = [
-            {
-                "$project": {
-                    "general_info": {
-                        "$arrayElemAt": [
-                            {
-                                "$filter": {
-                                    "input": "$sections",
-                                    "as": "section",
-                                    "cond": {
-                                        "$eq": [
-                                            "$$section.name",
-                                            "general_info"
-                                        ]
-                                    }
-                                }
-                            },
-                            0
-                        ]
-                    }
-                }
-            },
-            {
-                "$project": {
-                    "_id": 0,
-                    "nome": "$general_info.data.company_name",
-                    "codice_fiscale": "$_id"
-                }
-            }
-        ]
-        results = collection.aggregate(pipeline)
+        # Query con projection per trovare i brief delle company presenti
+        results = collection.find({},
+                                  {
+                                      "_id": 0,
+                                      "company_name": 1,
+                                      "fiscal_code": 1
+                                  })
 
         return [
             CompanyBrief(
-                nome=doc["nome"],
-                codice_fiscale=doc["codice_fiscale"]
+                company_name=doc["company_name"],
+                fiscal_code=doc["fiscal_code"]
             )
             for doc in results
         ]
