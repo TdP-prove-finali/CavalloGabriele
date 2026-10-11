@@ -1,14 +1,15 @@
 import sys
-from PySide6.QtGui import QCloseEvent, QIcon, QPixmap
+from PySide6.QtGui import QCloseEvent, QPixmap
 from PySide6.QtWidgets import *
 from pymongo.errors import ConnectionFailure
 
 from app.dialogs.importdialog import ImportDialog
 from app.windows.mainwindow import MainWindow
 from config.paths import project_rooted
-from dao.balance_dao import CompanyBalanceImporter
+from dao.data_import.CompanyImportDAO import CompanyImportDAO
 from dao.company_dao import CompanyDAO
 from dao.mongodb_connector import MongoDBConnector
+
 
 class MainController:
     def __init__(self, model, view: MainWindow, app):
@@ -40,12 +41,15 @@ class MainController:
             self.handleImportDialog()
         else:
             status_bar = self._view.statusBar()
-            widget = QWidget()
-            layout = QHBoxLayout(widget)
+            widget = self._view.data_status_widget
+            layout = widget.layout()
+
+            if layout is None:
+                layout = QHBoxLayout(widget)
             icn = QLabel()
             icn.setPixmap(QPixmap(project_rooted("app/resources/data-ok.png")).scaled(20, 20))
             layout.addWidget(icn)
-            layout.addWidget(QLabel("Dati importati"))
+            layout.addWidget(QLabel(str(len(briefs)) + " aziende importate"))
             status_bar.addPermanentWidget(widget)
 
     def handleImportDialog(self):
@@ -70,13 +74,12 @@ class MainController:
             MongoDBConnector.ping()
             print("Test connection OK")
             status_bar = self._view.statusBar()
-            widget = QWidget()
-            layout = QHBoxLayout(widget)
+            layout = QHBoxLayout(self._view.connection_status_widget)
             icn = QLabel()
             icn.setPixmap(QPixmap(project_rooted("app/resources/connected.png")).scaled(20, 20))
             layout.addWidget(icn)
             layout.addWidget(QLabel("Database connesso"))
-            status_bar.addPermanentWidget(widget)
+            status_bar.addPermanentWidget(self._view.connection_status_widget)
         except ConnectionFailure:
             msgBox = QMessageBox(self._view)
             msgBox.setText("Errore durante la connessione al database")
@@ -110,11 +113,12 @@ class MainController:
             return
 
         try:
-            c = CompanyBalanceImporter(path)
-            c.import_from_excel()
+            c = CompanyImportDAO(path)
+            c.import_company()
             company = c.company
-
             CompanyDAO.save_company(company)
+            translations = c.translations
+
         except Exception as e:
             print("WARNING: Eccezione durante l'importazione: " + e.__str__())
             msgBox = QMessageBox(self._view)

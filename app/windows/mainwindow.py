@@ -1,5 +1,5 @@
 from PySide6.QtCore import Slot
-from PySide6.QtWidgets import QMainWindow
+from PySide6.QtWidgets import QMainWindow, QWidget
 from app.ui_generated.ui_main_window import Ui_MainWindow
 
 class MainWindow(QMainWindow):
@@ -10,6 +10,8 @@ class MainWindow(QMainWindow):
         self.ui.sayHelloBtn.clicked.connect(self.on_pushBtnClick)
         self.ui.actionImportazione.triggered.connect(self.on_import_trigger)
         self._controller = None
+        self.__connstat_widget__ = None
+        self.__datastat_widget__ = None
 
     @Slot()
     def on_import_trigger(self):
@@ -30,3 +32,17 @@ class MainWindow(QMainWindow):
     def closeEvent(self, event, /):
         if self._controller is not None:
             self._controller.handleClose(event)
+
+    @property
+    def connection_status_widget(self) -> QWidget:
+        if self.__connstat_widget__ is None:
+            self.__connstat_widget__ = QWidget()
+
+        return self.__connstat_widget__
+
+    @property
+    def data_status_widget(self) -> QWidget:
+        if self.__datastat_widget__ is None:
+            self.__datastat_widget__ = QWidget()
+
+        return self.__datastat_widget__

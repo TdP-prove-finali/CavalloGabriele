@@ -1,8 +1,9 @@
-from dao.CompanyImportDAO import CompanyImportDAO
-from dao.balance_dao import RawCompanyBalanceImporter
-from dao.comp_preproc_dao import CompanyPreprocessorDAO
+from dao.data_import.CompanyImportDAO import CompanyImportDAO
+from dao.data_import.balance_dao import RawCompanyBalanceImporter
+from dao.data_import.comp_preproc_dao import CompanyPreprocessorDAO
 from dao.company_dao import CompanyDAO
 from dao.mongodb_connector import MongoDBConnector
+from dao.translations.translation_dao import TranslationDAO
 from test_data import raw_company_paramount, raw_company_eni, complete_company_1
 
 def test_loader():
@@ -95,9 +96,17 @@ def test_preproc_company():
 
 def test_complete():
     RawCompanyBalanceImporter.clear_translations()
+    MongoDBConnector.get_database()["translations"].drop()
+
     imp = CompanyImportDAO("../dataset/sample-aida-single.xlsx")
     imp.import_company()
 
     assert imp.company == complete_company_1
     assert imp.translations is not None
+
+    TranslationDAO.save_translations(imp.translations)
+    assert TranslationDAO.count_translations() > 0
+
+    translated = TranslationDAO.get_translations_for_company(imp.company)
+    assert len(translated.keys()) > 0
     RawCompanyBalanceImporter.clear_translations()

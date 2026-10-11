@@ -1,5 +1,5 @@
-from dao.balance_dao import RawCompanyBalanceImporter
-from dao.comp_preproc_dao import CompanyPreprocessorDAO
+from dao.data_import.balance_dao import RawCompanyBalanceImporter
+from dao.data_import.comp_preproc_dao import CompanyPreprocessorDAO
 from model.RawCompanyData import CompanyData
 
 class CompanyImportDAO:
