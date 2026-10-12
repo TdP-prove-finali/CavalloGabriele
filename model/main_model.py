@@ -7,6 +7,7 @@ from model.RawCompanyData import CompanyData
 class MainModel:
     company_fiscal_code: str
     _company_data: CompanyData | None = None
+    _translations: dict | None = None
 
     @property
     def company_data(self):
@@ -14,3 +15,7 @@ class MainModel:
             return self._company_data
 
         raise Exception("Accesso a company_data prima dell'inizializzazione")
+
+    @property
+    def translations(self):
+        return self._translations

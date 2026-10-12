@@ -41,7 +41,7 @@ class StartupController(AbstractController[StartupWindow, Any]):
         self.__load_dd_options__()
 
     def __load_dd_options__(self):
-        briefs = CompanyDAO.find_all_companies()
+        briefs = CompanyDAO.find_all_companies(sorted=True)
         self._view.ui.companyComboBox.clear()
         for b in briefs:
             self._view.ui.companyComboBox.addItem(b.company_name, b.fiscal_code)

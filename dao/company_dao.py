@@ -110,7 +110,15 @@ class CompanyDAO:
         return result.deleted_count > 0
 
     @staticmethod
-    def find_all_companies() -> list[CompanyBrief]:
+    def find_all_companies(sorted=None) -> list[CompanyBrief]:
+        """
+        Carica le informazioni riassuntive "CompanyBrief" di tutte le company presenti,
+        senza caricare in memoria tutti i dati di bilancio.
+
+        :param sorted: Indica se i risultati devono essere ordinati in ordine alfabetico per nome o no. Il sorting è realizzato
+        utilizzando PyMongo, non ordinando su Python i dati
+        :return: La lista delle informazioni riassuntive di tutte le company presenti
+        """
         database = MongoDBConnector.get_database()
         collection = database["companies"]
 
@@ -121,6 +129,9 @@ class CompanyDAO:
                                       "company_name": 1,
                                       "fiscal_code": 1
                                   })
+
+        if sorted:
+            results = results.sort("company_name")
 
         return [
             CompanyBrief(

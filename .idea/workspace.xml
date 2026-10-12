@@ -4,16 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d1f57556-a68b-4407-9511-95d58864d413" name="Changes" comment="Struttura finestra principale con visualizzazione situazione azienda">
-      <change afterPath="$PROJECT_DIR$/controller/abstract.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/controller/startup_controller.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/model/main_model.py" afterDir="false" />
+    <list default="true" id="d1f57556-a68b-4407-9511-95d58864d413" name="Changes" comment="Apertura finestra principale e passaggio dati company">
+      <change afterPath="$PROJECT_DIR$/app/view/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/view/summary_table_model.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/ui_generated/ui_main_window.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/ui_generated/ui_main_window.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/windows/mainwindow.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/windows/mainwindow.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/controller/main_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/controller/main_controller.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controller/startup_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/controller/startup_controller.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dao/company_dao.py" beforeDir="false" afterPath="$PROJECT_DIR$/dao/company_dao.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dao/util.py" beforeDir="false" afterPath="$PROJECT_DIR$/dao/util.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/main_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/main_model.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ui/main_window.ui" beforeDir="false" afterPath="$PROJECT_DIR$/ui/main_window.ui" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -258,7 +258,7 @@
       <workItem from="1791644146663" duration="5859000" />
       <workItem from="1791652420981" duration="1699000" />
       <workItem from="1791726913468" duration="9620000" />
-      <workItem from="1791797221050" duration="15805000" />
+      <workItem from="1791797221050" duration="20667000" />
     </task>
     <task id="LOCAL-00001" summary="Test commit">
       <option name="closed" value="true" />
@@ -644,14 +644,21 @@
       <option name="project" value="LOCAL" />
       <updated>1791819219363</updated>
     </task>
-    <option name="localTasksCounter" value="49" />
+    <task id="LOCAL-00049" summary="Apertura finestra principale e passaggio dati company">
+      <option name="closed" value="true" />
+      <created>1791828371194</created>
+      <option name="number" value="00049" />
+      <option name="presentableId" value="LOCAL-00049" />
+      <option name="project" value="LOCAL" />
+      <updated>1791828371194</updated>
+    </task>
+    <option name="localTasksCounter" value="50" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Refactoring" />
     <MESSAGE value="Caricam sezione info legali e comm" />
     <MESSAGE value="Altre sezioni" />
     <MESSAGE value="Sezione overview" />
@@ -676,7 +683,8 @@
     <MESSAGE value="Implementa caricamento chunk e corregge bug" />
     <MESSAGE value="Aggiunge test caricamento" />
     <MESSAGE value="Struttura finestra principale con visualizzazione situazione azienda" />
-    <option name="LAST_COMMIT_MESSAGE" value="Struttura finestra principale con visualizzazione situazione azienda" />
+    <MESSAGE value="Apertura finestra principale e passaggio dati company" />
+    <option name="LAST_COMMIT_MESSAGE" value="Apertura finestra principale e passaggio dati company" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -707,7 +715,7 @@
     </watches-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/CavalloGabriele$.coverage" NAME=" Coverage Results" MODIFIED="1791813865443" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
-    <SUITE FILE_PATH="coverage/CavalloGabriele$main.coverage" NAME="main Coverage Results" MODIFIED="1791828268145" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/CavalloGabriele$.coverage" NAME=" Coverage Results" MODIFIED="1791828872609" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
+    <SUITE FILE_PATH="coverage/CavalloGabriele$main.coverage" NAME="main Coverage Results" MODIFIED="1791833114150" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

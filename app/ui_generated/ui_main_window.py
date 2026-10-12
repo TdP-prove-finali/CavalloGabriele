@@ -18,9 +18,9 @@ from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
     QTransform)
 from PySide6.QtWidgets import (QApplication, QFrame, QGroupBox, QHBoxLayout,
     QHeaderView, QLabel, QMainWindow, QMenu,
-    QMenuBar, QPushButton, QSizePolicy, QSpacerItem,
-    QStatusBar, QTabWidget, QTableView, QTableWidget,
-    QTableWidgetItem, QVBoxLayout, QWidget)
+    QMenuBar, QPushButton, QScrollArea, QSizePolicy,
+    QSpacerItem, QStatusBar, QTabWidget, QTableView,
+    QVBoxLayout, QWidget)
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -71,6 +71,9 @@ class Ui_MainWindow(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label.sizePolicy().hasHeightForWidth())
         self.label.setSizePolicy(sizePolicy)
+        font1 = QFont()
+        font1.setBold(True)
+        self.label.setFont(font1)
 
         self.horizontalLayout.addWidget(self.label)
 
@@ -78,9 +81,9 @@ class Ui_MainWindow(object):
         self.fiscalCodeLabel.setObjectName(u"fiscalCodeLabel")
         sizePolicy.setHeightForWidth(self.fiscalCodeLabel.sizePolicy().hasHeightForWidth())
         self.fiscalCodeLabel.setSizePolicy(sizePolicy)
-        font1 = QFont()
-        font1.setItalic(True)
-        self.fiscalCodeLabel.setFont(font1)
+        font2 = QFont()
+        font2.setItalic(True)
+        self.fiscalCodeLabel.setFont(font2)
         self.fiscalCodeLabel.setAutoFillBackground(False)
         self.fiscalCodeLabel.setStyleSheet(u"")
 
@@ -112,6 +115,7 @@ class Ui_MainWindow(object):
         self.label_2.setObjectName(u"label_2")
         sizePolicy.setHeightForWidth(self.label_2.sizePolicy().hasHeightForWidth())
         self.label_2.setSizePolicy(sizePolicy)
+        self.label_2.setFont(font1)
 
         self.horizontalLayout_2.addWidget(self.label_2)
 
@@ -140,20 +144,30 @@ class Ui_MainWindow(object):
         sizePolicy2.setVerticalStretch(0)
         sizePolicy2.setHeightForWidth(self.groupBox.sizePolicy().hasHeightForWidth())
         self.groupBox.setSizePolicy(sizePolicy2)
-        self.groupBox.setMinimumSize(QSize(200, 100))
+        self.groupBox.setMinimumSize(QSize(200, 200))
         self.groupBox.setMaximumSize(QSize(600, 600))
-        font2 = QFont()
-        font2.setBold(True)
-        self.groupBox.setFont(font2)
+        self.groupBox.setFont(font1)
         self.groupBox.setFlat(False)
-        self.horizontalLayout_3 = QHBoxLayout(self.groupBox)
+        self.horizontalLayout_17 = QHBoxLayout(self.groupBox)
+        self.horizontalLayout_17.setObjectName(u"horizontalLayout_17")
+        self.horizontalLayout_17.setContentsMargins(0, 0, 0, 0)
+        self.scrollArea = QScrollArea(self.groupBox)
+        self.scrollArea.setObjectName(u"scrollArea")
+        self.scrollArea.setWidgetResizable(True)
+        self.scrollAreaWidgetContents = QWidget()
+        self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 390, 226))
+        self.horizontalLayout_3 = QHBoxLayout(self.scrollAreaWidgetContents)
         self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
-        self.horizontalLayout_3.setContentsMargins(12, -1, -1, -1)
-        self.label_3 = QLabel(self.groupBox)
-        self.label_3.setObjectName(u"label_3")
-        self.label_3.setWordWrap(True)
+        self.descriptionLabel = QLabel(self.scrollAreaWidgetContents)
+        self.descriptionLabel.setObjectName(u"descriptionLabel")
+        self.descriptionLabel.setWordWrap(True)
 
-        self.horizontalLayout_3.addWidget(self.label_3)
+        self.horizontalLayout_3.addWidget(self.descriptionLabel)
+
+        self.scrollArea.setWidget(self.scrollAreaWidgetContents)
+
+        self.horizontalLayout_17.addWidget(self.scrollArea)
 
 
         self.overviewSection.addWidget(self.groupBox)
@@ -164,6 +178,7 @@ class Ui_MainWindow(object):
         self.label_4.setObjectName(u"label_4")
         sizePolicy.setHeightForWidth(self.label_4.sizePolicy().hasHeightForWidth())
         self.label_4.setSizePolicy(sizePolicy)
+        self.label_4.setFont(font1)
 
         self.horizontalLayout_4.addWidget(self.label_4)
 
@@ -187,6 +202,7 @@ class Ui_MainWindow(object):
         self.label_5.setObjectName(u"label_5")
         sizePolicy.setHeightForWidth(self.label_5.sizePolicy().hasHeightForWidth())
         self.label_5.setSizePolicy(sizePolicy)
+        self.label_5.setFont(font1)
 
         self.horizontalLayout_5.addWidget(self.label_5)
 
@@ -210,15 +226,18 @@ class Ui_MainWindow(object):
         self.label_8.setObjectName(u"label_8")
         sizePolicy.setHeightForWidth(self.label_8.sizePolicy().hasHeightForWidth())
         self.label_8.setSizePolicy(sizePolicy)
+        self.label_8.setFont(font1)
 
         self.horizontalLayout_9.addWidget(self.label_8)
 
-        self.label_9 = QLabel(self.overviewSecWidget)
-        self.label_9.setObjectName(u"label_9")
-        sizePolicy.setHeightForWidth(self.label_9.sizePolicy().hasHeightForWidth())
-        self.label_9.setSizePolicy(sizePolicy)
+        self.legalAddressLabel = QLabel(self.overviewSecWidget)
+        self.legalAddressLabel.setObjectName(u"legalAddressLabel")
+        sizePolicy1.setHeightForWidth(self.legalAddressLabel.sizePolicy().hasHeightForWidth())
+        self.legalAddressLabel.setSizePolicy(sizePolicy1)
+        self.legalAddressLabel.setMaximumSize(QSize(300, 16777215))
+        self.legalAddressLabel.setWordWrap(True)
 
-        self.horizontalLayout_9.addWidget(self.label_9)
+        self.horizontalLayout_9.addWidget(self.legalAddressLabel)
 
         self.horizontalSpacer_6 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
@@ -233,13 +252,16 @@ class Ui_MainWindow(object):
         self.label_7.setObjectName(u"label_7")
         sizePolicy.setHeightForWidth(self.label_7.sizePolicy().hasHeightForWidth())
         self.label_7.setSizePolicy(sizePolicy)
+        self.label_7.setFont(font1)
 
         self.horizontalLayout_7.addWidget(self.label_7)
 
         self.operatingMarketLabel = QLabel(self.overviewSecWidget)
         self.operatingMarketLabel.setObjectName(u"operatingMarketLabel")
-        sizePolicy.setHeightForWidth(self.operatingMarketLabel.sizePolicy().hasHeightForWidth())
-        self.operatingMarketLabel.setSizePolicy(sizePolicy)
+        sizePolicy1.setHeightForWidth(self.operatingMarketLabel.sizePolicy().hasHeightForWidth())
+        self.operatingMarketLabel.setSizePolicy(sizePolicy1)
+        self.operatingMarketLabel.setMaximumSize(QSize(300, 16777215))
+        self.operatingMarketLabel.setWordWrap(True)
 
         self.horizontalLayout_7.addWidget(self.operatingMarketLabel)
 
@@ -256,6 +278,7 @@ class Ui_MainWindow(object):
         self.label_6.setObjectName(u"label_6")
         sizePolicy.setHeightForWidth(self.label_6.sizePolicy().hasHeightForWidth())
         self.label_6.setSizePolicy(sizePolicy)
+        self.label_6.setFont(font1)
 
         self.horizontalLayout_6.addWidget(self.label_6)
 
@@ -284,32 +307,17 @@ class Ui_MainWindow(object):
         self.groupBox_2.setObjectName(u"groupBox_2")
         sizePolicy2.setHeightForWidth(self.groupBox_2.sizePolicy().hasHeightForWidth())
         self.groupBox_2.setSizePolicy(sizePolicy2)
-        self.groupBox_2.setMinimumSize(QSize(250, 350))
+        self.groupBox_2.setMinimumSize(QSize(250, 200))
         self.groupBox_2.setMaximumSize(QSize(16777215, 16777215))
         font3 = QFont()
         font3.setPointSize(17)
         self.groupBox_2.setFont(font3)
-        self.verticalLayout = QVBoxLayout(self.groupBox_2)
-        self.verticalLayout.setObjectName(u"verticalLayout")
-        self.tableWidget = QTableWidget(self.groupBox_2)
-        if (self.tableWidget.columnCount() < 1):
-            self.tableWidget.setColumnCount(1)
-        __qtablewidgetitem = QTableWidgetItem()
-        self.tableWidget.setHorizontalHeaderItem(0, __qtablewidgetitem)
-        if (self.tableWidget.rowCount() < 3):
-            self.tableWidget.setRowCount(3)
-        __qtablewidgetitem1 = QTableWidgetItem()
-        self.tableWidget.setVerticalHeaderItem(0, __qtablewidgetitem1)
-        __qtablewidgetitem2 = QTableWidgetItem()
-        self.tableWidget.setVerticalHeaderItem(1, __qtablewidgetitem2)
-        __qtablewidgetitem3 = QTableWidgetItem()
-        self.tableWidget.setVerticalHeaderItem(2, __qtablewidgetitem3)
-        self.tableWidget.setObjectName(u"tableWidget")
-        font4 = QFont()
-        font4.setPointSize(13)
-        self.tableWidget.setFont(font4)
+        self.horizontalLayout_20 = QHBoxLayout(self.groupBox_2)
+        self.horizontalLayout_20.setObjectName(u"horizontalLayout_20")
+        self.summaryTableView = QTableView(self.groupBox_2)
+        self.summaryTableView.setObjectName(u"summaryTableView")
 
-        self.verticalLayout.addWidget(self.tableWidget)
+        self.horizontalLayout_20.addWidget(self.summaryTableView)
 
 
         self.overviewSection.addWidget(self.groupBox_2)
@@ -332,9 +340,9 @@ class Ui_MainWindow(object):
         self.horizontalLayout_10.setObjectName(u"horizontalLayout_10")
         self.balanceTabWidget = QTabWidget(self.balanceSection)
         self.balanceTabWidget.setObjectName(u"balanceTabWidget")
-        font5 = QFont()
-        font5.setPointSize(11)
-        self.balanceTabWidget.setFont(font5)
+        font4 = QFont()
+        font4.setPointSize(11)
+        self.balanceTabWidget.setFont(font4)
         self.conto_economico_tab = QWidget()
         self.conto_economico_tab.setObjectName(u"conto_economico_tab")
         self.horizontalLayout_11 = QHBoxLayout(self.conto_economico_tab)
@@ -375,7 +383,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_16.setObjectName(u"horizontalLayout_16")
         self.indiciesTabWidget = QTabWidget(self.indiciesSection)
         self.indiciesTabWidget.setObjectName(u"indiciesTabWidget")
-        self.indiciesTabWidget.setFont(font5)
+        self.indiciesTabWidget.setFont(font4)
         self.tab = QWidget()
         self.tab.setObjectName(u"tab")
         self.indiciesTabWidget.addTab(self.tab, "")
@@ -398,7 +406,9 @@ class Ui_MainWindow(object):
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
         self.tabWidget = QTabWidget(self.chartSection)
         self.tabWidget.setObjectName(u"tabWidget")
-        self.tabWidget.setFont(font4)
+        font5 = QFont()
+        font5.setPointSize(13)
+        self.tabWidget.setFont(font5)
         self.struttura_sp_tab = QWidget()
         self.struttura_sp_tab.setObjectName(u"struttura_sp_tab")
         self.tabWidget.addTab(self.struttura_sp_tab, "")
@@ -462,7 +472,7 @@ class Ui_MainWindow(object):
         self.cciaaNumberLabel.setText(QCoreApplication.translate("MainWindow", u"8948598439", None))
         self.cciaaNumberLabel.setProperty(u"cssClass", QCoreApplication.translate("MainWindow", u"number-label", None))
         self.groupBox.setTitle(QCoreApplication.translate("MainWindow", u"Descrizione", None))
-        self.label_3.setText(QCoreApplication.translate("MainWindow", u"Una descrizione bella", None))
+        self.descriptionLabel.setText(QCoreApplication.translate("MainWindow", u"Una descrizione bella", None))
         self.label_4.setText(QCoreApplication.translate("MainWindow", u"Forma giuridica", None))
         self.legalFormLabel.setText(QCoreApplication.translate("MainWindow", u"SPA", None))
 #if QT_CONFIG(tooltip)
@@ -470,8 +480,9 @@ class Ui_MainWindow(object):
 #endif // QT_CONFIG(tooltip)
         self.label_5.setText(QCoreApplication.translate("MainWindow", u"Data ultimo bilancio", None))
         self.lastBalanceDateLabel.setText(QCoreApplication.translate("MainWindow", u"2015", None))
+        self.lastBalanceDateLabel.setProperty(u"cssClass", QCoreApplication.translate("MainWindow", u"number-label", None))
         self.label_8.setText(QCoreApplication.translate("MainWindow", u"Sede legale", None))
-        self.label_9.setText(QCoreApplication.translate("MainWindow", u"Milano", None))
+        self.legalAddressLabel.setText(QCoreApplication.translate("MainWindow", u"Milano", None))
 #if QT_CONFIG(tooltip)
         self.label_7.setToolTip(QCoreApplication.translate("MainWindow", u"Mercato in cui opera l'azienda", None))
 #endif // QT_CONFIG(tooltip)
@@ -482,15 +493,8 @@ class Ui_MainWindow(object):
 #endif // QT_CONFIG(tooltip)
         self.label_6.setText(QCoreApplication.translate("MainWindow", u"Numero anni disponibili", None))
         self.numberOfYearsLabel.setText(QCoreApplication.translate("MainWindow", u"10", None))
+        self.numberOfYearsLabel.setProperty(u"cssClass", QCoreApplication.translate("MainWindow", u"number-label", None))
         self.groupBox_2.setTitle(QCoreApplication.translate("MainWindow", u"Informazioni riassuntive", None))
-        ___qtablewidgetitem = self.tableWidget.horizontalHeaderItem(0)
-        ___qtablewidgetitem.setText(QCoreApplication.translate("MainWindow", u"Valore", None))
-        ___qtablewidgetitem1 = self.tableWidget.verticalHeaderItem(0)
-        ___qtablewidgetitem1.setText(QCoreApplication.translate("MainWindow", u"Numero di dipendenti", None))
-        ___qtablewidgetitem2 = self.tableWidget.verticalHeaderItem(1)
-        ___qtablewidgetitem2.setText(QCoreApplication.translate("MainWindow", u"Ricavi dalle vendite", None))
-        ___qtablewidgetitem3 = self.tableWidget.verticalHeaderItem(2)
-        ___qtablewidgetitem3.setText(QCoreApplication.translate("MainWindow", u"Capitale sociale", None))
         self.balanceSection.setTitle(QCoreApplication.translate("MainWindow", u"Dati di bilancio", None))
         self.balanceTabWidget.setTabText(self.balanceTabWidget.indexOf(self.conto_economico_tab), QCoreApplication.translate("MainWindow", u"Conto Economico", None))
         self.balanceTabWidget.setTabText(self.balanceTabWidget.indexOf(self.stato_patrimoniale_tab), QCoreApplication.translate("MainWindow", u"Stato Patrimoniale", None))
