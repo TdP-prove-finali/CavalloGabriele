@@ -4,11 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d1f57556-a68b-4407-9511-95d58864d413" name="Changes" comment="Implementa caricamento chunk e corregge bug">
-      <change afterPath="$PROJECT_DIR$/dao/data_import/balance_dao_signals.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dataset/test/dataset-test-50.xlsx" beforeDir="false" />
+    <list default="true" id="d1f57556-a68b-4407-9511-95d58864d413" name="Changes" comment="Aggiunge test caricamento">
+      <change beforePath="$PROJECT_DIR$/app/ui_generated/ui_main_window.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/ui_generated/ui_main_window.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/windows/mainwindow.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/windows/mainwindow.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/windows/startupwindow.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/windows/startupwindow.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controller/main_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/controller/main_controller.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dao/data_import/CompanyImportDAO.py" beforeDir="false" afterPath="$PROJECT_DIR$/dao/data_import/company_import_dao.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tests/test_loader.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_loader.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/main_window.ui" beforeDir="false" afterPath="$PROJECT_DIR$/ui/main_window.ui" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -108,7 +111,7 @@
       <recent name="$PROJECT_DIR$/dataset/test" />
     </key>
   </component>
-  <component name="RunManager" selected="Python tests.Python tests for test_loader.test_loader_chunk_50">
+  <component name="RunManager" selected="Python.main">
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="CavalloGabriele" />
       <option name="ENV_FILES" value="" />
@@ -252,7 +255,7 @@
       <workItem from="1791644146663" duration="5859000" />
       <workItem from="1791652420981" duration="1699000" />
       <workItem from="1791726913468" duration="9620000" />
-      <workItem from="1791797221050" duration="9787000" />
+      <workItem from="1791797221050" duration="11379000" />
     </task>
     <task id="LOCAL-00001" summary="Test commit">
       <option name="closed" value="true" />
@@ -622,14 +625,21 @@
       <option name="project" value="LOCAL" />
       <updated>1791805210462</updated>
     </task>
-    <option name="localTasksCounter" value="47" />
+    <task id="LOCAL-00047" summary="Aggiunge test caricamento">
+      <option name="closed" value="true" />
+      <created>1791814069449</created>
+      <option name="number" value="00047" />
+      <option name="presentableId" value="LOCAL-00047" />
+      <option name="project" value="LOCAL" />
+      <updated>1791814069449</updated>
+    </task>
+    <option name="localTasksCounter" value="48" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Caricamento sezione generale" />
     <MESSAGE value="Caricamento sezione anagrafica" />
     <MESSAGE value="Refactoring" />
     <MESSAGE value="Caricam sezione info legali e comm" />
@@ -654,13 +664,14 @@
     <MESSAGE value="Implementa startup screen" />
     <MESSAGE value="Implementa visualizzazione e selezione azienda" />
     <MESSAGE value="Implementa caricamento chunk e corregge bug" />
-    <option name="LAST_COMMIT_MESSAGE" value="Implementa caricamento chunk e corregge bug" />
+    <MESSAGE value="Aggiunge test caricamento" />
+    <option name="LAST_COMMIT_MESSAGE" value="Aggiunge test caricamento" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/dao/data_import/CompanyImportDAO.py</url>
+          <url>file://$PROJECT_DIR$/dao/data_import/company_import_dao.py</url>
           <line>50</line>
           <option name="timeStamp" value="70" />
         </line-breakpoint>
@@ -686,6 +697,6 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/CavalloGabriele$.coverage" NAME=" Coverage Results" MODIFIED="1791813865443" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
-    <SUITE FILE_PATH="coverage/CavalloGabriele$main.coverage" NAME="main Coverage Results" MODIFIED="1791798907562" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/CavalloGabriele$main.coverage" NAME="main Coverage Results" MODIFIED="1791819120255" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

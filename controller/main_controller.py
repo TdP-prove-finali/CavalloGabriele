@@ -10,7 +10,7 @@ from app.dialogs.importdialog import ImportDialog
 from app.windows.mainwindow import MainWindow
 from app.windows.startupwindow import StartupWindow
 from config.paths import project_rooted
-from dao.data_import.CompanyImportDAO import CompanyImportDAO
+from dao.data_import.company_import_dao import CompanyImportDAO
 from dao.company_dao import CompanyDAO
 from dao.mongodb_connector import MongoDBConnector
 
@@ -20,6 +20,7 @@ class MainController:
         self._model = model
         self._view: StartupWindow = view
         self._app = app
+        self._main_window = None
 
         # Codice da eseguire all'avvio dell'applicazione
         self.__startup__code()
@@ -121,10 +122,16 @@ class MainController:
             self._view.close()
 
     def handleClose(self, event: QCloseEvent):
-        print("Chiudo app")
         MongoDBConnector.close()
         event.accept()
         sys.exit(-1)
+
+    def handleLoadCompany(self):
+        fiscal_code = self._view.ui.companyComboBox.currentData()
+
+        if fiscal_code is not None:
+            self._main_window = MainWindow(fiscal_code)
+            self._main_window.show()
 
     def __handleImportData__(self, path):
         if path is None or path == "":

@@ -1,4 +1,4 @@
-from dao.data_import.CompanyImportDAO import CompanyImportDAO
+from dao.data_import.company_import_dao import CompanyImportDAO
 from dao.data_import.balance_dao import RawCompanyBalanceImporter
 from dao.data_import.comp_preproc_dao import CompanyPreprocessorDAO
 from dao.company_dao import CompanyDAO

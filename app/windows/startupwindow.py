@@ -11,6 +11,11 @@ class StartupWindow(QMainWindow):
         self.__connstat_widget__ = None
         self.__datastat_widget__ = None
         self.ui.actionImportazione.triggered.connect(self.onImportTrigger)
+        self.ui.pushButton.clicked.connect(self.onLoadCompany)
+
+    @Slot()
+    def onLoadCompany(self):
+        self.controller.handleLoadCompany()
 
     @Slot()
     def onImportTrigger(self):
