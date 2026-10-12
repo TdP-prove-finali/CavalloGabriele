@@ -4,11 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d1f57556-a68b-4407-9511-95d58864d413" name="Changes" comment="Implementa visualizzazione e selezione azienda">
-      <change beforePath="$PROJECT_DIR$/controller/main_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/controller/main_controller.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dao/data_import/CompanyImportDAO.py" beforeDir="false" afterPath="$PROJECT_DIR$/dao/data_import/CompanyImportDAO.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dao/data_import/balance_dao.py" beforeDir="false" afterPath="$PROJECT_DIR$/dao/data_import/balance_dao.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_data.py" afterDir="false" />
+    <list default="true" id="d1f57556-a68b-4407-9511-95d58864d413" name="Changes" comment="Implementa caricamento chunk e corregge bug">
+      <change afterPath="$PROJECT_DIR$/dao/data_import/balance_dao_signals.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/test/dataset-test-50.xlsx" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/tests/test_loader.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_loader.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -59,11 +58,13 @@
   "keyToString": {
     "Python tests.Python tests for test_loader.test_company_brief.executor": "Debug",
     "Python tests.Python tests for test_loader.test_company_mongodb_roundtrip.executor": "Run",
+    "Python tests.Python tests for test_loader.test_compatibility.executor": "Run",
     "Python tests.Python tests for test_loader.test_complete.executor": "Run",
     "Python tests.Python tests for test_loader.test_loader.executor": "Run",
     "Python tests.Python tests for test_loader.test_loader2.executor": "Debug",
     "Python tests.Python tests for test_loader.test_loader_chunk.executor": "Run",
     "Python tests.Python tests for test_loader.test_loader_chunk_10.executor": "Run",
+    "Python tests.Python tests for test_loader.test_loader_chunk_50.executor": "Run",
     "Python tests.Python tests for test_loader.test_loader_cross.executor": "Run",
     "Python tests.Python tests for test_loader.test_preproc_company.executor": "Debug",
     "Python tests.Python tests for test_loader.test_serialization.executor": "Run",
@@ -107,7 +108,7 @@
       <recent name="$PROJECT_DIR$/dataset/test" />
     </key>
   </component>
-  <component name="RunManager" selected="Python tests.Python tests in test_loader.py">
+  <component name="RunManager" selected="Python tests.Python tests for test_loader.test_loader_chunk_50">
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="CavalloGabriele" />
       <option name="ENV_FILES" value="" />
@@ -132,7 +133,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="Python tests for test_loader.test_loader" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+    <configuration name="Python tests for test_loader.test_compatibility" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
       <module name="CavalloGabriele" />
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -145,7 +146,7 @@
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="RUN_TOOL" value="" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;test_loader.test_loader&quot;" />
+      <option name="_new_target" value="&quot;test_loader.test_compatibility&quot;" />
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
@@ -166,23 +167,6 @@
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
-    <configuration name="Python tests for test_loader.test_loader_chunk" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
-      <module name="CavalloGabriele" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="RUN_TOOL" value="" />
-      <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;test_loader.test_loader_chunk&quot;" />
-      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
-      <method v="2" />
-    </configuration>
     <configuration name="Python tests for test_loader.test_loader_chunk_10" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
       <module name="CavalloGabriele" />
       <option name="ENV_FILES" value="" />
@@ -197,6 +181,23 @@
       <option name="RUN_TOOL" value="" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
       <option name="_new_target" value="&quot;test_loader.test_loader_chunk_10&quot;" />
+      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Python tests for test_loader.test_loader_chunk_50" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+      <module name="CavalloGabriele" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="RUN_TOOL" value="" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;test_loader.test_loader_chunk_50&quot;" />
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
@@ -219,11 +220,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python tests.Python tests for test_loader.test_loader_chunk_50" />
         <item itemvalue="Python tests.Python tests in test_loader.py" />
         <item itemvalue="Python tests.Python tests for test_loader.test_loader_chunk_10" />
+        <item itemvalue="Python tests.Python tests for test_loader.test_compatibility" />
         <item itemvalue="Python tests.Python tests for test_loader.test_loader2" />
-        <item itemvalue="Python tests.Python tests for test_loader.test_loader" />
-        <item itemvalue="Python tests.Python tests for test_loader.test_loader_chunk" />
       </list>
     </recent_temporary>
   </component>
@@ -251,7 +252,7 @@
       <workItem from="1791644146663" duration="5859000" />
       <workItem from="1791652420981" duration="1699000" />
       <workItem from="1791726913468" duration="9620000" />
-      <workItem from="1791797221050" duration="7371000" />
+      <workItem from="1791797221050" duration="9787000" />
     </task>
     <task id="LOCAL-00001" summary="Test commit">
       <option name="closed" value="true" />
@@ -613,14 +614,21 @@
       <option name="project" value="LOCAL" />
       <updated>1791799016028</updated>
     </task>
-    <option name="localTasksCounter" value="46" />
+    <task id="LOCAL-00046" summary="Implementa caricamento chunk e corregge bug">
+      <option name="closed" value="true" />
+      <created>1791805210462</created>
+      <option name="number" value="00046" />
+      <option name="presentableId" value="LOCAL-00046" />
+      <option name="project" value="LOCAL" />
+      <updated>1791805210462</updated>
+    </task>
+    <option name="localTasksCounter" value="47" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Inizia impl caricam da excel in MongoDB" />
     <MESSAGE value="Caricamento sezione generale" />
     <MESSAGE value="Caricamento sezione anagrafica" />
     <MESSAGE value="Refactoring" />
@@ -645,7 +653,8 @@
     <MESSAGE value="Implementa traduzioni campo-descrizione automatiche" />
     <MESSAGE value="Implementa startup screen" />
     <MESSAGE value="Implementa visualizzazione e selezione azienda" />
-    <option name="LAST_COMMIT_MESSAGE" value="Implementa visualizzazione e selezione azienda" />
+    <MESSAGE value="Implementa caricamento chunk e corregge bug" />
+    <option name="LAST_COMMIT_MESSAGE" value="Implementa caricamento chunk e corregge bug" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -676,7 +685,7 @@
     </watches-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/CavalloGabriele$.coverage" NAME=" Coverage Results" MODIFIED="1791805159514" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
+    <SUITE FILE_PATH="coverage/CavalloGabriele$.coverage" NAME=" Coverage Results" MODIFIED="1791813865443" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/CavalloGabriele$main.coverage" NAME="main Coverage Results" MODIFIED="1791798907562" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

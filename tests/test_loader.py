@@ -126,3 +126,27 @@ def test_loader_chunk_10():
     imp = CompanyImportDAO("../dataset/test/dataset-10.xlsx")
     imported = imp.import_company_chunk()
     assert len(imported) == 10
+
+def test_loader_chunk_50():
+    RawCompanyBalanceImporter.clear_translations()
+    MongoDBConnector.get_database()["translations"].drop()
+
+    imp = CompanyImportDAO("../dataset/test/dataset-test-50-v2.xlsx")
+    imported = imp.import_company_chunk()
+    assert len(imported) == 50
+    for com in imported:
+        assert com.company_name is not None
+        assert com.fiscal_code is not None
+        CompanyDAO.save_company(com)
+
+    translations = RawCompanyBalanceImporter.get_translations()
+    assert len(translations.keys()) > 0
+    TranslationDAO.save_translations(translations)
+
+def test_compatibility():
+    RawCompanyBalanceImporter.clear_translations()
+    MongoDBConnector.get_database()["translations"].drop()
+
+    imp = CompanyImportDAO("../dataset/sample-aida-single.xlsx")
+    imported = imp.import_company_chunk()
+    assert len(imported) == 1
