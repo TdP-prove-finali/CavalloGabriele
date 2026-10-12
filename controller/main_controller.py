@@ -25,8 +25,6 @@ class MainController:
         self.__startup__code()
 
     def __startup__code(self):
-        self.dbconnectionTest()
-        self.checkDataImport()
         self.__resize_logo__()
 
         pixMap = QPixmap((project_rooted("app") / "resources" / "business_scenario_lab_icon.png").__str__())
@@ -37,6 +35,15 @@ class MainController:
                 PySide6.QtCore.Qt.AspectRatioMode.KeepAspectRatio
             )
         )
+        self.dbconnectionTest()
+        self.checkDataImport()
+        self.__load_dd_options__()
+
+    def __load_dd_options__(self):
+        briefs = CompanyDAO.find_all_companies()
+        self._view.ui.companyComboBox.clear()
+        for b in briefs:
+            self._view.ui.companyComboBox.addItem(b.company_name, b.fiscal_code)
 
     def __resize_logo__(self):
         pixMap = QPixmap((project_rooted("app") / "resources" / "business_scenario_lab_logo.png").__str__())
@@ -82,6 +89,7 @@ class MainController:
             selectedPath = importDialog.ui.selectedPathEdit.text()
             self.__handleImportData__(selectedPath)
             self.checkDataImport()
+            self.__load_dd_options__()
 
     def dbconnectionTest(self):
         try:

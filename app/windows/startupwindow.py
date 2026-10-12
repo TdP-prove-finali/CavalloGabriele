@@ -10,6 +10,11 @@ class StartupWindow(QMainWindow):
         self._controller = None
         self.__connstat_widget__ = None
         self.__datastat_widget__ = None
+        self.ui.actionImportazione.triggered.connect(self.onImportTrigger)
+
+    @Slot()
+    def onImportTrigger(self):
+        self.controller.handleImportDialog()
 
     def resizeEvent(self, event, /):
         super().resizeEvent(event)

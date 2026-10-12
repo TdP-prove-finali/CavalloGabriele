@@ -79,7 +79,11 @@
        </widget>
       </item>
       <item>
-       <widget class="QComboBox" name="companyComboBox"/>
+       <widget class="QComboBox" name="companyComboBox">
+        <property name="placeholderText">
+         <string>0</string>
+        </property>
+       </widget>
       </item>
      </layout>
     </item>
@@ -127,8 +131,23 @@
      <height>30</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionImportazione"/>
+   </widget>
+   <addaction name="menuFile"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionImportazione">
+   <property name="text">
+    <string>Importazione</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+I</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>
