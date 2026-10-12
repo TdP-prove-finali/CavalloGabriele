@@ -59,8 +59,8 @@ class CompanyDAO:
 
     @staticmethod
     def load_company(codice_fiscale: str) -> CompanyData | None:
-        client = MongoDBConnector.get_client()
-        collection = client["business_scenario_lab"]["companies"]
+        database = MongoDBConnector.get_database()
+        collection = database["companies"]
         document = collection.find_one({"_id": codice_fiscale})
 
         if document is None:

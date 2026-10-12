@@ -7,7 +7,7 @@ from PySide6.QtWidgets import QApplication
 from app.windows.mainwindow import MainWindow
 from app.windows.startupwindow import StartupWindow
 from config.paths import project_rooted
-from controller.main_controller import MainController
+from controller.startup_controller import StartupController
 
 
 def calcolo_esempio(a, b):
@@ -25,7 +25,7 @@ if __name__ == "__main__":
     )
     window = StartupWindow()
     window.show()
-    ctrl = MainController(None, window, app)
+    ctrl = StartupController(None, window, app)
     window.controller = ctrl
 
     sys.exit(app.exec())
