@@ -2,6 +2,8 @@ import keyword
 
 from openpyxl.cell import Cell
 from openpyxl.utils import get_column_letter
+from openpyxl.worksheet.worksheet import Worksheet
+
 from dao.util import remove_accents
 from model.RawCompanyData import RawCompanyData
 from openpyxl import load_workbook
@@ -13,12 +15,11 @@ class RawCompanyBalanceImporter:
     """
     Classe per gestire l'importazione delle informazioni di un'azienda presenti in un file excel
     """
-    def __init__(self, path):
-        self.path = path
+    def __init__(self, worksheet: Worksheet):
         self.cursor_column = 1
         self.cursor_row = 1
         self.data = {}
-        self.worksheet = None
+        self.worksheet: Worksheet = worksheet
         self.max_col = None
         self.max_row = None
         self.company: RawCompanyData | None = None
@@ -31,6 +32,16 @@ class RawCompanyBalanceImporter:
     def clear_translations(cls):
         """Rimuove tutte le traduzioni automatiche già generate da runtime precedenti"""
         cls.__translations__ = {}
+
+    @staticmethod
+    def fromFile(file_path: str):
+        wb = load_workbook(filename=file_path, read_only=False, data_only=True)
+
+        if len(wb.sheetnames) == 0:
+            raise Exception("Il file non ha fogli da cui caricare i dati")
+
+        firstSheet = wb.worksheets[0]
+        return RawCompanyBalanceImporter(firstSheet)
 
     def __set_cursor(self, column: int, row: int):
         if column > self.max_col or row > self.max_row:
@@ -89,7 +100,7 @@ class RawCompanyBalanceImporter:
 
     def __check_empty_row(self) -> bool:        # Controlla se la riga è vuota
         self.cursor_column = 1
-        for i in range(int(self.max_col / 3)):
+        for i in range(self.max_col):
             if self.__get_cell().value is not None:
                 return False
             self.__next_column()
@@ -156,16 +167,12 @@ class RawCompanyBalanceImporter:
                 and self.__get_cell().fill.start_color.value == 'FFE4ECF6')
 
     def import_from_excel(self) -> RawCompanyData:
-        """Funzione per avviare il caricamento delle informazioni dal file"""
-        wb = load_workbook(filename=self.path, read_only=False, data_only=True)
-
-        if len(wb.sheetnames) == 0:
-            raise Exception("Il file non ha fogli da cui caricare i dati")
-
-        firstSheet = wb.worksheets[0]
-        self.worksheet = firstSheet
-        self.max_row = firstSheet.max_row
-        self.max_col = firstSheet.max_column
+        """
+        Importa i dati di una company a partire dal worksheet impostato
+        :return:
+        """
+        self.max_row = self.worksheet.max_row
+        self.max_col = self.worksheet.max_column
         self.__set_cursor(2, 1) # B1
         self.company = RawCompanyData()
 
@@ -226,7 +233,6 @@ class RawCompanyBalanceImporter:
 
             self.__next_row()
 
-        wb.close()
         return self.company
 
     def __load_indices_section(self) -> Section:
@@ -305,10 +311,11 @@ class RawCompanyBalanceImporter:
         while self.__has_av_rows() and not self.__is_section_start():       # L'ultima sotto-sezione caricata dello SP lascia il cursore sull'intestazione del Conto Economico
             if not self.__check_empty_row():
                 content_rows += 1
-                row_name = self.__get_field_name(self.__get_cell().value)
-                if self.__get_cell().value.find(
-                        "di cui:") >= 0:  # Per i campi di dettaglio (di cui) aggiunge il nome completo del campo a cui fanno riferimento
-                    row_name = s.last_added_row_name + "__" + row_name
+                if self.__get_cell().value is not None:
+                    row_name = self.__get_field_name(self.__get_cell().value)
+                    if self.__get_cell().value.find(
+                            "di cui:") >= 0:  # Per i campi di dettaglio (di cui) aggiunge il nome completo del campo a cui fanno riferimento
+                        row_name = s.last_added_row_name + "__" + row_name
 
                 row_values = self.__load_all_hvalues()
                 s.append_row(row_name, row_values.copy())
@@ -367,7 +374,7 @@ class RawCompanyBalanceImporter:
                 elif self.__is_vsubsec2_start() and sub:        # Evita che la struttura dati divendi una cascata e mantiene tutto su 1 livello
                     self.__prev_row()                           # Torna indietro di una riga, ferma la subsection e ri-esegui il ciclo che creerà una nuova subsection ma a livello superiore e non un nuovo figlio
                     break
-                else:
+                elif self.__get_cell().value is not None:
                     row_name = self.__get_field_name(self.__get_cell().value)
                     if self.__get_cell().value.find("di cui:") >= 0:           # Per i campi di dettaglio (di cui) aggiunge il nome completo del campo a cui fanno riferimento
                         row_name = s.last_added_row_name + "__" + row_name
@@ -399,7 +406,7 @@ class RawCompanyBalanceImporter:
 
                     row_values = self.__load_all_hvalues()
                     self.data[row_name] = row_values.copy()
-                elif content_rows >= 6:
+                elif content_rows >= 6 and self.__get_cell().value is not None:     # Alcune aziende hanno dettagli aggiuntivi che non interessano
                     row_name = self.__get_field_name(self.__get_cell().value)
                     self.__next_column()
                     row_values = self.__load_all_hvalues()
@@ -557,33 +564,18 @@ class RawCompanyBalanceImporter:
                 content_rows += 1
                 self.__return_to_rstart()
 
-                if content_rows == 1 and self.__is_vsec_start():
+                if content_rows == 1 or content_rows == 5 and self.__is_vsec_start():
                     subSecName = self.__get_field_name(self.__get_cell().value)
                     curSnap = self.__snap_cursor()  # Salvo la posizione da cui parto, poi scendo verticalmente e concateno i valori
                     self.__down_vertically()
                     content = self.__concat_vertically()
                     self.data[subSecName] = content
                     self.__restore_snap(curSnap)    # Ripristino la posizione del cursore
-                elif content_rows == 2:
-                    self.__return_to_rstart()
-                    self.__move_to_next_value()     # Ignoro il valore già letto
-                    sec = self.__load_hsection()
-                    self.data[sec[0]] = sec[1]
-                elif content_rows == 3 or content_rows == 4:
-                    pass        # Ignoro i valori già utilizzati
-                elif content_rows == 5:
-                    if self.__is_vsec_start():
-                        subSecName = self.__get_field_name(self.__get_cell().value)
-                        curSnap = self.__snap_cursor()
-                        self.__down_vertically()
-                        value = self.__concat_vertically()
-                        self.data[subSecName] = value
-                        self.__restore_snap(curSnap)
-                elif content_rows == 6:
-                    self.__return_to_rstart()
-                    self.__move_to_next_value()
-                    sec = self.__load_hsection()
-                    self.data[sec[0]] = sec[1]
+
+                if self.__move_to_next_value(True) is not None:     # Ignoro il valore già letto
+                    sec = self.__load_hsection(True)    # Nel caso di società cessate, il sito web potrebbe non essere presente
+                    if sec is not None:
+                        self.data[sec[0]] = sec[1]
 
             self.__next_row()
 

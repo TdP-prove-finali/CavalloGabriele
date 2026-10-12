@@ -8,7 +8,7 @@ from test_data import raw_company_paramount, raw_company_eni, complete_company_1
 
 def test_loader():
     RawCompanyBalanceImporter.clear_translations()
-    c = RawCompanyBalanceImporter("../dataset/sample-aida-single.xlsx")
+    c = RawCompanyBalanceImporter.fromFile("../dataset/sample-aida-single.xlsx")
     translations = RawCompanyBalanceImporter.get_translations()
     c.import_from_excel()
     assert c.company == raw_company_paramount
@@ -16,7 +16,7 @@ def test_loader():
 
 def test_loader2():
     RawCompanyBalanceImporter.clear_translations()
-    c = RawCompanyBalanceImporter("../dataset/sample-aida-single2.xlsx")
+    c = RawCompanyBalanceImporter.fromFile("../dataset/sample-aida-single2.xlsx")
     c.import_from_excel()
     assert c.company == raw_company_eni
     RawCompanyBalanceImporter.clear_translations()
@@ -24,7 +24,7 @@ def test_loader2():
 def test_loader_cross():
     RawCompanyBalanceImporter.clear_translations()
     assert len(RawCompanyBalanceImporter.get_translations().keys()) == 0
-    c1 = RawCompanyBalanceImporter("../dataset/sample-aida-single.xlsx")
+    c1 = RawCompanyBalanceImporter.fromFile("../dataset/sample-aida-single.xlsx")
     translations = RawCompanyBalanceImporter.get_translations()
     c1.import_from_excel()
 
@@ -32,7 +32,7 @@ def test_loader_cross():
     assert len(translations.keys()) > 0
     l1 = len(RawCompanyBalanceImporter.get_translations().keys())
     assert l1 > 0
-    c = RawCompanyBalanceImporter("../dataset/sample-aida-single2.xlsx")
+    c = RawCompanyBalanceImporter.fromFile("../dataset/sample-aida-single2.xlsx")
     c.import_from_excel()
     assert c.company == raw_company_eni
     assert len(RawCompanyBalanceImporter.get_translations().keys()) > l1
@@ -79,7 +79,7 @@ def test_company_brief():
 
 def test_preproc_company():
     RawCompanyBalanceImporter.clear_translations()
-    c = RawCompanyBalanceImporter("../dataset/sample-aida-single.xlsx")
+    c = RawCompanyBalanceImporter.fromFile("../dataset/sample-aida-single.xlsx")
     translations = RawCompanyBalanceImporter.get_translations()
     c.import_from_excel()
     raw_company = c.company
@@ -99,7 +99,7 @@ def test_complete():
     MongoDBConnector.get_database()["translations"].drop()
 
     imp = CompanyImportDAO("../dataset/sample-aida-single.xlsx")
-    imp.import_company()
+    imp.import_single_company()
 
     assert imp.company == complete_company_1
     assert imp.translations is not None
@@ -110,3 +110,19 @@ def test_complete():
     translated = TranslationDAO.get_translations_for_company(imp.company)
     assert len(translated.keys()) > 0
     RawCompanyBalanceImporter.clear_translations()
+
+def test_loader_chunk():
+    RawCompanyBalanceImporter.clear_translations()
+    MongoDBConnector.get_database()["translations"].drop()
+
+    imp = CompanyImportDAO("../dataset/test/dataset-3.xlsx")
+    imported = imp.import_company_chunk()
+    assert len(imported) == 3
+
+def test_loader_chunk_10():
+    RawCompanyBalanceImporter.clear_translations()
+    MongoDBConnector.get_database()["translations"].drop()
+
+    imp = CompanyImportDAO("../dataset/test/dataset-10.xlsx")
+    imported = imp.import_company_chunk()
+    assert len(imported) == 10

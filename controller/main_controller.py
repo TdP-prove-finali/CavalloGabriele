@@ -137,7 +137,7 @@ class MainController:
 
         try:
             c = CompanyImportDAO(path)
-            c.import_company()
+            c.import_single_company()
             company = c.company
             CompanyDAO.save_company(company)
             translations = c.translations
