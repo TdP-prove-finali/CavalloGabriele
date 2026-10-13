@@ -2,7 +2,7 @@ from openpyxl import load_workbook
 
 from dao.data_import.balance_dao import RawCompanyBalanceImporter
 from dao.data_import.comp_preproc_dao import CompanyPreprocessorDAO
-from model.RawCompanyData import CompanyData, RawCompanyData
+from model.raw_company_data import CompanyData, RawCompanyData
 
 
 class CompanyImportDAO:

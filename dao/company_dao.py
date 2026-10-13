@@ -3,12 +3,12 @@ from dataclasses import asdict
 from pymongo.synchronous.collection import Collection
 
 from dao.mongodb_connector import MongoDBConnector
-from model.RawCompanyData import RawCompanyData, CompanyBrief, CompanyData
+from model.raw_company_data import RawCompanyData, CompanyBrief, CompanyData
 
 from datetime import datetime
 from typing import Any
 
-from model.Section import Section
+from model.section import Section
 
 class CompanyDAO:
     @staticmethod

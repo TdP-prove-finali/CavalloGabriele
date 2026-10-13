@@ -1,7 +1,7 @@
 import datetime
 
-from model.RawCompanyData import RawCompanyData, CompanyData
-from model.Section import Section
+from model.raw_company_data import RawCompanyData, CompanyData
+from model.section import Section
 
 raw_company_paramount = RawCompanyData(sections=[Section(name='general_info',
                                                          data={'codice_fiscale': '07237600965',

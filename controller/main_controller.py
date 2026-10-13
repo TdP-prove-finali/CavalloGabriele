@@ -1,8 +1,8 @@
-from typing import Any
+from PySide6.QtCore import QMargins
+from PySide6.QtWidgets import QMessageBox, QHeaderView, QHBoxLayout
 
-from PySide6.QtWidgets import QMessageBox, QHeaderView
-
-from app.view.summary_table_model import SummaryTableModel
+from model.ce_table_model import CETableModel
+from model.summary_table_model import SummaryTableModel
 from app.windows.mainwindow import MainWindow
 from controller.abstract import AbstractController
 from dao.company_dao import CompanyDAO
@@ -42,6 +42,21 @@ class MainController(AbstractController[MainWindow, MainModel]):
             self.view.ui.operatingMarketLabel.setText(c.gruppo_dei_pari["descrizione"])
             self.view.ui.numberOfYearsLabel.setText(str(c.informazioni_commerciali_e_legali["numero_di_anni_disponibili"]))
             self.loadSummaryInfoTable()
+            self.loadCETView()
+
+    # TODO: Implementare classe ResizableVerticalHeader per permettere di ridimensionare lo header verticale
+    def loadCETView(self):
+        c = self.model.company_data
+        tr = self.model.translations
+        data_model = CETableModel(
+            c.conto_economico, tr
+        )
+        self.view.ui.contoEconomicoTView.setModel(data_model)
+        self.view.ui.contoEconomicoTView.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Interactive)
+        header = self.view.ui.contoEconomicoTView.verticalHeader()
+        header.setMinimumWidth(40)
+        header.setMaximumWidth(150)
+        header.setSectionResizeMode(QHeaderView.ResizeMode.Interactive)
 
     def loadSummaryInfoTable(self):
         c = self.model.company_data

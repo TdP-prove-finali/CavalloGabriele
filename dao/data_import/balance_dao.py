@@ -5,9 +5,9 @@ from openpyxl.utils import get_column_letter
 from openpyxl.worksheet.worksheet import Worksheet
 
 from dao.util import remove_accents
-from model.RawCompanyData import RawCompanyData
+from model.raw_company_data import RawCompanyData
 from openpyxl import load_workbook
-from model.Section import Section
+from model.section import Section
 
 class RawCompanyBalanceImporter:
     __translations__ = {}       # Traduzioni condivise di tutti gli identificatori di campo con il corrispettivo descrittore completo
@@ -486,6 +486,7 @@ class RawCompanyBalanceImporter:
         )
 
     def __get_field_name(self, cellContent) -> str:
+        # TODO: I campi di cui non hanno traduzione
         """
         Restituisce un nome di campo valido per una voce dell'excel, verificando che possa essere utilizzato come identificatore
         python in un dizionario.

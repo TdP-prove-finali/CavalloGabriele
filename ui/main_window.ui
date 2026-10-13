@@ -23,6 +23,18 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout_19">
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
     <item>
      <widget class="QWidget" name="overviewSecWidget" native="true">
       <property name="maximumSize">
@@ -39,6 +51,9 @@
         <number>0</number>
        </property>
        <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
         <number>0</number>
        </property>
        <item>
@@ -225,7 +240,7 @@
            <property name="maximumSize">
             <size>
              <width>600</width>
-             <height>600</height>
+             <height>400</height>
             </size>
            </property>
            <property name="font">
@@ -263,7 +278,7 @@
                  <x>0</x>
                  <y>0</y>
                  <width>390</width>
-                 <height>226</height>
+                 <height>246</height>
                 </rect>
                </property>
                <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -589,6 +604,9 @@
              <pointsize>17</pointsize>
             </font>
            </property>
+           <property name="toolTip">
+            <string>Dati degli ultimi 2 anni disponibili</string>
+           </property>
            <property name="title">
             <string>Informazioni riassuntive</string>
            </property>
@@ -629,6 +647,18 @@
          <string>Dati di bilancio</string>
         </property>
         <layout class="QHBoxLayout" name="horizontalLayout_10">
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
          <item>
           <widget class="QTabWidget" name="balanceTabWidget">
            <property name="font">
@@ -637,13 +667,25 @@
             </font>
            </property>
            <property name="currentIndex">
-            <number>0</number>
+            <number>1</number>
            </property>
            <widget class="QWidget" name="conto_economico_tab">
             <attribute name="title">
              <string>Conto Economico</string>
             </attribute>
             <layout class="QHBoxLayout" name="horizontalLayout_11">
+             <property name="leftMargin">
+              <number>0</number>
+             </property>
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <property name="rightMargin">
+              <number>0</number>
+             </property>
+             <property name="bottomMargin">
+              <number>0</number>
+             </property>
              <item>
               <widget class="QTableView" name="contoEconomicoTView"/>
              </item>
@@ -654,6 +696,18 @@
              <string>Stato Patrimoniale</string>
             </attribute>
             <layout class="QHBoxLayout" name="horizontalLayout_12">
+             <property name="leftMargin">
+              <number>0</number>
+             </property>
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <property name="rightMargin">
+              <number>0</number>
+             </property>
+             <property name="bottomMargin">
+              <number>0</number>
+             </property>
              <item>
               <widget class="QTableView" name="statoPatrimTView"/>
              </item>
@@ -703,6 +757,18 @@
          <string>Indici riassuntivi</string>
         </property>
         <layout class="QHBoxLayout" name="horizontalLayout_16">
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
          <item>
           <widget class="QTabWidget" name="indiciesTabWidget">
            <property name="font">
@@ -741,6 +807,18 @@
        <string>Grafici</string>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
        <item>
         <widget class="QTabWidget" name="tabWidget">
          <property name="font">

@@ -2,8 +2,8 @@ from copy import deepcopy
 from dataclasses import fields
 from typing import Any
 
-from model.RawCompanyData import RawCompanyData, CompanyData
-from model.Section import Section
+from model.raw_company_data import RawCompanyData, CompanyData
+from model.section import Section
 
 
 class CompanyPreprocessorDAO:

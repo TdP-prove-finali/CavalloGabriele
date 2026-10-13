@@ -1,8 +1,10 @@
 from PySide6.QtCore import QAbstractTableModel, QModelIndex, Qt
 from PySide6.QtGui import QColor
 
-from dao.util import is_number
+from dao.util import is_number, format_number
 
+# TODO: Migliorare architettura con classe astratta che prende un dizionario e costruisce una tabella,
+# con possibilità di specificare la quantità massima di colonne e righe da utilizzare.
 
 class SummaryTableModel(QAbstractTableModel):
     def __init__(self, data: dict, translations: dict):
@@ -18,21 +20,18 @@ class SummaryTableModel(QAbstractTableModel):
     def columnCount(self, parent=QModelIndex()):
         return self.column_count
 
-    def format_number(value, decimals: int = 2) -> str:
-        return f"{value:,.{decimals}f}".replace(",", "X").replace(".", ",").replace("X", ".")
-
     def data(self, index, role=Qt.ItemDataRole.DisplayRole):
-        # TODO: Formattare i numeri con i punti di separazione delle migliaia
         # TODO: Gestire altezza righe e word-wrap
-        # TODO: Inserire in UI informazioni sul fatto che sono gli ultimi 2 anni
         column = index.column()
         row = index.row()
         keys = list(self._data.keys())
 
         if role == Qt.ItemDataRole.DisplayRole:
             field_name = keys[row]
-            d= self._data[field_name][column - 1]
+            d= self._data[field_name][column]
             if d is not None:
+                if is_number(d):
+                    return format_number(d)
                 return d
             else:
                 return "n.d."
@@ -50,7 +49,7 @@ class SummaryTableModel(QAbstractTableModel):
         if role != Qt.ItemDataRole.DisplayRole:
             return None
         elif orientation == Qt.Orientation.Horizontal:
-            return "Anno " + str(2026 - section)
+            return "Anno " + str(2026 - section - 1)
         elif orientation == Qt.Orientation.Vertical:
             field_name = keys[section]
 

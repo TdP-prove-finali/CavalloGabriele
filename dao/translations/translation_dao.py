@@ -3,7 +3,7 @@ from dataclasses import fields
 from pymongo import UpdateOne
 
 from dao.mongodb_connector import MongoDBConnector
-from model.RawCompanyData import CompanyData
+from model.raw_company_data import CompanyData
 
 
 class TranslationDAO:

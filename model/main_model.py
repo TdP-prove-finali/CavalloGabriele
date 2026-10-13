@@ -1,6 +1,6 @@
 import dataclasses
 
-from model.RawCompanyData import CompanyData
+from model.raw_company_data import CompanyData
 
 
 @dataclasses.dataclass
