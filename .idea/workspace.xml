@@ -4,13 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d1f57556-a68b-4407-9511-95d58864d413" name="Changes" comment="Implementa caricamento conto economico in tabella e migliora UI">
-      <change afterPath="$PROJECT_DIR$/model/sp_table_model.py" afterDir="false" />
+    <list default="true" id="d1f57556-a68b-4407-9511-95d58864d413" name="Changes" comment="Implementa caricamento stato patrimoniale">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controller/main_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/controller/main_controller.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dao/data_import/balance_dao_signals.py" beforeDir="false" afterPath="$PROJECT_DIR$/dao/data_import/balance_dao_signals.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/Section.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/section.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/main_window.ui" beforeDir="false" afterPath="$PROJECT_DIR$/ui/main_window.ui" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/sp_table_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/sp_table_model.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -257,15 +253,7 @@
       <workItem from="1791726913468" duration="9620000" />
       <workItem from="1791797221050" duration="20960000" />
       <workItem from="1791917383314" duration="4839000" />
-      <workItem from="1791991574926" duration="5310000" />
-    </task>
-    <task id="LOCAL-00003" summary="README.md">
-      <option name="closed" value="true" />
-      <created>1790243480445</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1790243480445</updated>
+      <workItem from="1791991574926" duration="6901000" />
     </task>
     <task id="LOCAL-00004" summary="Dataset prod e test">
       <option name="closed" value="true" />
@@ -651,14 +639,21 @@
       <option name="project" value="LOCAL" />
       <updated>1791922312627</updated>
     </task>
-    <option name="localTasksCounter" value="52" />
+    <task id="LOCAL-00052" summary="Implementa caricamento stato patrimoniale">
+      <option name="closed" value="true" />
+      <created>1791997024874</created>
+      <option name="number" value="00052" />
+      <option name="presentableId" value="LOCAL-00052" />
+      <option name="project" value="LOCAL" />
+      <updated>1791997024874</updated>
+    </task>
+    <option name="localTasksCounter" value="53" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Sezione overview" />
     <MESSAGE value="Miglioramento performance" />
     <MESSAGE value="Caricamento profilo finanziario e miglioramento stabilità" />
     <MESSAGE value="Caricamento stato patrimoniale" />
@@ -683,7 +678,8 @@
     <MESSAGE value="Apertura finestra principale e passaggio dati company" />
     <MESSAGE value="Implementa caricamento tabella profilo finanziario" />
     <MESSAGE value="Implementa caricamento conto economico in tabella e migliora UI" />
-    <option name="LAST_COMMIT_MESSAGE" value="Implementa caricamento conto economico in tabella e migliora UI" />
+    <MESSAGE value="Implementa caricamento stato patrimoniale" />
+    <option name="LAST_COMMIT_MESSAGE" value="Implementa caricamento stato patrimoniale" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -705,7 +701,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/model/sp_table_model.py</url>
-          <line>43</line>
+          <line>39</line>
           <option name="timeStamp" value="79" />
         </line-breakpoint>
       </breakpoints>
@@ -725,6 +721,6 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/CavalloGabriele$.coverage" NAME=" Coverage Results" MODIFIED="1791828872609" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
-    <SUITE FILE_PATH="coverage/CavalloGabriele$main.coverage" NAME="main Coverage Results" MODIFIED="1791996943225" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/CavalloGabriele$main.coverage" NAME="main Coverage Results" MODIFIED="1791998539775" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

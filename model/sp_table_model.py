@@ -20,40 +20,34 @@ class SPTableModel(QAbstractTableModel):
         return self.column_count
 
     def data(self, index, role=Qt.ItemDataRole.DisplayRole):
-        # TODO: Gestire altezza righe e word-wrap
-        # TODO: Finire implementazione
-        # Per ogni sotto-sezione, mettere intestazione con colore diverso e contenuto della riga vuoto
         column = index.column()
         row = index.row()
         d = None
+        field_name = None
+
+        if row == 0 and role == Qt.ItemDataRole.DisplayRole:
+            field_name = "Attivo"
+            d = None
+        elif row <= self._data.count_attivo_fields:
+            field_name = self._data.get_attivo_key(row - 1)
+            if role == Qt.ItemDataRole.DisplayRole:
+                d = self._data.attivo[field_name][column]
+        elif row == self._data.count_attivo_fields:     # Totale attivo
+            pass
+        elif row == self._data.count_attivo_fields + 1:      # Inizio del passivo
+            pass
+        elif self._data.count_attivo_fields + 1 < row <= self._data.count_attivo_fields + self._data.count_patrimon_fields + 1:
+            field_name = self._data.get_patrimn_key(row - self._data.count_attivo_fields - 2)
+            if role == Qt.ItemDataRole.DisplayRole:
+                d = self._data.patrimonio_netto[field_name][column]
+        elif self._data.count_attivo_fields + self._data.count_patrimon_fields < row <= self._data.count_attivo_fields + self._data.count_patrimon_fields + self._data.count_debiti_fields + 1:
+            field_name = self._data.get_debiti_key(row - self._data.count_attivo_fields - 2 - self._data.count_patrimon_fields)
+            if role == Qt.ItemDataRole.DisplayRole:
+                d = self._data.debiti[field_name][column]
 
         if role == Qt.ItemDataRole.DisplayRole:
-            field_name = None
-            if row == 0:
-                return None
-            elif row <= self._data.count_attivo_fields:
-                field_name = self._data.get_attivo_key(row - 1)
-                if field_name == "subsections":
-                    return None
-                d = self._data.attivo[field_name][column]
-            elif row == self._data.count_attivo_fields:     # Totale attivo
-                return None
-            elif row == self._data.count_attivo_fields + 1:      # Inizio del passivo
-                return None
-            elif self._data.count_attivo_fields + 1 < row <= self._data.count_attivo_fields + self._data.count_patrimon_fields + 1:
-                field_name = self._data.get_patrimn_key(row - self._data.count_attivo_fields - 2)
-                d = self._data.patrimonio_netto[field_name][column]
-            elif self._data.count_attivo_fields + self._data.count_patrimon_fields < row <= self._data.count_attivo_fields + self._data.count_patrimon_fields + self._data.count_debiti_fields + 1:
-                field_name = self._data.get_debiti_key(row - self._data.count_attivo_fields - 2 - self._data.count_patrimon_fields)
-                d = self._data.debiti[field_name][column]
-            if d is not None:
-                if is_number(d):
-                    return format_number(d)
-                return d
-            else:
-                return "n.d."
-        elif (role != Qt.ItemDataRole.DisplayRole and row == 0 or
-              row == self._data.count_attivo_fields):
+            return self.__prepare_data__(d)
+        elif field_name is not None and field_name.find("totale") > -1:
             return self.getSectionHeadData(role)
         elif role == Qt.ItemDataRole.BackgroundRole:
             return QColor(Qt.GlobalColor.darkGray)
@@ -64,43 +58,52 @@ class SPTableModel(QAbstractTableModel):
 
         return None
 
+    def __prepare_data__(self, d):
+        if d is not None:
+            if is_number(d):
+                return format_number(d)
+            return d
+        else:
+            return "n.d."
+
     def headerData(self, section, orientation, role):
         # TODO: Header con le sotto-sezioni dello SP
         # TODO: Utilizzare il TooltipRole per mostrare un tooltip delle sezioni più importanti
         # Ad esempio con lista hard-coded di descrizioni complete sulle cose più dettagliate
-        if role == Qt.ItemDataRole.DisplayRole:
-            if orientation == Qt.Orientation.Horizontal:
+        if orientation == Qt.Orientation.Horizontal:
+            if role == Qt.ItemDataRole.DisplayRole:
                 return "Anno " + str(2026 - section - 1)
-            elif orientation == Qt.Orientation.Vertical:
-                if section == 0:
+            else:
+                return None
+        elif orientation == Qt.Orientation.Vertical:
+            field_name = None
+            if section == 0:
+                if role == Qt.ItemDataRole.DisplayRole:
                     return "Attivo"
-                elif section <= self._data.count_attivo_fields:
-                    field_name = self._data.get_attivo_key(section - 1)
-                    if self._translations.get(field_name) is not None:
-                        return self._translations[field_name].strip()
-                    else:
-                        return field_name
-                elif section == self._data.count_attivo_fields + 1:
+            elif section <= self._data.count_attivo_fields:
+                field_name = self._data.get_attivo_key(section - 1)
+            elif section == self._data.count_attivo_fields + 1:
+                if role == Qt.ItemDataRole.DisplayRole:
                     return "Passivo"
-                elif self._data.count_attivo_fields + 1 < section <= self._data.count_attivo_fields + self._data.count_patrimon_fields + 1:
-                    field_name = self._data.get_patrimn_key(section - self._data.count_attivo_fields - 2)
-                    if self._translations.get(field_name) is not None:
-                        return self._translations[field_name]
-                    else:
-                        return field_name
-                elif self._data.count_attivo_fields + self._data.count_patrimon_fields < section <= self._data.count_attivo_fields + self._data.count_patrimon_fields + self._data.count_debiti_fields + 1:
-                    field_name = self._data.get_debiti_key(
-                        section - self._data.count_attivo_fields - 2 - self._data.count_patrimon_fields)
-                    if self._translations.get(field_name) is not None:
-                        return self._translations[field_name]
-                    else:
-                        return field_name
+            elif self._data.count_attivo_fields + 1 < section <= self._data.count_attivo_fields + self._data.count_patrimon_fields + 1:
+                field_name = self._data.get_patrimn_key(section - self._data.count_attivo_fields - 2)
+            elif self._data.count_attivo_fields + self._data.count_patrimon_fields < section <= self._data.count_attivo_fields + self._data.count_patrimon_fields + self._data.count_debiti_fields + 1:
+                field_name = self._data.get_debiti_key(
+                    section - self._data.count_attivo_fields - 2 - self._data.count_patrimon_fields)
 
+            if role == Qt.ItemDataRole.DisplayRole:
+                return self.__get_translation_for__(field_name)
 
-        elif (role != Qt.ItemDataRole.DisplayRole and (section == 0 or
-              section == self._data.count_attivo_fields) or section == (self._data.count_attivo_fields + 1)):
-            return self.getSectionHeadData(role)
+            elif role != Qt.ItemDataRole.DisplayRole and field_name is not None and (field_name.find("totale") != -1 or section == 0):
+                return self.getSectionHeadData(role)
 
+        return None
+
+    def __get_translation_for__(self, f_name):
+        if self._translations.get(f_name) is not None:
+            return self._translations[f_name].strip()
+        else:
+            return f_name
 
     def getSectionHeadData(self, role):
         if role == Qt.ItemDataRole.BackgroundRole:
