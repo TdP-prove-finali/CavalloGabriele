@@ -1,6 +1,6 @@
 from PySide6.QtCore import QObject, Signal
 
-from model.RawCompanyData import RawCompanyData
+from model.raw_company_data import RawCompanyData
 
 
 class BalanceImporterSignals(QObject):

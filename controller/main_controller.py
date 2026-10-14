@@ -2,6 +2,8 @@ from PySide6.QtCore import QMargins
 from PySide6.QtWidgets import QMessageBox, QHeaderView, QHBoxLayout
 
 from model.ce_table_model import CETableModel
+from model.section import SPSection
+from model.sp_table_model import SPTableModel
 from model.summary_table_model import SummaryTableModel
 from app.windows.mainwindow import MainWindow
 from controller.abstract import AbstractController
@@ -43,6 +45,20 @@ class MainController(AbstractController[MainWindow, MainModel]):
             self.view.ui.numberOfYearsLabel.setText(str(c.informazioni_commerciali_e_legali["numero_di_anni_disponibili"]))
             self.loadSummaryInfoTable()
             self.loadCETView()
+            self.loadSPTView()
+
+    def loadSPTView(self):
+        c = self.model.company_data
+        tr = self.model.translations
+        data_model = SPTableModel(
+            SPSection.fromSection(c.stato_patrimoniale), tr
+        )
+        self.view.ui.statoPatrimTView.setModel(data_model)
+        self.view.ui.statoPatrimTView.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Interactive)
+        header = self.view.ui.statoPatrimTView.verticalHeader()
+        header.setMinimumWidth(40)
+        header.setMaximumWidth(150)
+        header.setSectionResizeMode(QHeaderView.ResizeMode.Interactive)
 
     # TODO: Implementare classe ResizableVerticalHeader per permettere di ridimensionare lo header verticale
     def loadCETView(self):
