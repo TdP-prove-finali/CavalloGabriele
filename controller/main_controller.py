@@ -1,6 +1,7 @@
 from PySide6.QtCore import QMargins
 from PySide6.QtWidgets import QMessageBox, QHeaderView, QHBoxLayout
 
+from app.widget.resizable_vert_header import ResizableVerticalHeader
 from model.ce_table_model import CETableModel
 from model.section import SPSection
 from model.sp_table_model import SPTableModel
@@ -55,12 +56,10 @@ class MainController(AbstractController[MainWindow, MainModel]):
         )
         self.view.ui.statoPatrimTView.setModel(data_model)
         self.view.ui.statoPatrimTView.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Interactive)
-        header = self.view.ui.statoPatrimTView.verticalHeader()
-        header.setMinimumWidth(40)
-        header.setMaximumWidth(150)
-        header.setSectionResizeMode(QHeaderView.ResizeMode.Interactive)
+        header = ResizableVerticalHeader(self.view.ui.statoPatrimTView)
+        self.view.ui.statoPatrimTView.setVerticalHeader(header)
+        header.setVisible(True)
 
-    # TODO: Implementare classe ResizableVerticalHeader per permettere di ridimensionare lo header verticale
     def loadCETView(self):
         c = self.model.company_data
         tr = self.model.translations
@@ -69,10 +68,8 @@ class MainController(AbstractController[MainWindow, MainModel]):
         )
         self.view.ui.contoEconomicoTView.setModel(data_model)
         self.view.ui.contoEconomicoTView.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Interactive)
-        header = self.view.ui.contoEconomicoTView.verticalHeader()
-        header.setMinimumWidth(40)
-        header.setMaximumWidth(150)
-        header.setSectionResizeMode(QHeaderView.ResizeMode.Interactive)
+        header = ResizableVerticalHeader(self.view.ui.contoEconomicoTView)
+        self.view.ui.contoEconomicoTView.setVerticalHeader(header)
 
     def loadSummaryInfoTable(self):
         c = self.model.company_data
