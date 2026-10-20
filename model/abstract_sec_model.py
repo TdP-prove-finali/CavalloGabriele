@@ -1,18 +1,29 @@
 from PySide6.QtCore import QAbstractTableModel, QModelIndex, Qt
 from PySide6.QtGui import QColor
 
-from dao.util import is_number, format_number
+from dao.util import format_number, is_number
 
-# TODO: Migliorare architettura con classe astratta che prende un dizionario e costruisce una tabella,
-# con possibilità di specificare la quantità massima di colonne e righe da utilizzare.
-
-class SummaryTableModel(QAbstractTableModel):
-    def __init__(self, data: dict, translations: dict):
+class AbstractSectionTableModel(QAbstractTableModel):
+    """
+    Rappresenta un generico modello da utilizzare per intabellare una section,
+    organizzata come dizionario chiave-valore e con le traduzioni delle chiavi in un altro dizionario
+    """
+    def __init__(self, data: dict, translations: dict[str, str], max_row_count = None, max_column_count = None):
         QAbstractTableModel.__init__(self)
-        self.column_count = 2
-        self.row_count = len(data.keys())
+        if max_row_count is None:
+            self.row_count = len(data.keys())
+        else:
+            self.row_count = max_row_count
+            self.__max_row_count__ = max_row_count
+
         self._data = data
         self._translations = translations
+
+        if max_column_count is None:
+            self.column_count = len(data["data"])
+        else:
+            self.column_count = max_column_count
+            self.__max_col_count__ = max_column_count
 
     def rowCount(self, parent=QModelIndex()):
         return self.row_count
@@ -21,7 +32,6 @@ class SummaryTableModel(QAbstractTableModel):
         return self.column_count
 
     def data(self, index, role=Qt.ItemDataRole.DisplayRole):
-        # TODO: Gestire altezza righe e word-wrap
         column = index.column()
         row = index.row()
         keys = list(self._data.keys())

@@ -3,6 +3,17 @@ from dataclasses import dataclass
 from functools import cached_property
 from typing import Any
 
+
+def clear_section(section: dict[str, Any]):
+    """Rimuove dai dati di una sezione le indicazioni di eventuali sotto-sezioni"""
+    if section.get("subsections") is not None:
+        section.pop("subsections")
+
+    return section.copy()
+
+def find_key_by_token(data: dict, token: str) -> str | None:
+    return next((key for key in data if token in key), None)
+
 # Rappresenta una sezione generica del file excel con tutti i dati della company
 @dataclass
 class Section:
@@ -24,16 +35,10 @@ class SPSection:
     """
 
     def __init__(self, context, attivo, debiti, patrimonio_netto):
-        self.context: dict[str, Any] = self.__clear_section__(context)
-        self.attivo: dict[str, Any] = self.__clear_section__(attivo)
-        self.debiti: dict[str, Any] = self.__clear_section__(debiti)
-        self.patrimonio_netto: dict[str, Any] = self.__clear_section__(patrimonio_netto)
-
-    def __clear_section__(self, section: dict[str, Any]):
-        if section.get("subsections") is not None:
-            section.pop("subsections")
-
-        return section.copy()
+        self.context: dict[str, Any] = clear_section(context)
+        self.attivo: dict[str, Any] = clear_section(attivo)
+        self.debiti: dict[str, Any] = clear_section(debiti)
+        self.patrimonio_netto: dict[str, Any] = clear_section(patrimonio_netto)
 
     @cached_property
     def passivo(self):
@@ -79,4 +84,26 @@ class SPSection:
             attivo=section["subsections"]["attivo"],
             debiti=section["subsections"]["passivo"]["subsections"]["debiti"],
             patrimonio_netto=section["subsections"]["passivo"]["subsections"]["patrimonio_netto"],
+        )
+
+class IndiciesSection:
+    def __init__(self, context, financiary: dict[str, Any], current_period, revenue, productivity, signif_data):
+        self.context: dict[str, Any] = clear_section(context)
+        self.financiary: dict[str, Any] = clear_section(financiary)
+        self.current_period: dict[str, Any] = clear_section(current_period)
+        self.revenue: dict[str, Any] = clear_section(revenue)
+        self.productivity: dict[str, Any] = clear_section(productivity)
+        self.signif_data: dict[str, Any] = clear_section(signif_data)
+
+    @staticmethod
+    def fromSection(section: dict):
+        return IndiciesSection(
+            context={"data": section["data"],
+                     "moneta": section["moneta"],
+                     "periodo": section["periodo"]},
+            financiary=section["subsections"][find_key_by_token(section["subsections"], "indicatori_finanziari")],
+            current_period=section["subsections"][find_key_by_token(section["subsections"], "gestione_corrente")],
+            revenue=section["subsections"][find_key_by_token(section["subsections"], "redditivita")],
+            productivity=section["subsections"][find_key_by_token(section["subsections"], "produttivita")],
+            signif_data=section["subsections"][find_key_by_token(section["subsections"], "dati_significativi")],
         )

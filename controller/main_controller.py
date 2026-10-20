@@ -1,11 +1,9 @@
-from PySide6.QtCore import QMargins
-from PySide6.QtWidgets import QMessageBox, QHeaderView, QHBoxLayout
+from PySide6.QtWidgets import QMessageBox, QHeaderView
 
 from app.widget.resizable_vert_header import ResizableVerticalHeader
-from model.ce_table_model import CETableModel
+from model.abstract_sec_model import AbstractSectionTableModel
 from model.section import SPSection
 from model.sp_table_model import SPTableModel
-from model.summary_table_model import SummaryTableModel
 from app.windows.mainwindow import MainWindow
 from controller.abstract import AbstractController
 from dao.company_dao import CompanyDAO
@@ -63,7 +61,7 @@ class MainController(AbstractController[MainWindow, MainModel]):
     def loadCETView(self):
         c = self.model.company_data
         tr = self.model.translations
-        data_model = CETableModel(
+        data_model = AbstractSectionTableModel(
             c.conto_economico, tr
         )
         self.view.ui.contoEconomicoTView.setModel(data_model)
@@ -74,8 +72,8 @@ class MainController(AbstractController[MainWindow, MainModel]):
     def loadSummaryInfoTable(self):
         c = self.model.company_data
         tr = self.model.translations
-        data_model = SummaryTableModel(
-            c.profilo_finanziario, tr
+        data_model = AbstractSectionTableModel(
+            c.profilo_finanziario, tr, max_column_count=2
         )
         self.view.ui.summaryTableView.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Interactive)
         header = self.view.ui.summaryTableView.verticalHeader()
