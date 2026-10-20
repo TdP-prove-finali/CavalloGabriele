@@ -87,6 +87,14 @@ class SPSection:
         )
 
 class IndiciesSection:
+    __all_sections__ = {
+        "financiary": "Finanziari",
+        "current_period": "Gestione corrente",
+        "revenue": "Redditività",
+        "productivity": "Produttività",
+        "signif_data": "Dati significativi"
+    }
+
     def __init__(self, context, financiary: dict[str, Any], current_period, revenue, productivity, signif_data):
         self.context: dict[str, Any] = clear_section(context)
         self.financiary: dict[str, Any] = clear_section(financiary)
@@ -94,6 +102,12 @@ class IndiciesSection:
         self.revenue: dict[str, Any] = clear_section(revenue)
         self.productivity: dict[str, Any] = clear_section(productivity)
         self.signif_data: dict[str, Any] = clear_section(signif_data)
+
+    def itersections(self, function):
+        """Permette di iterare tutte le sotto-sezioni degli indici chiamando una funzione
+        function che riceve due parametri: il contenuto della sotto-sezione e la descrizione testuale della stessa. """
+        for key in IndiciesSection.__all_sections__.keys():
+            function(getattr(self, key), IndiciesSection.__all_sections__[key])
 
     @staticmethod
     def fromSection(section: dict):

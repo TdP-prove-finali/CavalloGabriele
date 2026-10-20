@@ -20,7 +20,7 @@ class AbstractSectionTableModel(QAbstractTableModel):
         self._translations = translations
 
         if max_column_count is None:
-            self.column_count = len(data["data"])
+            self.column_count = len(data[list(data.keys())[0]])
         else:
             self.column_count = max_column_count
             self.__max_col_count__ = max_column_count

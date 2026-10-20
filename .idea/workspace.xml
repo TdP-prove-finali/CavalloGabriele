@@ -4,14 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d1f57556-a68b-4407-9511-95d58864d413" name="Changes" comment="Migliora gestione dello header verticale delle tabelle">
+    <list default="true" id="d1f57556-a68b-4407-9511-95d58864d413" name="Changes" comment="Migliora architettura model per le tabelle">
       <change afterPath="$PROJECT_DIR$/dao/data_import/ImportException.py" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/dao/data_import/abstract_section_loader.py" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/dao/data_import/anagrafica_sec_loader.py" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/dao/data_import/excel_cursor.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/model/abstract_sec_model.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/controller/main_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/controller/main_controller.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/abstract_sec_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/abstract_sec_model.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/model/section.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/section.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -261,15 +261,7 @@
       <workItem from="1791917383314" duration="4839000" />
       <workItem from="1791991574926" duration="8472000" />
       <workItem from="1792086564437" duration="1881000" />
-      <workItem from="1792513134421" duration="1969000" />
-    </task>
-    <task id="LOCAL-00006" summary="Gitignore">
-      <option name="closed" value="true" />
-      <created>1791273737073</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1791273737073</updated>
+      <workItem from="1792513134421" duration="3454000" />
     </task>
     <task id="LOCAL-00007" summary="Struttura base PyQt con PySide6 e finestra funzionante">
       <option name="closed" value="true" />
@@ -655,14 +647,21 @@
       <option name="project" value="LOCAL" />
       <updated>1792513794777</updated>
     </task>
-    <option name="localTasksCounter" value="55" />
+    <task id="LOCAL-00055" summary="Migliora architettura model per le tabelle">
+      <option name="closed" value="true" />
+      <created>1792515315717</created>
+      <option name="number" value="00055" />
+      <option name="presentableId" value="LOCAL-00055" />
+      <option name="project" value="LOCAL" />
+      <updated>1792515315717</updated>
+    </task>
+    <option name="localTasksCounter" value="56" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Caricamento stato patrimoniale" />
     <MESSAGE value="Sotto-sezioni passivo SP" />
     <MESSAGE value="Completa caricam. SP" />
     <MESSAGE value="Bug fixes" />
@@ -687,7 +686,8 @@
     <MESSAGE value="Implementa caricamento stato patrimoniale" />
     <MESSAGE value="Migliora impaginazione tabella" />
     <MESSAGE value="Migliora gestione dello header verticale delle tabelle" />
-    <option name="LAST_COMMIT_MESSAGE" value="Migliora gestione dello header verticale delle tabelle" />
+    <MESSAGE value="Migliora architettura model per le tabelle" />
+    <option name="LAST_COMMIT_MESSAGE" value="Migliora architettura model per le tabelle" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -703,14 +703,14 @@
           <option name="timeStamp" value="72" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/model/ce_table_model.py</url>
-          <line>20</line>
-          <option name="timeStamp" value="73" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/model/sp_table_model.py</url>
           <line>39</line>
           <option name="timeStamp" value="79" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/controller/main_controller.py</url>
+          <line>86</line>
+          <option name="timeStamp" value="80" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
@@ -729,6 +729,6 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/CavalloGabriele$.coverage" NAME=" Coverage Results" MODIFIED="1792087734634" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
-    <SUITE FILE_PATH="coverage/CavalloGabriele$main.coverage" NAME="main Coverage Results" MODIFIED="1792515116010" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/CavalloGabriele$main.coverage" NAME="main Coverage Results" MODIFIED="1792516611190" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

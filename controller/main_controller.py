@@ -1,8 +1,8 @@
-from PySide6.QtWidgets import QMessageBox, QHeaderView
+from PySide6.QtWidgets import QMessageBox, QHeaderView, QTableView, QHBoxLayout, QWidget
 
 from app.widget.resizable_vert_header import ResizableVerticalHeader
 from model.abstract_sec_model import AbstractSectionTableModel
-from model.section import SPSection
+from model.section import SPSection, IndiciesSection
 from model.sp_table_model import SPTableModel
 from app.windows.mainwindow import MainWindow
 from controller.abstract import AbstractController
@@ -45,6 +45,7 @@ class MainController(AbstractController[MainWindow, MainModel]):
             self.loadSummaryInfoTable()
             self.loadCETView()
             self.loadSPTView()
+            self.loadIndiciesTables()
 
     def loadSPTView(self):
         c = self.model.company_data
@@ -82,6 +83,21 @@ class MainController(AbstractController[MainWindow, MainModel]):
         header.setSectionResizeMode(QHeaderView.ResizeMode.Interactive)
         self.view.ui.summaryTableView.setModel(data_model)
 
+    def loadIndiciesTables(self):
+        data = IndiciesSection.fromSection(self.model.company_data.indici)
+        self.view.ui.indiciesTabWidget.clear()      # Tolgo tutte le tab
+
+        def create_sec_tab(section, title):
+            wrapper = QWidget()
+            wid = QTableView()
+            lay = QHBoxLayout(wrapper)
+            lay.addWidget(wid)
+            wrapper.setLayout(lay)
+            wid.setModel(AbstractSectionTableModel(data=section, translations=self.model.translations))
+            wid.setVerticalHeader(ResizableVerticalHeader())
+            self.view.ui.indiciesTabWidget.addTab(wrapper, title)  # Tolgo tutte le tab
+
+        data.itersections(create_sec_tab)
 
     def handleClose(self, event):
         self.view.close()
