@@ -331,6 +331,22 @@ class Ui_MainWindow(object):
 
         self.balanceIndicesSection = QVBoxLayout()
         self.balanceIndicesSection.setObjectName(u"balanceIndicesSection")
+        self.horizontalLayout_13 = QHBoxLayout()
+        self.horizontalLayout_13.setObjectName(u"horizontalLayout_13")
+        self.horizontalSpacer_8 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.horizontalLayout_13.addItem(self.horizontalSpacer_8)
+
+        self.expandBalanceButton = QPushButton(self.centralwidget)
+        self.expandBalanceButton.setObjectName(u"expandBalanceButton")
+        sizePolicy.setHeightForWidth(self.expandBalanceButton.sizePolicy().hasHeightForWidth())
+        self.expandBalanceButton.setSizePolicy(sizePolicy)
+
+        self.horizontalLayout_13.addWidget(self.expandBalanceButton)
+
+
+        self.balanceIndicesSection.addLayout(self.horizontalLayout_13)
+
         self.balanceSection = QGroupBox(self.centralwidget)
         self.balanceSection.setObjectName(u"balanceSection")
         sizePolicy2.setHeightForWidth(self.balanceSection.sizePolicy().hasHeightForWidth())
@@ -381,7 +397,7 @@ class Ui_MainWindow(object):
         self.indiciesSection.setObjectName(u"indiciesSection")
         sizePolicy2.setHeightForWidth(self.indiciesSection.sizePolicy().hasHeightForWidth())
         self.indiciesSection.setSizePolicy(sizePolicy2)
-        self.indiciesSection.setMinimumSize(QSize(300, 300))
+        self.indiciesSection.setMinimumSize(QSize(300, 200))
         self.indiciesSection.setFont(font3)
         self.horizontalLayout_16 = QHBoxLayout(self.indiciesSection)
         self.horizontalLayout_16.setObjectName(u"horizontalLayout_16")
@@ -410,25 +426,25 @@ class Ui_MainWindow(object):
         self.verticalLayout_2 = QVBoxLayout(self.chartSection)
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
         self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
-        self.tabWidget = QTabWidget(self.chartSection)
-        self.tabWidget.setObjectName(u"tabWidget")
+        self.chartTabWidget = QTabWidget(self.chartSection)
+        self.chartTabWidget.setObjectName(u"chartTabWidget")
         font5 = QFont()
         font5.setPointSize(13)
-        self.tabWidget.setFont(font5)
+        self.chartTabWidget.setFont(font5)
         self.struttura_sp_tab = QWidget()
         self.struttura_sp_tab.setObjectName(u"struttura_sp_tab")
-        self.tabWidget.addTab(self.struttura_sp_tab, "")
+        self.chartTabWidget.addTab(self.struttura_sp_tab, "")
         self.struttura_ce_tab = QWidget()
         self.struttura_ce_tab.setObjectName(u"struttura_ce_tab")
-        self.tabWidget.addTab(self.struttura_ce_tab, "")
+        self.chartTabWidget.addTab(self.struttura_ce_tab, "")
         self.evoluz_ricav_tab = QWidget()
         self.evoluz_ricav_tab.setObjectName(u"evoluz_ricav_tab")
-        self.tabWidget.addTab(self.evoluz_ricav_tab, "")
+        self.chartTabWidget.addTab(self.evoluz_ricav_tab, "")
         self.evoluz_costi_tab = QWidget()
         self.evoluz_costi_tab.setObjectName(u"evoluz_costi_tab")
-        self.tabWidget.addTab(self.evoluz_costi_tab, "")
+        self.chartTabWidget.addTab(self.evoluz_costi_tab, "")
 
-        self.verticalLayout_2.addWidget(self.tabWidget)
+        self.verticalLayout_2.addWidget(self.chartTabWidget)
 
 
         self.horizontalLayout_19.addWidget(self.chartSection)
@@ -454,8 +470,8 @@ class Ui_MainWindow(object):
 
         self.openWebsiteButton.setDefault(True)
         self.balanceTabWidget.setCurrentIndex(1)
-        self.indiciesTabWidget.setCurrentIndex(1)
-        self.tabWidget.setCurrentIndex(3)
+        self.indiciesTabWidget.setCurrentIndex(0)
+        self.chartTabWidget.setCurrentIndex(0)
 
 
         QMetaObject.connectSlotsByName(MainWindow)
@@ -504,6 +520,7 @@ class Ui_MainWindow(object):
         self.groupBox_2.setToolTip(QCoreApplication.translate("MainWindow", u"Dati degli ultimi 2 anni disponibili", None))
 #endif // QT_CONFIG(tooltip)
         self.groupBox_2.setTitle(QCoreApplication.translate("MainWindow", u"Informazioni riassuntive", None))
+        self.expandBalanceButton.setText(QCoreApplication.translate("MainWindow", u"Espandi", None))
         self.balanceSection.setTitle(QCoreApplication.translate("MainWindow", u"Dati di bilancio", None))
         self.balanceTabWidget.setTabText(self.balanceTabWidget.indexOf(self.conto_economico_tab), QCoreApplication.translate("MainWindow", u"Conto Economico", None))
         self.balanceTabWidget.setTabText(self.balanceTabWidget.indexOf(self.stato_patrimoniale_tab), QCoreApplication.translate("MainWindow", u"Stato Patrimoniale", None))
@@ -511,10 +528,10 @@ class Ui_MainWindow(object):
         self.indiciesTabWidget.setTabText(self.indiciesTabWidget.indexOf(self.tab), QCoreApplication.translate("MainWindow", u"Tab 1", None))
         self.indiciesTabWidget.setTabText(self.indiciesTabWidget.indexOf(self.tab_2), QCoreApplication.translate("MainWindow", u"Tab 2", None))
         self.chartSection.setTitle(QCoreApplication.translate("MainWindow", u"Grafici", None))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.struttura_sp_tab), QCoreApplication.translate("MainWindow", u"Struttura SP", None))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.struttura_ce_tab), QCoreApplication.translate("MainWindow", u"Struttura CE", None))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.evoluz_ricav_tab), QCoreApplication.translate("MainWindow", u"Evoluzione ricavi", None))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.evoluz_costi_tab), QCoreApplication.translate("MainWindow", u"Evoluz. Costi", None))
+        self.chartTabWidget.setTabText(self.chartTabWidget.indexOf(self.struttura_sp_tab), QCoreApplication.translate("MainWindow", u"Struttura SP", None))
+        self.chartTabWidget.setTabText(self.chartTabWidget.indexOf(self.struttura_ce_tab), QCoreApplication.translate("MainWindow", u"Struttura CE", None))
+        self.chartTabWidget.setTabText(self.chartTabWidget.indexOf(self.evoluz_ricav_tab), QCoreApplication.translate("MainWindow", u"Evoluzione ricavi", None))
+        self.chartTabWidget.setTabText(self.chartTabWidget.indexOf(self.evoluz_costi_tab), QCoreApplication.translate("MainWindow", u"Evoluz. Costi", None))
         self.menuFile.setTitle(QCoreApplication.translate("MainWindow", u"File", None))
     # retranslateUi
 

@@ -32,3 +32,7 @@ class CompanyData:
     stato_patrimoniale: dict[str, Any] = field(default_factory=dict)
     conto_economico: dict[str, Any] = field(default_factory=dict)
     indici: dict[str, Any] = field(default_factory=dict)
+
+    @property
+    def available_years(self) -> int:
+        return self.informazioni_commerciali_e_legali["numero_di_anni_disponibili"]

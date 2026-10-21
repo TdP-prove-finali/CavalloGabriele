@@ -6,10 +6,14 @@ from model.section import SPSection
 
 
 class SPTableModel(QAbstractTableModel):
-    def __init__(self, data: SPSection, translations: dict):
+    def __init__(self, data: SPSection, translations: dict, max_columns = None):
         QAbstractTableModel.__init__(self)
         self.row_count = len(data.patrimonio_netto.keys()) + len(data.debiti.keys()) + len(data.attivo) + 2
-        self.column_count = len(data.context["data"])
+        if max_columns is None:
+            self.column_count = len(data.context["data"])
+        else:
+            self.column_count = max_columns
+
         self._data = data
         self._translations = translations
 

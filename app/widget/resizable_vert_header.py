@@ -1,9 +1,11 @@
-from PySide6.QtCore import Qt, QSize
-from PySide6.QtWidgets import QHeaderView
+from PySide6.QtCore import Qt, QSize, Slot
+from PySide6.QtWidgets import QHeaderView, QTableView
 
 
 class ResizableVerticalHeader(QHeaderView):
-    """Vertical Header per le tabelle che è ridimensionabile in tutte le dimensioni. """
+    """Vertical Header per le tabelle che è ridimensionabile in tutte le dimensioni.
+    La riga corrispondente ad una sezione può essere evidenziata cliccando
+    sulla rispettiva sezione. """
 
     def __init__(self, parent=None):
         super().__init__(Qt.Orientation.Vertical, parent)
@@ -15,6 +17,7 @@ class ResizableVerticalHeader(QHeaderView):
         self._min_width = 60
         self.setDefaultSectionSize(35)
         self.setMouseTracking(True)
+        self.setSectionsClickable(True)
 
     def sizeHint(self):
         size = super().sizeHint()

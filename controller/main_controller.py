@@ -1,6 +1,9 @@
+from PySide6.QtCore import QMargins
 from PySide6.QtWidgets import QMessageBox, QHeaderView, QTableView, QHBoxLayout, QWidget
 
+from app.dialogs.balance_detail_dialog import BalanceDetailDialog
 from app.widget.resizable_vert_header import ResizableVerticalHeader
+from controller.balance_detail_controller import BalanceDetailController
 from model.abstract_sec_model import AbstractSectionTableModel
 from model.section import SPSection, IndiciesSection
 from model.sp_table_model import SPTableModel
@@ -12,6 +15,10 @@ from model.main_model import MainModel
 
 
 class MainController(AbstractController[MainWindow, MainModel]):
+
+    def __init__(self, model , view, app):
+        super().__init__(model, view, app)
+        self.__detail_controller__ = None
 
     def init(self):
         self.view.set_controller(self)
@@ -47,11 +54,21 @@ class MainController(AbstractController[MainWindow, MainModel]):
             self.loadSPTView()
             self.loadIndiciesTables()
 
+    def handleExpandBalance(self):
+        dial = BalanceDetailDialog()
+        self.__detail_controller__ = BalanceDetailController(
+            view=dial,
+            model=self.model,
+            app=self.app
+        )
+        dial.controller = self.__detail_controller__
+
     def loadSPTView(self):
         c = self.model.company_data
         tr = self.model.translations
         data_model = SPTableModel(
-            SPSection.fromSection(c.stato_patrimoniale), tr
+            SPSection.fromSection(c.stato_patrimoniale), tr,
+            max_columns=2
         )
         self.view.ui.statoPatrimTView.setModel(data_model)
         self.view.ui.statoPatrimTView.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Interactive)
@@ -63,7 +80,7 @@ class MainController(AbstractController[MainWindow, MainModel]):
         c = self.model.company_data
         tr = self.model.translations
         data_model = AbstractSectionTableModel(
-            c.conto_economico, tr
+            c.conto_economico, tr, max_column_count=2
         )
         self.view.ui.contoEconomicoTView.setModel(data_model)
         self.view.ui.contoEconomicoTView.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Interactive)
@@ -87,17 +104,21 @@ class MainController(AbstractController[MainWindow, MainModel]):
         data = IndiciesSection.fromSection(self.model.company_data.indici)
         self.view.ui.indiciesTabWidget.clear()      # Tolgo tutte le tab
 
-        def create_sec_tab(section, title):
+        def create_sec_tab(section, title: str):
             wrapper = QWidget()
             wid = QTableView()
             lay = QHBoxLayout(wrapper)
+            lay.setContentsMargins(QMargins(0, 0, 0, 0))
             lay.addWidget(wid)
             wrapper.setLayout(lay)
-            wid.setModel(AbstractSectionTableModel(data=section, translations=self.model.translations))
-            wid.setVerticalHeader(ResizableVerticalHeader())
+            wid.setModel(AbstractSectionTableModel(data=section, translations=self.model.translations, max_column_count=2, header_transformer=lambda trans: trans.strip().replace("-", "")))
+            wid.setVerticalHeader(ResizableVerticalHeader(wid))
             self.view.ui.indiciesTabWidget.addTab(wrapper, title)  # Tolgo tutte le tab
 
         data.itersections(create_sec_tab)
+
+    def loadPieChart(self):
+        self.view.ui.struttura_ce_tab
 
     def handleClose(self, event):
         self.view.close()

@@ -12,6 +12,11 @@ class MainWindow(QMainWindow):
         self._controller: AbstractController | None = None
         self.__connstat_widget__ = None
         self.__datastat_widget__ = None
+        self.ui.expandBalanceButton.clicked.connect(self.handleExpandBalance)
+
+    @Slot()
+    def handleExpandBalance(self):
+        self.controller.handleExpandBalance()
 
     def set_controller(self, controller):
         self._controller = controller

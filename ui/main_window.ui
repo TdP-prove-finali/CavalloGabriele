@@ -278,7 +278,7 @@
                  <x>0</x>
                  <y>0</y>
                  <width>390</width>
-                 <height>244</height>
+                 <height>246</height>
                 </rect>
                </property>
                <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -625,6 +625,36 @@
     <item>
      <layout class="QVBoxLayout" name="balanceIndicesSection">
       <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_13">
+        <item>
+         <spacer name="horizontalSpacer_8">
+          <property name="orientation">
+           <enum>Qt::Orientation::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QPushButton" name="expandBalanceButton">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>Espandi</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
        <widget class="QGroupBox" name="balanceSection">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -745,7 +775,7 @@
         <property name="minimumSize">
          <size>
           <width>300</width>
-          <height>300</height>
+          <height>200</height>
          </size>
         </property>
         <property name="font">
@@ -820,14 +850,14 @@
         <number>0</number>
        </property>
        <item>
-        <widget class="QTabWidget" name="tabWidget">
+        <widget class="QTabWidget" name="chartTabWidget">
          <property name="font">
           <font>
            <pointsize>13</pointsize>
           </font>
          </property>
          <property name="currentIndex">
-          <number>3</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="struttura_sp_tab">
           <attribute name="title">
@@ -862,7 +892,7 @@
      <x>0</x>
      <y>0</y>
      <width>1621</width>
-     <height>33</height>
+     <height>30</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

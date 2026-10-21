@@ -8,7 +8,21 @@ class AbstractSectionTableModel(QAbstractTableModel):
     Rappresenta un generico modello da utilizzare per intabellare una section,
     organizzata come dizionario chiave-valore e con le traduzioni delle chiavi in un altro dizionario
     """
-    def __init__(self, data: dict, translations: dict[str, str], max_row_count = None, max_column_count = None):
+    def __init__(self, data: dict,
+                 translations: dict[str, str],
+                 max_row_count = None,
+                 max_column_count = None,
+                 header_transformer = None):
+        """
+        Crea una nuova istanza del modello
+        :param data: Dati da visualizzare sotto forma di sezione
+        :param translations: Dizionario con le traduzioni dei field_name
+        :param max_row_count: Numero massimo di righe
+        :param max_column_count: Numero massimo di colonne
+        :param header_transformer: Funzione da applicare alla traduzione del field-name per prepararlo alla visualizzazione
+        def header_transformer(field_name: str) -> str:
+            ...
+        """
         QAbstractTableModel.__init__(self)
         if max_row_count is None:
             self.row_count = len(data.keys())
@@ -24,6 +38,8 @@ class AbstractSectionTableModel(QAbstractTableModel):
         else:
             self.column_count = max_column_count
             self.__max_col_count__ = max_column_count
+
+        self.__header_transformer__ = header_transformer
 
     def rowCount(self, parent=QModelIndex()):
         return self.row_count
@@ -64,6 +80,10 @@ class AbstractSectionTableModel(QAbstractTableModel):
             field_name = keys[section]
 
             if self._translations.get(field_name) is not None:
-                return self._translations[field_name].strip()
+                tr = self._translations[field_name].strip()
+                if self.__header_transformer__ is not None:
+                    tr = self.__header_transformer__(tr)
+
+                return tr
             else:
                 return field_name
