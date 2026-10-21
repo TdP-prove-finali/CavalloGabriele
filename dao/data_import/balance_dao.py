@@ -312,10 +312,7 @@ class RawCompanyBalanceImporter:
             if not self.__check_empty_row():
                 content_rows += 1
                 if self.__get_cell().value is not None:
-                    row_name = self.__get_field_name(self.__get_cell().value)
-                    if self.__get_cell().value.find(
-                            "di cui:") >= 0:  # Per i campi di dettaglio (di cui) aggiunge il nome completo del campo a cui fanno riferimento
-                        row_name = s.last_added_row_name + "__" + row_name
+                    row_name = self.__get_field_name(self.__get_cell().value, s.last_added_row_name)
 
                 row_values = self.__load_all_hvalues()
                 s.append_row(row_name, row_values.copy())
@@ -375,9 +372,7 @@ class RawCompanyBalanceImporter:
                     self.__prev_row()                           # Torna indietro di una riga, ferma la subsection e ri-esegui il ciclo che creerà una nuova subsection ma a livello superiore e non un nuovo figlio
                     break
                 elif self.__get_cell().value is not None:
-                    row_name = self.__get_field_name(self.__get_cell().value)
-                    if self.__get_cell().value.find("di cui:") >= 0:           # Per i campi di dettaglio (di cui) aggiunge il nome completo del campo a cui fanno riferimento
-                        row_name = s.last_added_row_name + "__" + row_name
+                    row_name = self.__get_field_name(self.__get_cell().value, previous=s.last_added_row_name)
 
                     row_values = self.__load_all_hvalues()
                     s.append_row(row_name, row_values.copy())
@@ -485,13 +480,16 @@ class RawCompanyBalanceImporter:
             data=self.data.copy()
         )
 
-    def __get_field_name(self, cellContent) -> str:
+    def __get_field_name(self, cellContent: str, previous: str | None = None) -> str:
         # TODO: I campi di cui non hanno traduzione
         """
         Restituisce un nome di campo valido per una voce dell'excel, verificando che possa essere utilizzato come identificatore
         python in un dizionario.
-        Inoltre, salva la corrispondenza Descrizione - nomecampo per permettere la traduzione sull'interfaccia
-        :param cellContent:
+        Inoltre, salva la corrispondenza Descrizione - nomecampo per permettere la traduzione sull'interfaccia.
+        Gestisce anche il caso delle voci "di cui", che nei bilanci specificano ulteriormente un campo, generando dei descrittori univoci riconducibili
+        al nome del campo e salvando correttamente le traduzioni.
+        :param cellContent: Contenuto della cella
+        :param previous: Ultima voce che è stata processata, se presente
         :return:
         """
         field_name = remove_accents(cellContent.lower().lstrip().rstrip().replace(" ", "_")
@@ -506,6 +504,11 @@ class RawCompanyBalanceImporter:
                               .replace("+", "plus")
                               .replace("-", "minus")
                               )
+
+        if cellContent.find(
+                "di cui:") >= 0 and previous is not None:  # Per i campi di dettaglio (di cui) aggiunge il nome completo del campo a cui fanno riferimento
+            field_name = previous + "__" + field_name
+
         # Evita identificatori che iniziano con una cifra
         if field_name and field_name[0].isdigit():
             field_name = f"_{field_name}"
