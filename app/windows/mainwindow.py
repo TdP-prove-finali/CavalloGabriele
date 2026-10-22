@@ -13,6 +13,11 @@ class MainWindow(QMainWindow):
         self.__connstat_widget__ = None
         self.__datastat_widget__ = None
         self.ui.expandBalanceButton.clicked.connect(self.handleExpandBalance)
+        self.ui.actionNewProject.triggered.connect(self.handleInvestProjectCreate)
+
+    @Slot()
+    def handleInvestProjectCreate(self):
+        self.controller.handleInvestProjectCreate()
 
     @Slot()
     def handleExpandBalance(self):

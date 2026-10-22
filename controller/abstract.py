@@ -1,17 +1,52 @@
-from typing import TypeVar, Generic
+from typing import TypeVar, Generic, Any
 from PySide6.QtWidgets import QApplication, QWidget
 
-ViewType = TypeVar('ViewType', bound=QWidget)
 ModelType = TypeVar('ModelType')
+T = TypeVar("T", bound=Any)
 
-class AbstractController(Generic[ViewType, ModelType]):
+class HasModel[T]:
+    """
+    Rappresenta una generica classe che ha accesso ad un model di tipo T generico
+    """
+    def __init__(self, model: ModelType):
+        self._model = model
+
+    @property
+    def model(self) -> ModelType:
+        return self._model
+
+ViewType = TypeVar('ViewType', bound=QWidget)
+
+class AbstractController[ViewType, ModelType, ParentModelType] (HasModel):
     """
     Definisce un generico controller e le sue caratteristiche base
+
+    Type Parameters:
+        ViewType: Tipo della view che viene gestita, deve essere un QWidget di QT
+        ModelType: Tipo del model gestito da questo controller
+        ParentModelType: Tipo di model dell'eventuale controller parent
+
+        L'ultimo può anche essere None nel caso in cui non ci sia un parent
     """
-    def __init__(self, model, view, app):
-        self._model: ModelType = model
+    def __init__(self, model, view, app, parent: HasModel | None = None):
+        """
+        Inizializza un nuovo controller
+        :param model: Model
+        :param view: View
+        :param app: Puntatore alla QApplication qt per permettere di eseguire azioni su tutta l'applicazione (come stopparne l'esecuzione)
+        :param parent: Puntatore al controller che ha aperto questo nuovo controller, utile per permettere di accedere al model del padre e non dover
+        copiare i dati per renderli accessibili anche ad un controller figlio.
+        Un esempio di utilizzo è questo:
+            * MainWindow (che ha il suo controller MainWindowController) deve aprire la finestra per modificare il progetto di investimento. Questa finestra necessita di accedere
+            alle informazioni di bilancio della company attualmente selezionata (presenti nel model del MainController). Per non ricopiarle e passarle al controller figlio (spawnato insieme al suo model all'apertura
+            della finestra) gli si passa un puntatore al controller parent.
+            Il controller figlio potrà quindi fare: `self.parent_model.company_data` per accedere alle informazioni della company, senza passarle esplicitamente.
+        I controller figli non possono mai chiamare metodi sul parent per ragioni di sicurezza e pulizia.
+        """
+        super().__init__(model=model)
         self._view: ViewType = view
         self._app: QApplication = app
+        self.__parent__ = parent
 
         self.init()
 
@@ -29,9 +64,19 @@ class AbstractController(Generic[ViewType, ModelType]):
         """
         pass
 
+    def hasParent(self):
+        return self.__parent__ is not None
+
     @property
-    def model(self) -> ModelType:
-        return self._model
+    def parent_model(self) -> ParentModelType:
+        """
+        Permette di accedere al model del controller parent
+        :return:
+        """
+        if self.__parent__ is None:
+            raise Exception("Impossibile accedere al parent di un controller top level")
+
+        return self.__parent__.model
 
     @property
     def view(self):

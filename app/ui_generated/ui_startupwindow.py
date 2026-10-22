@@ -131,7 +131,7 @@ class Ui_MainWindow(object):
         self.pictureBox.setText("")
         self.label.setText(QCoreApplication.translate("MainWindow", u"Business Scenario Lab", None))
         self.label_2.setText(QCoreApplication.translate("MainWindow", u"Societ\u00e0 da analizzare", None))
-        self.companyComboBox.setPlaceholderText(QCoreApplication.translate("MainWindow", u"0", None))
+        self.companyComboBox.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Seleziona un'azienda", None))
         self.pushButton.setText(QCoreApplication.translate("MainWindow", u"Carica", None))
         self.menuFile.setTitle(QCoreApplication.translate("MainWindow", u"File", None))
     # retranslateUi

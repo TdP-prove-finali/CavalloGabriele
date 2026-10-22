@@ -8,7 +8,7 @@ from model.main_model import MainModel
 from model.section import SPSection
 from model.sp_table_model import SPTableModel
 
-class BalanceDetailController(AbstractController[BalanceDetailDialog, MainModel]):
+class BalanceDetailController(AbstractController[BalanceDetailDialog, MainModel, None]):
 
     def init(self):
         super().init()

@@ -1,10 +1,12 @@
 from PySide6.QtCore import QMargins
 from PySide6.QtWidgets import QMessageBox, QHeaderView, QTableView, QHBoxLayout, QWidget
-
 from app.dialogs.balance_detail_dialog import BalanceDetailDialog
 from app.widget.resizable_vert_header import ResizableVerticalHeader
+from app.windows.investsimwindow import InvestSimWindow
 from controller.balance_detail_controller import BalanceDetailController
+from controller.invest_proj_controller import InvestProjectController
 from model.abstract_sec_model import AbstractSectionTableModel
+from model.invest_proj_model import InvestmentProjModel
 from model.section import SPSection, IndiciesSection
 from model.sp_table_model import SPTableModel
 from app.windows.mainwindow import MainWindow
@@ -13,12 +15,12 @@ from dao.company_dao import CompanyDAO
 from dao.translations.translation_dao import TranslationDAO
 from model.main_model import MainModel
 
-
-class MainController(AbstractController[MainWindow, MainModel]):
+class MainController(AbstractController[MainWindow, MainModel, None]):
 
     def __init__(self, model , view, app):
         super().__init__(model, view, app)
         self.__detail_controller__ = None
+        self.__invest_proj_controller__ = None
 
     def init(self):
         self.view.set_controller(self)
@@ -94,11 +96,20 @@ class MainController(AbstractController[MainWindow, MainModel]):
             c.profilo_finanziario, tr, max_column_count=2
         )
         self.view.ui.summaryTableView.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Interactive)
-        header = self.view.ui.summaryTableView.verticalHeader()
-        header.setMinimumWidth(40)
-        header.setMaximumWidth(150)
-        header.setSectionResizeMode(QHeaderView.ResizeMode.Interactive)
+        header = ResizableVerticalHeader()
+        self.view.ui.summaryTableView.setVerticalHeader(header)
+        header.setVisible(True)
         self.view.ui.summaryTableView.setModel(data_model)
+
+    def handleInvestProjectCreate(self):
+        v = InvestSimWindow()
+        child = InvestProjectController(
+            model=InvestmentProjModel(None, None, [], self.model.company_fiscal_code, None),
+            view=v,
+            app=self.app,
+            parent=self
+        )
+        self.__invest_proj_controller__ = child
 
     def loadIndiciesTables(self):
         data = IndiciesSection.fromSection(self.model.company_data.indici)
@@ -118,7 +129,7 @@ class MainController(AbstractController[MainWindow, MainModel]):
         data.itersections(create_sec_tab)
 
     def loadPieChart(self):
-        self.view.ui.struttura_ce_tab
+        pass
 
     def handleClose(self, event):
         self.view.close()

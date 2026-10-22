@@ -45,7 +45,7 @@
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout_18">
        <property name="leftMargin">
-        <number>0</number>
+        <number>5</number>
        </property>
        <property name="topMargin">
         <number>0</number>
@@ -277,7 +277,7 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>390</width>
+                 <width>385</width>
                  <height>246</height>
                 </rect>
                </property>
@@ -904,7 +904,14 @@
     <addaction name="separator"/>
     <addaction name="actionChiudi"/>
    </widget>
+   <widget class="QMenu" name="menuProgetto_di_investimento">
+    <property name="title">
+     <string>Progetto di investimento</string>
+    </property>
+    <addaction name="actionNewProject"/>
+   </widget>
    <addaction name="menuFile"/>
+   <addaction name="menuProgetto_di_investimento"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionImportazione">
@@ -923,6 +930,11 @@
   <action name="actionChiudi">
    <property name="text">
     <string>Chiudi</string>
+   </property>
+  </action>
+  <action name="actionNewProject">
+   <property name="text">
+    <string>Nuovo progetto</string>
    </property>
   </action>
  </widget>

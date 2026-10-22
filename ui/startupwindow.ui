@@ -81,7 +81,7 @@
       <item>
        <widget class="QComboBox" name="companyComboBox">
         <property name="placeholderText">
-         <string>0</string>
+         <string>Seleziona un'azienda</string>
         </property>
        </widget>
       </item>

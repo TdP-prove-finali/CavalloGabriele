@@ -481,7 +481,6 @@ class RawCompanyBalanceImporter:
         )
 
     def __get_field_name(self, cellContent: str, previous: str | None = None) -> str:
-        # TODO: I campi di cui non hanno traduzione
         """
         Restituisce un nome di campo valido per una voce dell'excel, verificando che possa essere utilizzato come identificatore
         python in un dizionario.

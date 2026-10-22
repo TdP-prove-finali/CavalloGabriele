@@ -1,4 +1,3 @@
-
 ## Caratteristiche utili di AIDA
 Permette di filtrare per dimensioni delle aziende (piccole, medie e grandi)
 
@@ -78,3 +77,44 @@ Il flusso di lavoro è:
 
 Comandi utili per DB:
 Avvio servizio mongodb --> `brew services start mongodb-community@8.0`
+
+# Indici di bilancio utilizzati
+Indice di liquidità immediata --> Attivo circolante (senza magazzino) / Debiti a breve %       0.70 - 1.20 (acid)
+Indice di copertura delle immobilizzazioni --> Attività lungo termine / (Passività lungo termine + Capitale netto)
+
+
+Error calling Python override of QAbstractTableModel::data(): Traceback (most recent call last):
+  File "/Users/gabrielecavallo/PycharmProjects/CavalloGabriele/model/abstract_sec_model.py", line 57, in data
+    d= self._data[field_name][column]
+       ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+IndexError: list index out of range
+Error calling Python override of QAbstractTableModel::data(): Traceback (most recent call last):
+  File "/Users/gabrielecavallo/PycharmProjects/CavalloGabriele/model/abstract_sec_model.py", line 57, in data
+    d= self._data[field_name][column]
+       ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+IndexError: list index out of range
+Error calling Python override of QAbstractTableModel::data(): Traceback (most recent call last):
+  File "/Users/gabrielecavallo/PycharmProjects/CavalloGabriele/model/abstract_sec_model.py", line 57, in data
+    d= self._data[field_name][column]
+       ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+IndexError: list index out of range
+Error calling Python override of QAbstractTableModel::data(): Traceback (most recent call last):
+  File "/Users/gabrielecavallo/PycharmProjects/CavalloGabriele/model/abstract_sec_model.py", line 57, in data
+    d= self._data[field_name][column]
+       ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+IndexError: list index out of range
+Error calling Python override of QAbstractTableModel::data(): Traceback (most recent call last):
+  File "/Users/gabrielecavallo/PycharmProjects/CavalloGabriele/model/abstract_sec_model.py", line 57, in data
+    d= self._data[field_name][column]
+       ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+IndexError: list index out of range
+Error calling Python override of QAbstractTableModel::data(): Traceback (most recent call last):
+  File "/Users/gabrielecavallo/PycharmProjects/CavalloGabriele/model/abstract_sec_model.py", line 57, in data
+    d= self._data[field_name][column]
+       ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+IndexError: list index out of range
+Error calling Python override of QAbstractTableModel::data(): Traceback (most recent call last):
+  File "/Users/gabrielecavallo/PycharmProjects/CavalloGabriele/model/abstract_sec_model.py", line 57, in data
+    d= self._data[field_name][column]
+       ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+IndexError: list index out of range

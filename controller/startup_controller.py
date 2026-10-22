@@ -18,7 +18,7 @@ from dao.mongodb_connector import MongoDBConnector
 from model.main_model import MainModel
 
 
-class StartupController(AbstractController[StartupWindow, Any]):
+class StartupController(AbstractController[StartupWindow, Any, None]):
     """Controller per gestire la finestra di avvio dell'applicazione.
     """
     def __init__(self, model, view, app):
