@@ -1,0 +1,99 @@
+\documentclass{article}
+
+% Language setting
+% Replace `english' with e.g. `spanish' to change the document language
+\usepackage[italian]{babel}
+
+% Set page size and margins
+% Replace `letterpaper' with `a4paper' for UK/EU standard size
+\usepackage[letterpaper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+% Useful packages
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+
+\title{Business Scenario Lab - Tesi triennale}
+\author{Gabriele Cavallo, 323600, Politecnico di Torino}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Your abstract.
+\end{abstract}
+
+\section{Introduction}
+Fonti utilizzate https://www.agile-hr-analytics.com/hr-performance-kpis-guide/
+
+Your introduction goes here! Simply start writing your document and use the Recompile button to view the updated PDF preview. Examples of commonly used commands and features are listed below, to help you get started.
+
+Once you're familiar with the editor, you can find various project settings in the Overleaf menu, accessed via the button in the very top left of the editor. To view tutorials, user guides, and further documentation, please visit our \href{https://www.overleaf.com/learn}{help library}, or head to our plans page to \href{https://www.overleaf.com/user/subscription/plans}{choose your plan}.
+
+\section{Tipi di investimento supportati}
+
+\subsection{Assunzione di nuovo dipendente}
+
+Questa tipologia di investimento rappresenta l'assunzione di un nuovo dipendente da parte dell'azienda. Viene modellizzato utilizzando un approccio causa-effetto, in cui la causa contiene tutti i dati di configurazione dell'investimento (dettagliati a breve) e l'effetto riassume le singole modifiche che avvengono a livello di bilancio.  
+
+Per l'assunzione di un dipendente, l'azienda sostiene una serie di costi, modellate tramite queste variabili: 
+\begin{itemize}
+    \item Costo di onboarding $OC$ Tipicamente legato alla formazione iniziale del dipendente neoassunto, sostenuto una tantum (corsi iniziali, webinair, eventi di formazione)
+    \item Attrezzature $ATC$ Acquisto di eventuali attrezzature necessarie al lavoro del nuovo dipendente
+    \item Costo lordo mensile $TC_m$ Corrisponde allo stipendo del dipendente comprensivo delle tasse a carico dell'impresa, eventuali assicurazioni e altri costi ricorrenti legati al dipendente (utenze, licenze, etc...)
+\end{itemize}
+
+In automatico il software gestirà la simulazione e gli eventi legati alla presenza di questo nuovo dipendente. 
+Tra le meccaniche che vengono gestite dalla simulazione c'è anche l'
+accantonamento annuale della quota TFR nel fondo TFR, calcolando in automatico l'importo. La formula utilizzata è la seguente: 
+\[
+TFR = \frac{TC_m}{13.5}
+\]
+
+Scopo del modello è anche quello di prevedere l'impatto di questa nuova assunzione in termini di produttività aziendale, pertanto è stata anche sviluppata una metodologia per valutare l'impatto di una nuova assunzione, secondo i seguenti criteri:
+\begin{enumerate}
+    \item L'assunzione di un nuovo dipendente causa un aumento della produttività aziendale
+    \item \label{item:learning-curve} Il neo-assunto non raggiunge subito la produttività massima perchè deve imparare, bensì questa aumenta nel tempo secondo una certa curva di apprendimento
+    \item La produttività aziendale (espressa in termini di domanda massima che può evadere) non è infinita, esiste un limite alla capacità massima
+    \item A seconda del ruolo del dipendente, l'impatto in termini di produttività è diverso
+\end{enumerate}
+
+\subsection{Curva di apprendimento}
+Come descritto al punto \ref{item:learning-curve}, un nuovo dipendente presenta una curva di apprendimento. Per strutturarla è stata sfruttata la metrica (largamente utilizzata nei reparti HR) del $TTP$ (Time To Productivity) che indica il tempo in mesi dall'assunzione necessario a far sì che il nuovo dipendente raggiunga la produttività massima in percentuale. 
+La produttività percentuale del dipendente, indicata con $\alpha(t)$ è una funzione che dipende dalla variabile $t$, indice del mese in cui la si vuole valutare. 
+
+$\alpha(t)$ ha delle caratteristiche matematiche \textbf{generali}: 
+\begin{enumerate}
+    \item \[
+    \alpha(TTP) = 100\%
+    \] Ossia la produttività del neo-dipendente deve raggiungere il massimo quando si è in corrispondenza del TTP
+    \item In generale deve essere definita su tutto l'intervallo $$[0, TTP]$$,
+    su cui deve essere continua e derivabile in ogni punto. 
+    \item \[
+    \alpha(0) = 0
+    \] La funzione deve passare per l'origine
+    \item In generale \[\alpha(t)\] deve essere monotona crescente nell'intervallo $$[0, TTP]$$, ossia \[
+\frac{d\alpha(t)}{dt} >= 0
+\qquad \forall t \in [0, TTP]
+\]
+\end{enumerate}
+
+All'interno di questo software la curva di apprendimento è stata definita dalla seguente legge: 
+Sia \[
+TTP \in \mathbb{R}, \qquad 0 < TTP < 1
+\] si definisce:
+\[
+\alpha(t) = \left(\sqrt[TTP]{2}\right)^t - 1
+\]
+Una rappresentazione grafica è la seguente:
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{geogebra-export.png}
+    \caption{Andamento della curva di apprendimento}
+    \label{fig:placeholder}
+\end{figure}
+
+\bibliographystyle{alpha}
+\bibliography{sample}
+
+\end{document}

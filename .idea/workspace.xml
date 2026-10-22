@@ -4,29 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d1f57556-a68b-4407-9511-95d58864d413" name="Changes" comment="Fix sezioni di cui non tradotte">
-      <change afterPath="$PROJECT_DIR$/app/windows/investsimwindow.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/controller/invest_proj_controller.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dao/data_import/ImportException.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dao/data_import/abstract_section_loader.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dao/data_import/anagrafica_sec_loader.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dao/data_import/excel_cursor.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/model/invest_proj_model.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/model/investment_effect.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/model/investment_item.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ui/invest_sim_window.ui" afterDir="false" />
+    <list default="true" id="d1f57556-a68b-4407-9511-95d58864d413" name="Changes" comment="Implementa finestra progetto investimento e migliora architettura controller MVC">
+      <change afterPath="$PROJECT_DIR$/docs/main.tex" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ui/employee_hire.ui" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/ui_generated/ui_main_window.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/ui_generated/ui_main_window.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/ui_generated/ui_startupwindow.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/ui_generated/ui_startupwindow.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/windows/mainwindow.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/windows/mainwindow.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controller/abstract.py" beforeDir="false" afterPath="$PROJECT_DIR$/controller/abstract.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controller/balance_detail_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/controller/balance_detail_controller.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controller/main_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/controller/main_controller.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controller/startup_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/controller/startup_controller.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dao/data_import/balance_dao.py" beforeDir="false" afterPath="$PROJECT_DIR$/dao/data_import/balance_dao.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs-bozza.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs-bozza.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/main_window.ui" beforeDir="false" afterPath="$PROJECT_DIR$/ui/main_window.ui" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/startupwindow.ui" beforeDir="false" afterPath="$PROJECT_DIR$/ui/startupwindow.ui" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -72,53 +53,53 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Python tests.Python tests for test_loader.test_company_brief.executor": "Debug",
-    "Python tests.Python tests for test_loader.test_company_mongodb_roundtrip.executor": "Run",
-    "Python tests.Python tests for test_loader.test_compatibility.executor": "Run",
-    "Python tests.Python tests for test_loader.test_complete.executor": "Run",
-    "Python tests.Python tests for test_loader.test_loader.executor": "Run",
-    "Python tests.Python tests for test_loader.test_loader2.executor": "Debug",
-    "Python tests.Python tests for test_loader.test_loader_chunk.executor": "Run",
-    "Python tests.Python tests for test_loader.test_loader_chunk_10.executor": "Run",
-    "Python tests.Python tests for test_loader.test_loader_chunk_50.executor": "Run",
-    "Python tests.Python tests for test_loader.test_loader_cross.executor": "Run",
-    "Python tests.Python tests for test_loader.test_preproc_company.executor": "Debug",
-    "Python tests.Python tests for test_loader.test_serialization.executor": "Run",
-    "Python tests.Python tests for test_main.test_connection.executor": "Run",
-    "Python tests.Python tests for tests.test_main.test_calcolo_esempio.executor": "Run",
-    "Python tests.Python tests in test_loader.py.executor": "Run",
-    "Python.main.executor": "Run",
-    "RunOnceActivity.MCP Project settings loaded": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "SHELLCHECK.PATH": "/Users/gabrielecavallo/Library/Application Support/JetBrains/PyCharm2025.3/plugins/Shell Script/shellcheck",
-    "ai.playground.ignore.import.keys.banner.in.settings": "true",
-    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
-    "git-widget-placeholder": "main",
-    "junie.onboarding.icon.badge.shown": "true",
-    "last_opened_file_path": "/Users/gabrielecavallo/PycharmProjects/CavalloGabriele/app/windows",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "debugger.dataViews.python.type.renderers",
-    "to.speed.mode.migration.done": "true",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python tests.Python tests for test_loader.test_company_brief.executor&quot;: &quot;Debug&quot;,
+    &quot;Python tests.Python tests for test_loader.test_company_mongodb_roundtrip.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.Python tests for test_loader.test_compatibility.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.Python tests for test_loader.test_complete.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.Python tests for test_loader.test_loader.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.Python tests for test_loader.test_loader2.executor&quot;: &quot;Debug&quot;,
+    &quot;Python tests.Python tests for test_loader.test_loader_chunk.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.Python tests for test_loader.test_loader_chunk_10.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.Python tests for test_loader.test_loader_chunk_50.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.Python tests for test_loader.test_loader_cross.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.Python tests for test_loader.test_preproc_company.executor&quot;: &quot;Debug&quot;,
+    &quot;Python tests.Python tests for test_loader.test_serialization.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.Python tests for test_main.test_connection.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.Python tests for tests.test_main.test_calcolo_esempio.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.Python tests in test_loader.py.executor&quot;: &quot;Run&quot;,
+    &quot;Python.main.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;SHELLCHECK.PATH&quot;: &quot;/Users/gabrielecavallo/Library/Application Support/JetBrains/PyCharm2025.3/plugins/Shell Script/shellcheck&quot;,
+    &quot;ai.playground.ignore.import.keys.banner.in.settings&quot;: &quot;true&quot;,
+    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/gabrielecavallo/PycharmProjects/CavalloGabriele/docs&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;debugger.dataViews.python.type.renderers&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/docs" />
       <recent name="$PROJECT_DIR$/app/windows" />
       <recent name="$PROJECT_DIR$/app/resources" />
       <recent name="$PROJECT_DIR$/dataset" />
       <recent name="$PROJECT_DIR$/screens" />
-      <recent name="$PROJECT_DIR$/ui" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/model" />
@@ -277,15 +258,7 @@
       <workItem from="1792086564437" duration="1881000" />
       <workItem from="1792513134421" duration="4368000" />
       <workItem from="1792574939280" duration="13015000" />
-      <workItem from="1792667109366" duration="4686000" />
-    </task>
-    <task id="LOCAL-00010" summary="Script di deploy semplice">
-      <option name="closed" value="true" />
-      <created>1791276822648</created>
-      <option name="number" value="00010" />
-      <option name="presentableId" value="LOCAL-00010" />
-      <option name="project" value="LOCAL" />
-      <updated>1791276822648</updated>
+      <workItem from="1792667109366" duration="8337000" />
     </task>
     <task id="LOCAL-00011" summary="Configurazione di deploy">
       <option name="closed" value="true" />
@@ -671,14 +644,21 @@
       <option name="project" value="LOCAL" />
       <updated>1792583455186</updated>
     </task>
-    <option name="localTasksCounter" value="59" />
+    <task id="LOCAL-00059" summary="Implementa finestra progetto investimento e migliora architettura controller MVC">
+      <option name="closed" value="true" />
+      <created>1792672719496</created>
+      <option name="number" value="00059" />
+      <option name="presentableId" value="LOCAL-00059" />
+      <option name="project" value="LOCAL" />
+      <updated>1792672719496</updated>
+    </task>
+    <option name="localTasksCounter" value="60" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Caricamento conto economico" />
     <MESSAGE value="Termina caricamento CE e indici e introduce traduzione campi" />
     <MESSAGE value="Implementa caricamento company su MongoDB e test" />
     <MESSAGE value="Caricamento lista company e UI per importazione" />
@@ -703,7 +683,8 @@
     <MESSAGE value="Implementa sezione indici" />
     <MESSAGE value="Implementa dettaglio bilancio in dialogo e diversi fix" />
     <MESSAGE value="Fix sezioni di cui non tradotte" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix sezioni di cui non tradotte" />
+    <MESSAGE value="Implementa finestra progetto investimento e migliora architettura controller MVC" />
+    <option name="LAST_COMMIT_MESSAGE" value="Implementa finestra progetto investimento e migliora architettura controller MVC" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
