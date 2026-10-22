@@ -3,6 +3,7 @@
 % Language setting
 % Replace `english' with e.g. `spanish' to change the document language
 \usepackage[italian]{babel}
+\usepackage{textcomp}
 
 % Set page size and margins
 % Replace `letterpaper' with `a4paper' for UK/EU standard size
@@ -13,7 +14,7 @@
 \usepackage{graphicx}
 \usepackage[colorlinks=true, allcolors=blue]{hyperref}
 
-\title{Business Scenario Lab - Tesi triennale}
+\title{Business Scenario Lab - Tesi triennale - BOZZA}
 \author{Gabriele Cavallo, 323600, Politecnico di Torino}
 
 \begin{document}
@@ -24,11 +25,12 @@ Your abstract.
 \end{abstract}
 
 \section{Introduction}
-Fonti utilizzate https://www.agile-hr-analytics.com/hr-performance-kpis-guide/
+Fonti utilizzate \href{https://www.agile-hr-analytics.com/hr-performance-kpis-guide/}{KPI performance dipendenti}
+Lomax \href{https://en.wikipedia.org/wiki/Lomax_distribution}{Distribuzione Lomax}
 
-Your introduction goes here! Simply start writing your document and use the Recompile button to view the updated PDF preview. Examples of commonly used commands and features are listed below, to help you get started.
+La mia bellissima tesina triennale
 
-Once you're familiar with the editor, you can find various project settings in the Overleaf menu, accessed via the button in the very top left of the editor. To view tutorials, user guides, and further documentation, please visit our \href{https://www.overleaf.com/learn}{help library}, or head to our plans page to \href{https://www.overleaf.com/user/subscription/plans}{choose your plan}.
+\tableofcontents
 
 \section{Tipi di investimento supportati}
 
@@ -52,11 +54,36 @@ TFR = \frac{TC_m}{13.5}
 
 Scopo del modello è anche quello di prevedere l'impatto di questa nuova assunzione in termini di produttività aziendale, pertanto è stata anche sviluppata una metodologia per valutare l'impatto di una nuova assunzione, secondo i seguenti criteri:
 \begin{enumerate}
-    \item L'assunzione di un nuovo dipendente causa un aumento della produttività aziendale
+    \item \label{item:productivity} L'assunzione di un nuovo dipendente causa un aumento della produttività aziendale
     \item \label{item:learning-curve} Il neo-assunto non raggiunge subito la produttività massima perchè deve imparare, bensì questa aumenta nel tempo secondo una certa curva di apprendimento
     \item La produttività aziendale (espressa in termini di domanda massima che può evadere) non è infinita, esiste un limite alla capacità massima
     \item A seconda del ruolo del dipendente, l'impatto in termini di produttività è diverso
 \end{enumerate}
+
+\subsection{Aumento della produttività aziendale}
+Nel punto \ref{item:productivity} si è anticipato che una nuova assunzione porta ad un aumento della produttività aziendale. In questa sezione si esplicherà meglio come è stato sviluppato questo aspetto del modello. 
+Un KPI molto utilizzato per valutare le performance dei dipendenti è il fatturato pro-capite, ossia:
+\[
+\overline{R_{c, mens}} = \frac{FATTURATO ANNUO}{DIPENDENTI * 12}
+\]
+misurato in $\frac{\texteuro}{dipendente}$
+Questo indica il valore medio in euro prodotto da ogni dipendente ogni mese dell'anno (assumendo che l'azienda lavori per 12 mesi all'anno). 
+Un ulteriore fattore importante è la produttività del singolo dipendente, che viene sviluppata al punto \ref{item:learning-curve}. 
+In generale, l'incremento di produttività viene modellato secondo la seguente legge:
+
+\begin{equation}
+\Delta R_m(t) = \alpha (t)\overline{R_{c, mens}} + HP
+\label{eq:general}
+\end{equation}
+Con: 
+\begin{itemize}
+    \item $\Delta R_m$ incremento di produttività mensile del dipendente al mese t
+    \item $\alpha (t)$ Curva di apprendimento (variabile casuale dettagliata dopo)
+    \item $HP$ quantità in \texteuro  di sovra-produzione del dipendente rispetto alla media di tutti gli altri. Variabile casuale che segue una distribuzione di Lomax (anche chiamata Pareto di II tipo). $HP \sim Lomax(a, \lambda)$
+\end{itemize}
+
+Come è possibile osservare nell'equazione \ref{eq:general}, la funzione $\alpha(t)$ smorza il valore medio di produttività di ogni dipendente, producendo al massimo il 100\% della produttività media. Esistono però dei casi in cui il dipendente produce di più della media, che vengono riassunti dalla variabile casuale $HP$. 
+Questa variabile casuale segue una distribuzione che raccoglie la maggior parte dei valori possibili vicino a 0 (perchè la maggior parte dei dipendenti produrrà al massimo la media) ma permette la presenza di "eccezioni" che producono anche di più della media e ne riassume la probabilità. 
 
 \subsection{Curva di apprendimento}
 Come descritto al punto \ref{item:learning-curve}, un nuovo dipendente presenta una curva di apprendimento. Per strutturarla è stata sfruttata la metrica (largamente utilizzata nei reparti HR) del $TTP$ (Time To Productivity) che indica il tempo in mesi dall'assunzione necessario a far sì che il nuovo dipendente raggiunga la produttività massima in percentuale. 
@@ -80,11 +107,20 @@ $\alpha(t)$ ha delle caratteristiche matematiche \textbf{generali}:
 
 All'interno di questo software la curva di apprendimento è stata definita dalla seguente legge: 
 Sia \[
-TTP \in \mathbb{R}, \qquad 0 < TTP < 1
+TTP \in \mathbb{R}, \qquad 0 < TTP < 12
 \] si definisce:
-\[
+\begin{equation}
 \alpha(t) = \left(\sqrt[TTP]{2}\right)^t - 1
-\]
+\label{eq:productivity}
+\end{equation}
+
+Nella realtà il tempo necessario a raggiungere la massima produttività dipende da persona a persona, entro determinati limiti. Quindi per rendere più realistico il modello, è stato previsto che TTP sia una variabile casuale supposta con distribuzione normale:
+\begin{equation}
+    TTP \sim \mathcal{N}(\mu, \sigma^2)
+\end{equation}
+Per ogni dipendente, utilizzando i generatori casuali della libreria scipy.stats, viene generato un diverso TTP conforme alla distribuzione fornita dall'utente durante la configurazione.  
+La funzione $\alpha(t)$ assume quindi il carattere di una \textbf{variabile casuale trasformata} a partire da $TTP$. 
+
 Una rappresentazione grafica è la seguente:
 \begin{figure}
     \centering
