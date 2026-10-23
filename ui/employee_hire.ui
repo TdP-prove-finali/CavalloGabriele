@@ -13,6 +13,18 @@
     <height>589</height>
    </rect>
   </property>
+  <property name="minimumSize">
+   <size>
+    <width>714</width>
+    <height>589</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>714</width>
+    <height>589</height>
+   </size>
+  </property>
   <property name="windowTitle">
    <string>Assunzione nuovo dipendente</string>
   </property>
@@ -326,7 +338,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
       <item>
        <widget class="QLabel" name="label">
         <property name="text">
-         <string>Titolo operazione</string>
+         <string>Titolo operazione*</string>
         </property>
        </widget>
       </item>
@@ -347,7 +359,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
          <string>Costo totale mensile sostenuto dall'impresa per il dipendente (stipendio + tasse)</string>
         </property>
         <property name="text">
-         <string>Costo mensile lordo</string>
+         <string>Costo mensile lordo*</string>
         </property>
        </widget>
       </item>
@@ -372,8 +384,11 @@ li.checked::marker { content: &quot;\2612&quot;; }
           <height>16777215</height>
          </size>
         </property>
+        <property name="inputMask">
+         <string/>
+        </property>
         <property name="text">
-         <string>2000</string>
+         <string/>
         </property>
         <property name="alignment">
          <set>Qt::AlignmentFlag::AlignCenter</set>
@@ -421,7 +436,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
        </spacer>
       </item>
       <item>
-       <widget class="QLineEdit" name="onboardingCostEdit_2">
+       <widget class="QLineEdit" name="strumentCostEdit">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -465,7 +480,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
          <string>Costo una tantum speso dall'azienda per formare inizialmente il dipendente nuovo</string>
         </property>
         <property name="text">
-         <string>Costo di onboarding</string>
+         <string>Costo di onboarding*</string>
         </property>
        </widget>
       </item>
@@ -524,12 +539,16 @@ li.checked::marker { content: &quot;\2612&quot;; }
          </sizepolicy>
         </property>
         <property name="text">
-         <string>Ruolo</string>
+         <string>Ruolo*</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QComboBox" name="roleComboBox"/>
+       <widget class="QComboBox" name="roleComboBox">
+        <property name="editable">
+         <bool>true</bool>
+        </property>
+       </widget>
       </item>
      </layout>
     </item>
@@ -556,7 +575,17 @@ li.checked::marker { content: &quot;\2612&quot;; }
      </widget>
     </item>
     <item>
-     <widget class="QSpinBox" name="stopRatioEditNum"/>
+     <widget class="QSpinBox" name="stopRatioEditNum">
+      <property name="minimum">
+       <number>1</number>
+      </property>
+      <property name="maximum">
+       <number>84</number>
+      </property>
+      <property name="singleStep">
+       <number>1</number>
+      </property>
+     </widget>
     </item>
    </layout>
   </widget>

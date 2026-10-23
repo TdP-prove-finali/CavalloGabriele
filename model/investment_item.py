@@ -12,7 +12,6 @@ class EmployeeHireInvestment(AbstractInvestmentItem):
     def __init__(self,
                  title: str,
                  id: int,
-                 type: str,
                  total_monthly_cost: float,
                  onboarding_cost: float,
                  strumental_cost: float,
@@ -24,7 +23,7 @@ class EmployeeHireInvestment(AbstractInvestmentItem):
                  role: str):
 
         effects = list()
-
+        self.type = "employee-hire"
         self.tfr_quote = (total_monthly_cost * 12) / 13.5
         self.role = role
         self.strumental_cost = strumental_cost
