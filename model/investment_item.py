@@ -9,12 +9,32 @@ class AbstractInvestmentItem:
         self.effects = effects
 
 class EmployeeHireInvestment(AbstractInvestmentItem):
-    def __init__(self, title: str, id: int, type: str,
-                 total_monthly_cost: float, onboarding_cost: float, role: str):
+    def __init__(self,
+                 title: str,
+                 id: int,
+                 type: str,
+                 total_monthly_cost: float,
+                 onboarding_cost: float,
+                 strumental_cost: float,
+                 hp_lomax_scale: float,
+                 hp_lomax_shape: float,
+                 ttp_normal_average: float,
+                 ttp_normal_variance:float,
+                 stop_ratio: float,
+                 role: str):
+
         effects = list()
-        # TODO: Raffinare gli effetti
+
         self.tfr_quote = (total_monthly_cost * 12) / 13.5
         self.role = role
+        self.strumental_cost = strumental_cost
+        self.hp_lomax_scale = hp_lomax_scale
+        self.hp_lomax_shape = hp_lomax_shape
+        self.ttp_normal_average = ttp_normal_average
+        self.ttp_normal_variance = ttp_normal_variance
+        self.stop_ratio = stop_ratio
+
+        # TODO: Raffinare gli effetti
         effects.append(InvestmentEffect(
             0, EffectType.INCREASE, ValueMode.CONSTANT, "costi_operativi", EffectFrequency.MONTHLY, EffectDestination.CONTO_ECON, value_constant=total_monthly_cost),
         )

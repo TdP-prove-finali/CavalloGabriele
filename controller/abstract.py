@@ -47,8 +47,18 @@ class AbstractController[ViewType, ModelType, ParentModelType] (HasModel):
         self._view: ViewType = view
         self._app: QApplication = app
         self.__parent__ = parent
-
+        self.__internal_pointers__ = dict()     # Dizionario con puntatori ad eventuali dati interni che il controller deve mantenere (ad esempio puntatori a finestre che ha aperto e vuole tenere in memoria)
         self.init()
+
+    @property
+    def internal_pointers(self) -> dict[str, Any]:
+        return self.__internal_pointers__
+
+    def set_internal_pointer(self, key, value):
+        self.__internal_pointers__[key] = value
+
+    def get_internal_pointer(self, key):
+        return self.__internal_pointers__.get(key)
 
     def init(self):
         """

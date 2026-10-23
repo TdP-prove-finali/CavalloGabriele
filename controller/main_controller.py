@@ -109,6 +109,7 @@ class MainController(AbstractController[MainWindow, MainModel, None]):
             app=self.app,
             parent=self
         )
+        v.set_controller(child)
         self.__invest_proj_controller__ = child
 
     def loadIndiciesTables(self):

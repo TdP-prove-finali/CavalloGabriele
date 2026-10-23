@@ -4,10 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d1f57556-a68b-4407-9511-95d58864d413" name="Changes" comment="Implementa finestra progetto investimento e migliora architettura controller MVC">
-      <change afterPath="$PROJECT_DIR$/docs/main.tex" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ui/employee_hire.ui" afterDir="false" />
+    <list default="true" id="d1f57556-a68b-4407-9511-95d58864d413" name="Changes" comment="Ragionamenti matematici sul modello assunzione dipendenti">
+      <change afterPath="$PROJECT_DIR$/app/dialogs/employee_hire_dialog.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/ui_generated/ui_employee_hire.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/ui_generated/ui_employee_hire.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/windows/investsimwindow.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/windows/investsimwindow.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controller/abstract.py" beforeDir="false" afterPath="$PROJECT_DIR$/controller/abstract.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controller/invest_proj_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/controller/invest_proj_controller.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controller/main_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/controller/main_controller.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/investment_item.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/investment_item.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/employee_hire.ui" beforeDir="false" afterPath="$PROJECT_DIR$/ui/employee_hire.ui" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -15,7 +21,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="174" />
+    <option name="cachedIndexableFilesCount" value="181" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -259,22 +265,7 @@
       <workItem from="1792513134421" duration="4368000" />
       <workItem from="1792574939280" duration="13015000" />
       <workItem from="1792667109366" duration="8337000" />
-    </task>
-    <task id="LOCAL-00011" summary="Configurazione di deploy">
-      <option name="closed" value="true" />
-      <created>1791277538742</created>
-      <option name="number" value="00011" />
-      <option name="presentableId" value="LOCAL-00011" />
-      <option name="project" value="LOCAL" />
-      <updated>1791277538742</updated>
-    </task>
-    <task id="LOCAL-00012" summary="Configurazione unit-test">
-      <option name="closed" value="true" />
-      <created>1791280263741</created>
-      <option name="number" value="00012" />
-      <option name="presentableId" value="LOCAL-00012" />
-      <option name="project" value="LOCAL" />
-      <updated>1791280263741</updated>
+      <workItem from="1792679978560" duration="4318000" />
     </task>
     <task id="LOCAL-00013" summary="Config pattern MVC">
       <option name="closed" value="true" />
@@ -652,15 +643,29 @@
       <option name="project" value="LOCAL" />
       <updated>1792672719496</updated>
     </task>
-    <option name="localTasksCounter" value="60" />
+    <task id="LOCAL-00060" summary="Skelethon UI dipendenti">
+      <option name="closed" value="true" />
+      <created>1792680029680</created>
+      <option name="number" value="00060" />
+      <option name="presentableId" value="LOCAL-00060" />
+      <option name="project" value="LOCAL" />
+      <updated>1792680029680</updated>
+    </task>
+    <task id="LOCAL-00061" summary="Ragionamenti matematici sul modello assunzione dipendenti">
+      <option name="closed" value="true" />
+      <created>1792700656507</created>
+      <option name="number" value="00061" />
+      <option name="presentableId" value="LOCAL-00061" />
+      <option name="project" value="LOCAL" />
+      <updated>1792700656507</updated>
+    </task>
+    <option name="localTasksCounter" value="62" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Termina caricamento CE e indici e introduce traduzione campi" />
-    <MESSAGE value="Implementa caricamento company su MongoDB e test" />
     <MESSAGE value="Caricamento lista company e UI per importazione" />
     <MESSAGE value="UI Compilata" />
     <MESSAGE value="Migliora importazione" />
@@ -684,7 +689,9 @@
     <MESSAGE value="Implementa dettaglio bilancio in dialogo e diversi fix" />
     <MESSAGE value="Fix sezioni di cui non tradotte" />
     <MESSAGE value="Implementa finestra progetto investimento e migliora architettura controller MVC" />
-    <option name="LAST_COMMIT_MESSAGE" value="Implementa finestra progetto investimento e migliora architettura controller MVC" />
+    <MESSAGE value="Skelethon UI dipendenti" />
+    <MESSAGE value="Ragionamenti matematici sul modello assunzione dipendenti" />
+    <option name="LAST_COMMIT_MESSAGE" value="Ragionamenti matematici sul modello assunzione dipendenti" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -721,6 +728,6 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/CavalloGabriele$.coverage" NAME=" Coverage Results" MODIFIED="1792583194405" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
-    <SUITE FILE_PATH="coverage/CavalloGabriele$main.coverage" NAME="main Coverage Results" MODIFIED="1792672335455" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/CavalloGabriele$main.coverage" NAME="main Coverage Results" MODIFIED="1792749487730" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
