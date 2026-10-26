@@ -4,11 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d1f57556-a68b-4407-9511-95d58864d413" name="Changes" comment="Struttura classi simulazione">
+    <list default="true" id="d1f57556-a68b-4407-9511-95d58864d413" name="Changes" comment="Progress bar esecuzione simulazione">
+      <change afterPath="$PROJECT_DIR$/ui/asset_invest.ui" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controller/invest_proj_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/controller/invest_proj_controller.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controller/simulation_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/controller/simulation_controller.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_balance.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_balance.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/item_list_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/item_list_model.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -85,7 +84,7 @@
     "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
     "git-widget-placeholder": "main",
     "junie.onboarding.icon.badge.shown": "true",
-    "last_opened_file_path": "/Users/gabrielecavallo/PycharmProjects/CavalloGabriele/app/resources",
+    "last_opened_file_path": "/Users/gabrielecavallo/PycharmProjects/CavalloGabriele/ui",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -98,11 +97,11 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/ui" />
       <recent name="$PROJECT_DIR$/app/resources" />
       <recent name="$PROJECT_DIR$/docs" />
       <recent name="$PROJECT_DIR$/app/windows" />
       <recent name="$PROJECT_DIR$/dataset" />
-      <recent name="$PROJECT_DIR$/screens" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/model" />
@@ -265,23 +264,7 @@
       <workItem from="1792679978560" duration="4416000" />
       <workItem from="1792758485818" duration="4571000" />
       <workItem from="1793014102311" duration="6332000" />
-      <workItem from="1793029256965" duration="5432000" />
-    </task>
-    <task id="LOCAL-00016" summary="Configurazione DB e codice per connessione">
-      <option name="closed" value="true" />
-      <created>1791300568783</created>
-      <option name="number" value="00016" />
-      <option name="presentableId" value="LOCAL-00016" />
-      <option name="project" value="LOCAL" />
-      <updated>1791300568783</updated>
-    </task>
-    <task id="LOCAL-00017" summary="Migliora pattern db">
-      <option name="closed" value="true" />
-      <created>1791301121144</created>
-      <option name="number" value="00017" />
-      <option name="presentableId" value="LOCAL-00017" />
-      <option name="project" value="LOCAL" />
-      <updated>1791301121144</updated>
+      <workItem from="1793029256965" duration="9186000" />
     </task>
     <task id="LOCAL-00018" summary="Installa scipy per statistica">
       <option name="closed" value="true" />
@@ -659,15 +642,29 @@
       <option name="project" value="LOCAL" />
       <updated>1793033347913</updated>
     </task>
-    <option name="localTasksCounter" value="65" />
+    <task id="LOCAL-00065" summary="Scheletro esecuzione simulazione su thread a parte">
+      <option name="closed" value="true" />
+      <created>1793034972760</created>
+      <option name="number" value="00065" />
+      <option name="presentableId" value="LOCAL-00065" />
+      <option name="project" value="LOCAL" />
+      <updated>1793034972760</updated>
+    </task>
+    <task id="LOCAL-00066" summary="Progress bar esecuzione simulazione">
+      <option name="closed" value="true" />
+      <created>1793037599841</created>
+      <option name="number" value="00066" />
+      <option name="presentableId" value="LOCAL-00066" />
+      <option name="project" value="LOCAL" />
+      <updated>1793037599841</updated>
+    </task>
+    <option name="localTasksCounter" value="67" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Solidifica algoritmo importazione per supportare strutture diverse" />
-    <MESSAGE value="Avvia implementazione traduzione campi" />
     <MESSAGE value="Migliora la struttura dati della company rendendola più maneggiabile" />
     <MESSAGE value="Implementa traduzioni campo-descrizione automatiche" />
     <MESSAGE value="Implementa startup screen" />
@@ -691,7 +688,9 @@
     <MESSAGE value="Dialogo assunzione dipendenti" />
     <MESSAGE value="Dialogo assunzione dipendenti funzionante con validazione" />
     <MESSAGE value="Struttura classi simulazione" />
-    <option name="LAST_COMMIT_MESSAGE" value="Struttura classi simulazione" />
+    <MESSAGE value="Scheletro esecuzione simulazione su thread a parte" />
+    <MESSAGE value="Progress bar esecuzione simulazione" />
+    <option name="LAST_COMMIT_MESSAGE" value="Progress bar esecuzione simulazione" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -733,6 +732,6 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/CavalloGabriele$.coverage" NAME=" Coverage Results" MODIFIED="1793033147586" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
-    <SUITE FILE_PATH="coverage/CavalloGabriele$main.coverage" NAME="main Coverage Results" MODIFIED="1793034660278" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/CavalloGabriele$main.coverage" NAME="main Coverage Results" MODIFIED="1793038070558" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
