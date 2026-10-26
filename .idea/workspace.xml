@@ -4,20 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d1f57556-a68b-4407-9511-95d58864d413" name="Changes" comment="Dialogo assunzione dipendenti funzionante con validazione">
-      <change afterPath="$PROJECT_DIR$/tests/test_balance.py" afterDir="false" />
+    <list default="true" id="d1f57556-a68b-4407-9511-95d58864d413" name="Changes" comment="Struttura classi simulazione">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/ui_generated/ui_invest_sim_window.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/ui_generated/ui_invest_sim_window.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/windows/investsimwindow.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/windows/investsimwindow.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controller/abstract.py" beforeDir="false" afterPath="$PROJECT_DIR$/controller/abstract.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/controller/invest_proj_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/controller/invest_proj_controller.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/controller/simulation_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/controller/simulation_controller.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/investment_effect.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/investment_effect.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/investment_item.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/investment_item.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/item_list_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/item_list_model.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/model.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/sim_state.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/raw_company_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/raw_company_data.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/invest_sim_window.ui" beforeDir="false" afterPath="$PROJECT_DIR$/ui/invest_sim_window.ui" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_balance.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_balance.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -120,7 +111,7 @@
       <recent name="$PROJECT_DIR$/dataset/test" />
     </key>
   </component>
-  <component name="RunManager" selected="Python tests.Python tests for test_balance.test_sim">
+  <component name="RunManager" selected="Python.main">
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="CavalloGabriele" />
       <option name="ENV_FILES" value="" />
@@ -274,15 +265,7 @@
       <workItem from="1792679978560" duration="4416000" />
       <workItem from="1792758485818" duration="4571000" />
       <workItem from="1793014102311" duration="6332000" />
-      <workItem from="1793029256965" duration="4057000" />
-    </task>
-    <task id="LOCAL-00015" summary="Update gitignore">
-      <option name="closed" value="true" />
-      <created>1791282508329</created>
-      <option name="number" value="00015" />
-      <option name="presentableId" value="LOCAL-00015" />
-      <option name="project" value="LOCAL" />
-      <updated>1791282508329</updated>
+      <workItem from="1793029256965" duration="5432000" />
     </task>
     <task id="LOCAL-00016" summary="Configurazione DB e codice per connessione">
       <option name="closed" value="true" />
@@ -668,14 +651,21 @@
       <option name="project" value="LOCAL" />
       <updated>1792770475141</updated>
     </task>
-    <option name="localTasksCounter" value="64" />
+    <task id="LOCAL-00064" summary="Struttura classi simulazione">
+      <option name="closed" value="true" />
+      <created>1793033347913</created>
+      <option name="number" value="00064" />
+      <option name="presentableId" value="LOCAL-00064" />
+      <option name="project" value="LOCAL" />
+      <updated>1793033347913</updated>
+    </task>
+    <option name="localTasksCounter" value="65" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Migliora importazione" />
     <MESSAGE value="Solidifica algoritmo importazione per supportare strutture diverse" />
     <MESSAGE value="Avvia implementazione traduzione campi" />
     <MESSAGE value="Migliora la struttura dati della company rendendola più maneggiabile" />
@@ -700,7 +690,8 @@
     <MESSAGE value="Ragionamenti matematici sul modello assunzione dipendenti" />
     <MESSAGE value="Dialogo assunzione dipendenti" />
     <MESSAGE value="Dialogo assunzione dipendenti funzionante con validazione" />
-    <option name="LAST_COMMIT_MESSAGE" value="Dialogo assunzione dipendenti funzionante con validazione" />
+    <MESSAGE value="Struttura classi simulazione" />
+    <option name="LAST_COMMIT_MESSAGE" value="Struttura classi simulazione" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -742,6 +733,6 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/CavalloGabriele$.coverage" NAME=" Coverage Results" MODIFIED="1793033147586" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
-    <SUITE FILE_PATH="coverage/CavalloGabriele$main.coverage" NAME="main Coverage Results" MODIFIED="1793030656554" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/CavalloGabriele$main.coverage" NAME="main Coverage Results" MODIFIED="1793034660278" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

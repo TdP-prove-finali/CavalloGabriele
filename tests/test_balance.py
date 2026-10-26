@@ -1,4 +1,4 @@
-from controller.simulation_controller import SimulationController
+from controller.simulation_controller import SimulationWorker
 from model.investment_item import InvestmentProject
 from model.raw_company_data import BalanceSnaphot, BalanceLocation
 from model.sim_state import SimulationCompleteModel, SimulationState, GlobalParameters
@@ -25,7 +25,7 @@ def test_balance():
 
 def test_sim():
     b = complete_company_1
-    ctrl = SimulationController(
+    ctrl = SimulationWorker(
         SimulationCompleteModel(
             SimulationState(
                 b,
