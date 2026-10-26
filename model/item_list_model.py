@@ -1,6 +1,5 @@
 from PySide6 import QtCore, QtGui
 from PySide6.QtCore import Qt
-
 from config.paths import project_rooted
 from model.investment_item import AbstractInvestmentItem
 
@@ -22,6 +21,9 @@ class ItemListModel(QtCore.QAbstractListModel):
                 return tick
 
         return None
+
+    def remove_item_by_index(self, index):
+        self.list_data.remove(self.list_data[index])
 
     def add_item(self, item):
         self.list_data.append(item)

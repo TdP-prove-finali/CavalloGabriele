@@ -1,4 +1,7 @@
-from model.investment_effect import InvestmentEffect, EffectType, ValueMode, EffectFrequency, EffectDestination
+from model.investment_effect import (InvestmentEffect,
+                                     EffectFrequency,
+                                     EffectDestination,
+                                     ValueMode, EffectType)
 
 
 class AbstractInvestmentItem:
@@ -46,10 +49,56 @@ class EmployeeHireInvestment(AbstractInvestmentItem):
             EffectDestination.CONTO_ECON, value_constant=onboarding_cost),
         )
 
-        super().__init__(title, id, type, effects)
+        super().__init__(title, id, self.type, effects)
+
+class AssetInvestment(AbstractInvestmentItem):
+    def __init__(self,
+                 title: str,
+                 id: int,
+                 description: str,
+                 total_cost: float,
+                 duration_years: int,
+                 maintenance_cost: float
+                 ):
+        self.type = "asset-investment"
+        self.description = description
+
+        if total_cost < 0:
+            raise ValueError("Il costo del cespite non può essere negativo")
+
+        self.total_cost = total_cost
+
+        if duration_years <= 0:
+            raise ValueError("La durata di un cespite non può essere negativa")
+
+        self.duration_years = duration_years
+        self.maintenance_cost = maintenance_cost
+        self.amortization_quote = self.total_cost / self.duration_years
+        effects = []            # TODO: Impostare effetti
+        super().__init__(title, id, self.type, effects)
+
+class ProductivityImprovementInvestment(AbstractInvestmentItem):
+    def __init__(self,
+                 title: str,
+                 id: int,
+                 description: str,
+                 total_cost: float,
+                 yearly_op_cost_reduction: float
+                 ):
+        self.type = "op-improvement-investment"
+        self.description = description
+
+        if total_cost < 0:
+            raise ValueError("Il costo del cespite non può essere negativo")
+
+        self.yearly_op_cost_reduction = yearly_op_cost_reduction
+        self.total_cost = total_cost
+        effects = []            # TODO: Impostare effetti
+        super().__init__(title, id, self.type, effects)
 
 class InvestmentProject:
-    def __init__(self, title: str, description: str):
+    def __init__(self, title: str, description: str, global_effects: list):
         self.title = title
         self.description = description
         self.items: list[AbstractInvestmentItem] = []
+        self.global_effects = global_effects

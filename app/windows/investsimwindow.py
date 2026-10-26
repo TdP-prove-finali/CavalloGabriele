@@ -13,6 +13,7 @@ class InvestSimWindow(QMainWindow):
         self.__connstat_widget__ = None
         self.__datastat_widget__ = None
         self.ui.newComponentBtn.clicked.connect(self.handle_new_item)
+        self.ui.removeComponentBtn.clicked.connect(self.handle_rem_item)
 
     def set_controller(self, controller):
         self._controller = controller
@@ -22,6 +23,10 @@ class InvestSimWindow(QMainWindow):
         if self._controller is not None:
             return self._controller
         raise Exception("Controller richiesto ma non ancora impostato")
+
+    @Slot()
+    def handle_rem_item(self):
+        self.controller.handleRemoveItem()
 
     @Slot()
     def handle_new_item(self):

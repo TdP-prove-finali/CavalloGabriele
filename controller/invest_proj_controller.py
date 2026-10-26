@@ -19,6 +19,13 @@ class InvestProjectController(AbstractController[InvestSimWindow, InvestmentProj
         self.set_internal_pointer("model", model)
         self.view.ui.projectComponentsListView.setModel(model)
 
+    def handleRemoveItem(self):
+        r = self.view.ui.projectComponentsListView.selectedIndexes()
+        if len(r) > 0:
+            model: ItemListModel = self.view.ui.projectComponentsListView.model()
+            model.remove_item_by_index(r[0].row())
+            model.layoutChanged.emit()
+
     def handleItemAdd(self):
         dialog = EmployeeHireDialog()
         self.set_internal_pointer("dialog", dialog)

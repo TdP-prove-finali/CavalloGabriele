@@ -1,6 +1,8 @@
 from enum import Enum
 from typing import Callable, Any
 
+from model.raw_company_data import BalanceSnaphot
+
 """
 Rappresenta il tipo di effetto che l'investimento avrà su un determinato campo del bilancio
 """
@@ -42,7 +44,12 @@ class InvestmentEffect:
         self.value_constant = value_constant
         self.frequency = frequency
 
-    def apply(self, env):
+    def apply(self, state) -> BalanceSnaphot:
+        """
+        Applica l'effetto sullo snapshot corrente del bilancio
+        :param state:
+        :return:
+        """
         pass        # TODO: Implement
 
     def __str__(self):

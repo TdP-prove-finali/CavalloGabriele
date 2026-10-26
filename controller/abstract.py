@@ -65,7 +65,8 @@ class AbstractController[ViewType, ModelType, ParentModelType] (HasModel):
         Funzione chiamata all'avvio del controller (ossia quando viene visualizzato il widget per la prima volta)
         :return: None
         """
-        self._view.show()
+        if self._view is not None:
+            self._view.show()
 
     def handleClose(self, event):
         """
