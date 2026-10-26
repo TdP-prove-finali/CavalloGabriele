@@ -15,11 +15,11 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QComboBox, QDoubleSpinBox, QGroupBox,
-    QHBoxLayout, QLabel, QLineEdit, QListView,
-    QMainWindow, QMenuBar, QProgressBar, QPushButton,
-    QSizePolicy, QSpacerItem, QSpinBox, QStatusBar,
-    QTextEdit, QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QApplication, QDoubleSpinBox, QGroupBox, QHBoxLayout,
+    QLabel, QLineEdit, QListView, QMainWindow,
+    QMenuBar, QProgressBar, QPushButton, QSizePolicy,
+    QSpacerItem, QSpinBox, QStatusBar, QTextEdit,
+    QVBoxLayout, QWidget)
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -181,13 +181,11 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_2.addItem(self.horizontalSpacer_2)
 
-        self.companyComboBox = QComboBox(self.groupBox_2)
-        self.companyComboBox.setObjectName(u"companyComboBox")
-        self.companyComboBox.setEnabled(False)
-        self.companyComboBox.setMaximumSize(QSize(300, 16777215))
-        self.companyComboBox.setFont(font2)
+        self.companyNameEdit = QLineEdit(self.groupBox_2)
+        self.companyNameEdit.setObjectName(u"companyNameEdit")
+        self.companyNameEdit.setEnabled(False)
 
-        self.horizontalLayout_2.addWidget(self.companyComboBox)
+        self.horizontalLayout_2.addWidget(self.companyNameEdit)
 
         self.horizontalSpacer_9 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
@@ -228,14 +226,14 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_8.addWidget(self.label_6)
 
-        self.numberOfYears_2 = QSpinBox(self.groupBox_2)
-        self.numberOfYears_2.setObjectName(u"numberOfYears_2")
-        self.numberOfYears_2.setFont(font2)
-        self.numberOfYears_2.setMinimum(2000)
-        self.numberOfYears_2.setMaximum(3000)
-        self.numberOfYears_2.setValue(2026)
+        self.startingYearEdit = QSpinBox(self.groupBox_2)
+        self.startingYearEdit.setObjectName(u"startingYearEdit")
+        self.startingYearEdit.setFont(font2)
+        self.startingYearEdit.setMinimum(2000)
+        self.startingYearEdit.setMaximum(3000)
+        self.startingYearEdit.setValue(2026)
 
-        self.horizontalLayout_8.addWidget(self.numberOfYears_2)
+        self.horizontalLayout_8.addWidget(self.startingYearEdit)
 
         self.horizontalSpacer_10 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
@@ -255,11 +253,11 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_9.addWidget(self.label_7)
 
-        self.doubleSpinBox = QDoubleSpinBox(self.groupBox_2)
-        self.doubleSpinBox.setObjectName(u"doubleSpinBox")
-        self.doubleSpinBox.setFont(font2)
+        self.organicGrowthSpin = QDoubleSpinBox(self.groupBox_2)
+        self.organicGrowthSpin.setObjectName(u"organicGrowthSpin")
+        self.organicGrowthSpin.setFont(font2)
 
-        self.horizontalLayout_9.addWidget(self.doubleSpinBox)
+        self.horizontalLayout_9.addWidget(self.organicGrowthSpin)
 
         self.label_8 = QLabel(self.groupBox_2)
         self.label_8.setObjectName(u"label_8")
@@ -282,20 +280,20 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_10.addWidget(self.label_9)
 
-        self.label_10 = QLabel(self.groupBox_2)
-        self.label_10.setObjectName(u"label_10")
+        self.lastAvYearsLabel = QLabel(self.groupBox_2)
+        self.lastAvYearsLabel.setObjectName(u"lastAvYearsLabel")
         font3 = QFont()
         font3.setPointSize(13)
         font3.setItalic(True)
-        self.label_10.setFont(font3)
-        self.label_10.setStyleSheet(u"QLabel[cssClass=\"number-label\"] {\n"
+        self.lastAvYearsLabel.setFont(font3)
+        self.lastAvYearsLabel.setStyleSheet(u"QLabel[cssClass=\"number-label\"] {\n"
 "	padding: 5px;\n"
 "	background-color: rgb(18, 65, 255);\n"
 "	border-radius: 5px;\n"
 "	font-style: italic;\n"
 "}")
 
-        self.horizontalLayout_10.addWidget(self.label_10)
+        self.horizontalLayout_10.addWidget(self.lastAvYearsLabel)
 
         self.horizontalSpacer_12 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
@@ -386,8 +384,8 @@ class Ui_MainWindow(object):
         self.label_7.setText(QCoreApplication.translate("MainWindow", u"Crescita organica", None))
         self.label_8.setText(QCoreApplication.translate("MainWindow", u"%", None))
         self.label_9.setText(QCoreApplication.translate("MainWindow", u"Anni passati disponibili", None))
-        self.label_10.setText(QCoreApplication.translate("MainWindow", u"5", None))
-        self.label_10.setProperty(u"cssClass", QCoreApplication.translate("MainWindow", u"number-label", None))
+        self.lastAvYearsLabel.setText(QCoreApplication.translate("MainWindow", u"5", None))
+        self.lastAvYearsLabel.setProperty(u"cssClass", QCoreApplication.translate("MainWindow", u"number-label", None))
         self.stopSimBtn.setText(QCoreApplication.translate("MainWindow", u"Ferma simulazione", None))
         self.startSimBtn.setText(QCoreApplication.translate("MainWindow", u"Avvia simulazione", None))
     # retranslateUi

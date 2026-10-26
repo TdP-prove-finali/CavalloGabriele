@@ -14,6 +14,7 @@ class SimulationWorker(QObject):
     @Slot()
     def start(self):
         m: SimulationCompleteModel = self.model
+        total_step = m.simulation_state.global_parameters.number_of_years * 12
 
         def effect_spawner(env):
             id = m.simulation_state.global_parameters.sim_id
@@ -21,15 +22,15 @@ class SimulationWorker(QObject):
 
             while True:
                 print('Start parking at %d' % env.now)
-                self.progress.emit(env.now)
+                self.progress.emit(env.now / total_step)
                 parking_duration = 5
                 yield env.timeout(parking_duration)
-                self.progress.emit(env.now)
+                self.progress.emit(env.now / total_step)
 
                 print('Start driving at %d' % env.now)
                 trip_duration = 2
                 yield env.timeout(trip_duration)
-                self.progress.emit(env.now)
+                self.progress.emit(env.now / total_step)
 
         self.model.env = simpy.Environment()
         self.model.env.process(effect_spawner(self.model.env))

@@ -295,20 +295,9 @@
           </spacer>
          </item>
          <item>
-          <widget class="QComboBox" name="companyComboBox">
+          <widget class="QLineEdit" name="companyNameEdit">
            <property name="enabled">
             <bool>false</bool>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>300</width>
-             <height>16777215</height>
-            </size>
-           </property>
-           <property name="font">
-            <font>
-             <pointsize>13</pointsize>
-            </font>
            </property>
           </widget>
          </item>
@@ -391,7 +380,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QSpinBox" name="numberOfYears_2">
+            <widget class="QSpinBox" name="startingYearEdit">
              <property name="font">
               <font>
                <pointsize>13</pointsize>
@@ -443,7 +432,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QDoubleSpinBox" name="doubleSpinBox">
+          <widget class="QDoubleSpinBox" name="organicGrowthSpin">
            <property name="font">
             <font>
              <pointsize>13</pointsize>
@@ -493,7 +482,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QLabel" name="label_10">
+          <widget class="QLabel" name="lastAvYearsLabel">
            <property name="font">
             <font>
              <pointsize>13</pointsize>

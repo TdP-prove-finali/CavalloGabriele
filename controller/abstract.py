@@ -1,4 +1,6 @@
 from typing import TypeVar, Generic, Any
+
+from PySide6.QtCore import QObject
 from PySide6.QtWidgets import QApplication, QWidget
 
 ModelType = TypeVar('ModelType')
@@ -17,7 +19,7 @@ class HasModel[T]:
 
 ViewType = TypeVar('ViewType', bound=QWidget)
 
-class AbstractController[ViewType, ModelType, ParentModelType] (HasModel):
+class AbstractController[ViewType, ModelType, ParentModelType] (HasModel, QObject):
     """
     Definisce un generico controller e le sue caratteristiche base
 
@@ -42,8 +44,11 @@ class AbstractController[ViewType, ModelType, ParentModelType] (HasModel):
             della finestra) gli si passa un puntatore al controller parent.
             Il controller figlio potrà quindi fare: `self.parent_model.company_data` per accedere alle informazioni della company, senza passarle esplicitamente.
         I controller figli non possono mai chiamare metodi sul parent per ragioni di sicurezza e pulizia.
+
+        Nota: la classe eredita anche da QObject per permettere di gestire i thread correttamente
         """
-        super().__init__(model=model)
+        QObject.__init__(self)
+        HasModel.__init__(self, model)
         self._view: ViewType = view
         self._app: QApplication = app
         self.__parent__ = parent
