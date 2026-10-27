@@ -1,3 +1,5 @@
+from enum import IntEnum
+
 from model.investment_effect import (InvestmentEffect,
                                      EffectFrequency,
                                      EffectDestination,
@@ -10,6 +12,20 @@ class AbstractInvestmentItem:
         self.id = id
         self.type = type
         self.effects = effects
+
+    def total_expenditure_first_month(self) -> float:
+        """
+        Restituisce la spesa totale per questo item nel primo mese
+        :return:
+        """
+        return 0.0
+
+    def total_funding_request_first_month(self) -> float:
+        """
+        Restituisce il totale dei finanziamenti richiesti da questa componente nel primo mese
+        :return:
+        """
+        return 0.0
 
 class EmployeeHireInvestment(AbstractInvestmentItem):
     def __init__(self,
@@ -29,12 +45,14 @@ class EmployeeHireInvestment(AbstractInvestmentItem):
         self.type = "employee-hire"
         self.tfr_quote = (total_monthly_cost * 12) / 13.5
         self.role = role
+        self.onboarding_cost = onboarding_cost
         self.strumental_cost = strumental_cost
         self.hp_lomax_scale = hp_lomax_scale
         self.hp_lomax_shape = hp_lomax_shape
         self.ttp_normal_average = ttp_normal_average
         self.ttp_normal_variance = ttp_normal_variance
         self.stop_ratio = stop_ratio
+        self.total_monthly_cost = total_monthly_cost
 
         # TODO: Raffinare gli effetti
         effects.append(InvestmentEffect(
@@ -51,17 +69,24 @@ class EmployeeHireInvestment(AbstractInvestmentItem):
 
         super().__init__(title, id, self.type, effects)
 
+    def total_expenditure_first_month(self):
+        return self.total_monthly_cost + self.strumental_cost + self.onboarding_cost + self.tfr_quote / 12
+
+class AssetType(IntEnum):
+    MATERIAL = 0,
+    IMMATERIAL = 1
+
 class AssetInvestment(AbstractInvestmentItem):
     def __init__(self,
                  title: str,
                  id: int,
-                 description: str,
                  total_cost: float,
                  duration_years: int,
-                 maintenance_cost: float
+                 maintenance_cost: float,
+                 asset_type: AssetType
                  ):
         self.type = "asset-investment"
-        self.description = description
+        self.asset_type = asset_type
 
         if total_cost < 0:
             raise ValueError("Il costo del cespite non può essere negativo")
@@ -77,16 +102,17 @@ class AssetInvestment(AbstractInvestmentItem):
         effects = []            # TODO: Impostare effetti
         super().__init__(title, id, self.type, effects)
 
+    def total_expenditure_first_month(self) -> float:
+        return self.total_cost
+
 class ProductivityImprovementInvestment(AbstractInvestmentItem):
     def __init__(self,
                  title: str,
                  id: int,
-                 description: str,
                  total_cost: float,
                  yearly_op_cost_reduction: float
                  ):
         self.type = "op-improvement-investment"
-        self.description = description
 
         if total_cost < 0:
             raise ValueError("Il costo del cespite non può essere negativo")
@@ -96,9 +122,50 @@ class ProductivityImprovementInvestment(AbstractInvestmentItem):
         effects = []            # TODO: Impostare effetti
         super().__init__(title, id, self.type, effects)
 
+    def total_expenditure_first_month(self) -> float:
+        return self.total_cost
+
+class FundingType(IntEnum):
+    BANK = 0,
+    STOCK = 1
+
+class FundingInvestment(AbstractInvestmentItem):
+    def __init__(self, title: str,
+                 id: int,
+                 total_import: float,
+                 type: FundingType,
+                 interest_rate: float | None,
+                 duration: int | None
+                 ):
+        self.total_import = total_import
+        self.funding_type = type
+        self.interest_rate = interest_rate
+        self.duration = duration
+        effects = []
+        super().__init__(title, id, "funding-investment", effects)
+
+    def total_funding_request_first_month(self) -> float:
+        return self.total_import
+
 class InvestmentProject:
     def __init__(self, title: str, description: str, global_effects: list):
         self.title = title
         self.description = description
         self.items: list[AbstractInvestmentItem] = []
         self.global_effects = global_effects
+
+    @staticmethod
+    def total_expenditure(items: list[AbstractInvestmentItem]):
+        f = 0
+        for item in items:
+            f += item.total_expenditure_first_month()
+
+        return f
+
+    @staticmethod
+    def total_funding_request(items: list[AbstractInvestmentItem]):
+        f = 0
+        for item in items:
+            f += item.total_funding_request_first_month()
+
+        return f

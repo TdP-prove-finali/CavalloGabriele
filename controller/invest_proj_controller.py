@@ -1,9 +1,14 @@
 from PySide6.QtCore import QThread, Slot, Qt
-from PySide6.QtWidgets import QDialog, QApplication, QMessageBox
+from PySide6.QtWidgets import QDialog, QApplication, QMessageBox, QMenu
+
+from app.dialogs.asset_dialog import AssetDialog
 from app.dialogs.employee_hire_dialog import EmployeeHireDialog
+from app.dialogs.funding_dialog import FundingDialog
+from app.dialogs.op_improvement_dialog import OperativeImprovementDialog
 from app.windows.investsimwindow import InvestSimWindow
 from controller.abstract import AbstractController
 from controller.simulation_controller import SimulationWorker
+from dao.util import format_number
 from model.invest_proj_model import InvestmentProjModel
 from model.investment_item import InvestmentProject
 from model.item_list_model import ItemListModel
@@ -31,24 +36,85 @@ class InvestProjectController(AbstractController[InvestSimWindow, InvestmentProj
         self.view.ui.stopSimBtn.setVisible(False)
         self.view.ui.projectComponentsListView.setModel(model)
         self.view.ui.startSimBtn.clicked.connect(self.run_simulation)
+
+        menu = QMenu(self.view.ui.newComponentBtn)
+        action1 = menu.addAction("Assunzione dipendente")
+        action2 = menu.addAction("Acquisto cespiti")
+        action3 = menu.addAction("Finanziamento")
+        action4 = menu.addAction("Efficientamento operazioni")
+        action1.triggered.connect(self.handleCreateEmployee)
+        action2.triggered.connect(self.handleCreateCespiti)
+        action3.triggered.connect(self.handleCreateFinancial)
+        action4.triggered.connect(self.handleCreateEffic)
+
+        v = self.parent_model.company_data.stato_patrimoniale["subsections"]["attivo"]["civ_tot_dispon_liquide"][0] * 1.00
+        if "migl" in self.parent_model.company_data.stato_patrimoniale["moneta"][0]:
+            v = v * 1000
+        self.view.ui.liquidAvailabilityLabel.setText(format_number(v) + " €")
+        self.__update_stats()
+
+        self.view.ui.newComponentBtn.setMenu(menu)
         super().init()
 
-    def handleRemoveItem(self):
-        r = self.view.ui.projectComponentsListView.selectedIndexes()
-        if len(r) > 0:
-            model: ItemListModel = self.view.ui.projectComponentsListView.model()
-            model.remove_item_by_index(r[0].row())
-            model.layoutChanged.emit()
-
-    def handleItemAdd(self):
+    @Slot()
+    def handleCreateEmployee(self):
         dialog = EmployeeHireDialog()
         self.set_internal_pointer("dialog", dialog)
         result = dialog.exec()
 
         if result == QDialog.DialogCode.Accepted:
-            self.model.components.append(dialog.item)
-            self.view.ui.projectComponentsListView.model().add_item(dialog.item)
-            self.view.ui.projectComponentsListView.model().layoutChanged.emit()
+            self.__append_component(dialog.item)
+
+    def __append_component(self, component):
+        self.model.components.append(component)
+        self.view.ui.projectComponentsListView.model().add_item(component)
+        self.view.ui.projectComponentsListView.model().layoutChanged.emit()
+        self.__update_stats()
+
+    def __update_stats(self):
+        e = InvestmentProject.total_expenditure(self.model.components)
+        f = InvestmentProject.total_funding_request(self.model.components)
+
+        self.view.ui.totalEsbLabel.setText(format_number(e) + "€")
+        self.view.ui.totalFundingLabel.setText(format_number(f) + "€")
+
+
+    @Slot()
+    def handleCreateCespiti(self):
+        dialog = AssetDialog()
+        self.set_internal_pointer("dialog", dialog)
+        result = dialog.exec()
+
+        if result == QDialog.DialogCode.Accepted:
+            self.__append_component(dialog.item)
+
+    @Slot()
+    def handleCreateFinancial(self):
+        dialog = FundingDialog()
+        self.set_internal_pointer("dialog", dialog)
+        result = dialog.exec()
+
+        if result == QDialog.DialogCode.Accepted:
+            self.__append_component(dialog.item)
+
+    @Slot()
+    def handleCreateEffic(self):
+        dialog = OperativeImprovementDialog()
+        self.set_internal_pointer("dialog", dialog)
+        result = dialog.exec()
+
+        if result == QDialog.DialogCode.Accepted:
+            self.__append_component(dialog.item)
+
+    def handleRemoveItem(self):
+        r = self.view.ui.projectComponentsListView.selectedIndexes()
+        if len(r) > 0:
+            self.model.components.remove(self.model.components[r[0].row()])
+            model: ItemListModel = self.view.ui.projectComponentsListView.model()
+            model.remove_item_by_index(r[0].row())
+            model.layoutChanged.emit()
+
+        self.__update_stats()
 
     @Slot()
     def run_simulation(self):

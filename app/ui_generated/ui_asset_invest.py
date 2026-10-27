@@ -17,21 +17,21 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QAbstractButton, QApplication, QComboBox, QDialog,
     QDialogButtonBox, QGroupBox, QHBoxLayout, QLabel,
-    QLineEdit, QSizePolicy, QSpacerItem, QTextBrowser,
-    QVBoxLayout, QWidget)
+    QLineEdit, QSizePolicy, QSpacerItem, QSpinBox,
+    QTextBrowser, QVBoxLayout, QWidget)
 
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
         if not Dialog.objectName():
             Dialog.setObjectName(u"Dialog")
         Dialog.setWindowModality(Qt.WindowModality.WindowModal)
-        Dialog.resize(714, 589)
-        Dialog.setMinimumSize(QSize(714, 589))
+        Dialog.resize(714, 414)
+        Dialog.setMinimumSize(QSize(714, 0))
         Dialog.setMaximumSize(QSize(714, 589))
         Dialog.setModal(True)
         self.buttonBox = QDialogButtonBox(Dialog)
         self.buttonBox.setObjectName(u"buttonBox")
-        self.buttonBox.setGeometry(QRect(350, 530, 341, 32))
+        self.buttonBox.setGeometry(QRect(360, 360, 341, 32))
         self.buttonBox.setOrientation(Qt.Orientation.Horizontal)
         self.buttonBox.setStandardButtons(QDialogButtonBox.StandardButton.Cancel|QDialogButtonBox.StandardButton.Ok)
         self.label_7 = QLabel(Dialog)
@@ -125,17 +125,12 @@ class Ui_Dialog(object):
 
         self.horizontalLayout_6.addItem(self.horizontalSpacer_2)
 
-        self.durationYearsEdit = QLineEdit(self.layoutWidget)
-        self.durationYearsEdit.setObjectName(u"durationYearsEdit")
-        sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Fixed)
-        sizePolicy1.setHorizontalStretch(0)
-        sizePolicy1.setVerticalStretch(0)
-        sizePolicy1.setHeightForWidth(self.durationYearsEdit.sizePolicy().hasHeightForWidth())
-        self.durationYearsEdit.setSizePolicy(sizePolicy1)
-        self.durationYearsEdit.setMaximumSize(QSize(150, 16777215))
-        self.durationYearsEdit.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.durationSpinBox = QSpinBox(self.layoutWidget)
+        self.durationSpinBox.setObjectName(u"durationSpinBox")
+        self.durationSpinBox.setMinimum(1)
+        self.durationSpinBox.setMaximum(100)
 
-        self.horizontalLayout_6.addWidget(self.durationYearsEdit)
+        self.horizontalLayout_6.addWidget(self.durationSpinBox)
 
         self.label_18 = QLabel(self.layoutWidget)
         self.label_18.setObjectName(u"label_18")
@@ -160,6 +155,9 @@ class Ui_Dialog(object):
 
         self.maintenanceCostEdit = QLineEdit(self.layoutWidget)
         self.maintenanceCostEdit.setObjectName(u"maintenanceCostEdit")
+        sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Fixed)
+        sizePolicy1.setHorizontalStretch(0)
+        sizePolicy1.setVerticalStretch(0)
         sizePolicy1.setHeightForWidth(self.maintenanceCostEdit.sizePolicy().hasHeightForWidth())
         self.maintenanceCostEdit.setSizePolicy(sizePolicy1)
         self.maintenanceCostEdit.setMaximumSize(QSize(150, 16777215))
@@ -188,7 +186,7 @@ class Ui_Dialog(object):
         self.assetTypeCombo.addItem("")
         self.assetTypeCombo.addItem("")
         self.assetTypeCombo.setObjectName(u"assetTypeCombo")
-        self.assetTypeCombo.setEditable(True)
+        self.assetTypeCombo.setEditable(False)
 
         self.horizontalLayout_5.addWidget(self.assetTypeCombo)
 
@@ -215,17 +213,17 @@ class Ui_Dialog(object):
 "li.unchecked::marker { content: \"\\2610\"; }\n"
 "li.checked::marker { content: \"\\2612\"; }\n"
 "</style></head><body style=\" font-family:'.AppleSystemUIFont'; font-size:13pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">L'investimento prevede l'acquisto di un cespite con una determinata durata). Tra gli effetti che apporter\u00e0 sul bilancio sono previsti: </p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">L'investimento prevede l'acquisto di un cespite con una determinata durata. Tra gli effetti che apporter\u00e0 sul bilancio sono previsti: </p>\n"
 "<ul style=\"margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;\">\n"
-"<li style=\" margin-top:12px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Pagament"
-                        "o annuale della quota di ammortamento</li>\n"
+"<li style=\" margin-top:12px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Pagamento"
+                        " annuale della quota di ammortamento</li>\n"
 "<li style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Accantonamento in apposito fondo</li>\n"
 "<li style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Esborso dei costi di manutenzione se presenti</li>\n"
 "<li style=\" margin-top:0px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Aumento delle immobilizzazioni</li></ul>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>", None))
         self.label_9.setText("")
         self.label.setText(QCoreApplication.translate("Dialog", u"Titolo operazione*", None))
-        self.operationTitleEdit.setPlaceholderText(QCoreApplication.translate("Dialog", u"Assunzione grafico", None))
+        self.operationTitleEdit.setPlaceholderText(QCoreApplication.translate("Dialog", u"Acquisto macchinari", None))
 #if QT_CONFIG(tooltip)
         self.label_2.setToolTip(QCoreApplication.translate("Dialog", u"Costo totale mensile sostenuto dall'impresa per il dipendente (stipendio + tasse)", None))
 #endif // QT_CONFIG(tooltip)
@@ -236,13 +234,12 @@ class Ui_Dialog(object):
 #if QT_CONFIG(tooltip)
         self.label_17.setToolTip(QCoreApplication.translate("Dialog", u"Costo una tantum speso dall'azienda per formare inizialmente il dipendente nuovo", None))
 #endif // QT_CONFIG(tooltip)
-        self.label_17.setText(QCoreApplication.translate("Dialog", u"Durata", None))
-        self.durationYearsEdit.setText(QCoreApplication.translate("Dialog", u"100", None))
+        self.label_17.setText(QCoreApplication.translate("Dialog", u"Durata*", None))
         self.label_18.setText(QCoreApplication.translate("Dialog", u"anni", None))
 #if QT_CONFIG(tooltip)
         self.label_4.setToolTip(QCoreApplication.translate("Dialog", u"Costo una tantum speso dall'azienda per formare inizialmente il dipendente nuovo", None))
 #endif // QT_CONFIG(tooltip)
-        self.label_4.setText(QCoreApplication.translate("Dialog", u"Costo di manutenzione*", None))
+        self.label_4.setText(QCoreApplication.translate("Dialog", u"Costo di manutenzione", None))
         self.maintenanceCostEdit.setText(QCoreApplication.translate("Dialog", u"100", None))
         self.label_5.setText(QCoreApplication.translate("Dialog", u"\u20ac", None))
         self.label_6.setText(QCoreApplication.translate("Dialog", u"Tipo*", None))

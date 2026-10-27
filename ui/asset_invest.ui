@@ -10,13 +10,13 @@
     <x>0</x>
     <y>0</y>
     <width>714</width>
-    <height>589</height>
+    <height>414</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
     <width>714</width>
-    <height>589</height>
+    <height>0</height>
    </size>
   </property>
   <property name="maximumSize">
@@ -34,8 +34,8 @@
   <widget class="QDialogButtonBox" name="buttonBox">
    <property name="geometry">
     <rect>
-     <x>350</x>
-     <y>530</y>
+     <x>360</x>
+     <y>360</y>
      <width>341</width>
      <height>32</height>
     </rect>
@@ -117,7 +117,7 @@ hr { height: 1px; border-width: 0; }
 li.unchecked::marker { content: &quot;\2610&quot;; }
 li.checked::marker { content: &quot;\2612&quot;; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'.AppleSystemUIFont'; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;L'investimento prevede l'acquisto di un cespite con una determinata durata). Tra gli effetti che apporterà sul bilancio sono previsti: &lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;L'investimento prevede l'acquisto di un cespite con una determinata durata. Tra gli effetti che apporterà sul bilancio sono previsti: &lt;/p&gt;
 &lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;
 &lt;li style=&quot; margin-top:12px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Pagamento annuale della quota di ammortamento&lt;/li&gt;
 &lt;li style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Accantonamento in apposito fondo&lt;/li&gt;
@@ -161,7 +161,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
       <item>
        <widget class="QLineEdit" name="operationTitleEdit">
         <property name="placeholderText">
-         <string>Assunzione grafico</string>
+         <string>Acquisto macchinari</string>
         </property>
        </widget>
       </item>
@@ -234,7 +234,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
          <string>Costo una tantum speso dall'azienda per formare inizialmente il dipendente nuovo</string>
         </property>
         <property name="text">
-         <string>Durata</string>
+         <string>Durata*</string>
         </property>
        </widget>
       </item>
@@ -252,24 +252,12 @@ li.checked::marker { content: &quot;\2612&quot;; }
        </spacer>
       </item>
       <item>
-       <widget class="QLineEdit" name="durationYearsEdit">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
+       <widget class="QSpinBox" name="durationSpinBox">
+        <property name="minimum">
+         <number>1</number>
         </property>
-        <property name="maximumSize">
-         <size>
-          <width>150</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>100</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignmentFlag::AlignCenter</set>
+        <property name="maximum">
+         <number>100</number>
         </property>
        </widget>
       </item>
@@ -296,7 +284,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
          <string>Costo una tantum speso dall'azienda per formare inizialmente il dipendente nuovo</string>
         </property>
         <property name="text">
-         <string>Costo di manutenzione*</string>
+         <string>Costo di manutenzione</string>
         </property>
        </widget>
       </item>
@@ -362,7 +350,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
       <item>
        <widget class="QComboBox" name="assetTypeCombo">
         <property name="editable">
-         <bool>true</bool>
+         <bool>false</bool>
         </property>
         <item>
          <property name="text">

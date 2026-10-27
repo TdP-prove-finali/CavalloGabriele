@@ -3,19 +3,8 @@ from PySide6.QtGui import QRegularExpressionValidator
 from PySide6.QtWidgets import QDialog, QMessageBox
 
 from app.ui_generated.ui_employee_hire import Ui_Dialog
+from dao.util import check_empty, check_invalid_factor, parse
 from model.investment_item import EmployeeHireInvestment
-
-def check_empty(v):
-    return v is None or v == ""
-
-def check_invalid_factor(v: str):
-    try:
-        return float(v.replace(",", ".")) == 0.00
-    except:
-        return True
-
-def parse(v):
-    return float(v.replace(",", "."))
 
 class EmployeeHireDialog(QDialog):
     def __init__(self):

@@ -4,10 +4,27 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d1f57556-a68b-4407-9511-95d58864d413" name="Changes" comment="Progress bar esecuzione simulazione">
-      <change afterPath="$PROJECT_DIR$/ui/asset_invest.ui" afterDir="false" />
+    <list default="true" id="d1f57556-a68b-4407-9511-95d58864d413" name="Changes" comment="UI ultime finestre">
+      <change afterPath="$PROJECT_DIR$/app/dialogs/asset_dialog.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/dialogs/funding_dialog.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/dialogs/op_improvement_dialog.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/resources/factory.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/resources/line-graph.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/resources/money.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ui/funding_invest.ui" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ui/operativ_effic_dialog.ui" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/dialogs/employee_hire_dialog.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/dialogs/employee_hire_dialog.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/ui_generated/ui_asset_invest.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/ui_generated/ui_asset_invest.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/ui_generated/ui_invest_sim_window.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/ui_generated/ui_invest_sim_window.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/windows/investsimwindow.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/windows/investsimwindow.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controller/invest_proj_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/controller/invest_proj_controller.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dao/util.py" beforeDir="false" afterPath="$PROJECT_DIR$/dao/util.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/investment_item.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/investment_item.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/model/item_list_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/item_list_model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/asset_invest.ui" beforeDir="false" afterPath="$PROJECT_DIR$/ui/asset_invest.ui" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/invest_sim_window.ui" beforeDir="false" afterPath="$PROJECT_DIR$/ui/invest_sim_window.ui" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -15,7 +32,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="184" />
+    <option name="cachedIndexableFilesCount" value="187" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -84,7 +101,7 @@
     "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
     "git-widget-placeholder": "main",
     "junie.onboarding.icon.badge.shown": "true",
-    "last_opened_file_path": "/Users/gabrielecavallo/PycharmProjects/CavalloGabriele/ui",
+    "last_opened_file_path": "/Users/gabrielecavallo/PycharmProjects/CavalloGabriele/app/resources",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -97,11 +114,11 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/ui" />
       <recent name="$PROJECT_DIR$/app/resources" />
+      <recent name="$PROJECT_DIR$/ui" />
+      <recent name="$PROJECT_DIR$/app/dialogs" />
       <recent name="$PROJECT_DIR$/docs" />
       <recent name="$PROJECT_DIR$/app/windows" />
-      <recent name="$PROJECT_DIR$/dataset" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/model" />
@@ -264,23 +281,8 @@
       <workItem from="1792679978560" duration="4416000" />
       <workItem from="1792758485818" duration="4571000" />
       <workItem from="1793014102311" duration="6332000" />
-      <workItem from="1793029256965" duration="9186000" />
-    </task>
-    <task id="LOCAL-00018" summary="Installa scipy per statistica">
-      <option name="closed" value="true" />
-      <created>1791301606140</created>
-      <option name="number" value="00018" />
-      <option name="presentableId" value="LOCAL-00018" />
-      <option name="project" value="LOCAL" />
-      <updated>1791301606140</updated>
-    </task>
-    <task id="LOCAL-00019" summary="Implem. controllo connessione startup">
-      <option name="closed" value="true" />
-      <created>1791302996552</created>
-      <option name="number" value="00019" />
-      <option name="presentableId" value="LOCAL-00019" />
-      <option name="project" value="LOCAL" />
-      <updated>1791302996552</updated>
+      <workItem from="1793029256965" duration="9888000" />
+      <workItem from="1793097557760" duration="7308000" />
     </task>
     <task id="LOCAL-00020" summary="Inizia impl caricam da excel in MongoDB">
       <option name="closed" value="true" />
@@ -658,14 +660,29 @@
       <option name="project" value="LOCAL" />
       <updated>1793037599841</updated>
     </task>
-    <option name="localTasksCounter" value="67" />
+    <task id="LOCAL-00067" summary="UI ultime finestre">
+      <option name="closed" value="true" />
+      <created>1793038570206</created>
+      <option name="number" value="00067" />
+      <option name="presentableId" value="LOCAL-00067" />
+      <option name="project" value="LOCAL" />
+      <updated>1793038570206</updated>
+    </task>
+    <task id="LOCAL-00068" summary="UI ultime finestre">
+      <option name="closed" value="true" />
+      <created>1793038580760</created>
+      <option name="number" value="00068" />
+      <option name="presentableId" value="LOCAL-00068" />
+      <option name="project" value="LOCAL" />
+      <updated>1793038580760</updated>
+    </task>
+    <option name="localTasksCounter" value="69" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Migliora la struttura dati della company rendendola più maneggiabile" />
     <MESSAGE value="Implementa traduzioni campo-descrizione automatiche" />
     <MESSAGE value="Implementa startup screen" />
     <MESSAGE value="Implementa visualizzazione e selezione azienda" />
@@ -690,7 +707,8 @@
     <MESSAGE value="Struttura classi simulazione" />
     <MESSAGE value="Scheletro esecuzione simulazione su thread a parte" />
     <MESSAGE value="Progress bar esecuzione simulazione" />
-    <option name="LAST_COMMIT_MESSAGE" value="Progress bar esecuzione simulazione" />
+    <MESSAGE value="UI ultime finestre" />
+    <option name="LAST_COMMIT_MESSAGE" value="UI ultime finestre" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -732,6 +750,6 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/CavalloGabriele$.coverage" NAME=" Coverage Results" MODIFIED="1793033147586" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
-    <SUITE FILE_PATH="coverage/CavalloGabriele$main.coverage" NAME="main Coverage Results" MODIFIED="1793038070558" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/CavalloGabriele$main.coverage" NAME="main Coverage Results" MODIFIED="1793105208189" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

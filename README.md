@@ -37,3 +37,7 @@ Il tech stack proposto è: Python, SimPy (per implementazione simulazione DES), 
 5) L'utente **visualizza il confronto** tra la situazione iniziale e quella finale dell'impresa
 6) L'utente **salva lo scenario finale prodotto**, eventualmente per confrontarlo con un altro progetto di investimento
 7) L'utente **crea un nuovo progetto di investimento**, ottiene una nuova simulazione e fa un confronto tra le situazioni finali con i due progetti di investimento per scegliere quale sia migliore
+
+Icone
+https://freeicon.com/it/free-icons/money/line
+

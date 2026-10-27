@@ -8,6 +8,18 @@ def remove_accents(text: str) -> str:   # Toglie tutti gli accenti da una string
         if unicodedata.category(char) != 'Mn'
     )
 
+def check_empty(v):
+    return v is None or v == ""
+
+def check_invalid_factor(v: str):
+    try:
+        return float(v.replace(",", ".")) == 0.00
+    except:
+        return True
+
+def parse(v):
+    return float(v.replace(",", "."))
+
 
 def is_number(value) -> bool:
     if isinstance(value, bool):

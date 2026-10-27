@@ -25,7 +25,13 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(1119, 745)
+        MainWindow.resize(1436, 922)
+        MainWindow.setStyleSheet(u"QLabel[cssClass=\"number-label\"] {\n"
+"	padding: 5px;\n"
+"	background-color: rgb(18, 65, 255);\n"
+"	border-radius: 5px;\n"
+"	font-style: italic;\n"
+"}")
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         self.verticalLayout = QVBoxLayout(self.centralwidget)
@@ -149,6 +155,72 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_3.addWidget(self.projectComponentsListView)
 
+        self.horizontalLayout_12 = QHBoxLayout()
+        self.horizontalLayout_12.setObjectName(u"horizontalLayout_12")
+        self.label_10 = QLabel(self.groupBox)
+        self.label_10.setObjectName(u"label_10")
+        sizePolicy1.setHeightForWidth(self.label_10.sizePolicy().hasHeightForWidth())
+        self.label_10.setSizePolicy(sizePolicy1)
+        font3 = QFont()
+        font3.setPointSize(11)
+        self.label_10.setFont(font3)
+
+        self.horizontalLayout_12.addWidget(self.label_10)
+
+        self.liquidAvailabilityLabel = QLabel(self.groupBox)
+        self.liquidAvailabilityLabel.setObjectName(u"liquidAvailabilityLabel")
+        sizePolicy1.setHeightForWidth(self.liquidAvailabilityLabel.sizePolicy().hasHeightForWidth())
+        self.liquidAvailabilityLabel.setSizePolicy(sizePolicy1)
+        font4 = QFont()
+        font4.setPointSize(11)
+        font4.setItalic(True)
+        self.liquidAvailabilityLabel.setFont(font4)
+
+        self.horizontalLayout_12.addWidget(self.liquidAvailabilityLabel)
+
+        self.horizontalSpacer_5 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.horizontalLayout_12.addItem(self.horizontalSpacer_5)
+
+        self.label_13 = QLabel(self.groupBox)
+        self.label_13.setObjectName(u"label_13")
+        sizePolicy1.setHeightForWidth(self.label_13.sizePolicy().hasHeightForWidth())
+        self.label_13.setSizePolicy(sizePolicy1)
+        self.label_13.setFont(font3)
+
+        self.horizontalLayout_12.addWidget(self.label_13)
+
+        self.totalEsbLabel = QLabel(self.groupBox)
+        self.totalEsbLabel.setObjectName(u"totalEsbLabel")
+        sizePolicy1.setHeightForWidth(self.totalEsbLabel.sizePolicy().hasHeightForWidth())
+        self.totalEsbLabel.setSizePolicy(sizePolicy1)
+        self.totalEsbLabel.setFont(font4)
+
+        self.horizontalLayout_12.addWidget(self.totalEsbLabel)
+
+        self.horizontalSpacer_7 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.horizontalLayout_12.addItem(self.horizontalSpacer_7)
+
+        self.label_15 = QLabel(self.groupBox)
+        self.label_15.setObjectName(u"label_15")
+        sizePolicy1.setHeightForWidth(self.label_15.sizePolicy().hasHeightForWidth())
+        self.label_15.setSizePolicy(sizePolicy1)
+        self.label_15.setFont(font3)
+
+        self.horizontalLayout_12.addWidget(self.label_15)
+
+        self.totalFundingLabel = QLabel(self.groupBox)
+        self.totalFundingLabel.setObjectName(u"totalFundingLabel")
+        sizePolicy1.setHeightForWidth(self.totalFundingLabel.sizePolicy().hasHeightForWidth())
+        self.totalFundingLabel.setSizePolicy(sizePolicy1)
+        self.totalFundingLabel.setFont(font4)
+
+        self.horizontalLayout_12.addWidget(self.totalFundingLabel)
+
+
+        self.verticalLayout_3.addLayout(self.horizontalLayout_12)
+
 
         self.horizontalLayout_6.addLayout(self.verticalLayout_3)
 
@@ -157,7 +229,7 @@ class Ui_MainWindow(object):
 
         self.groupBox_2 = QGroupBox(self.centralwidget)
         self.groupBox_2.setObjectName(u"groupBox_2")
-        sizePolicy3 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Minimum)
+        sizePolicy3 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
         sizePolicy3.setHorizontalStretch(0)
         sizePolicy3.setVerticalStretch(0)
         sizePolicy3.setHeightForWidth(self.groupBox_2.sizePolicy().hasHeightForWidth())
@@ -247,6 +319,11 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_9 = QHBoxLayout()
         self.horizontalLayout_9.setObjectName(u"horizontalLayout_9")
+        self.label_11 = QLabel(self.groupBox_2)
+        self.label_11.setObjectName(u"label_11")
+
+        self.horizontalLayout_9.addWidget(self.label_11)
+
         self.label_7 = QLabel(self.groupBox_2)
         self.label_7.setObjectName(u"label_7")
         self.label_7.setFont(font2)
@@ -282,16 +359,11 @@ class Ui_MainWindow(object):
 
         self.lastAvYearsLabel = QLabel(self.groupBox_2)
         self.lastAvYearsLabel.setObjectName(u"lastAvYearsLabel")
-        font3 = QFont()
-        font3.setPointSize(13)
-        font3.setItalic(True)
-        self.lastAvYearsLabel.setFont(font3)
-        self.lastAvYearsLabel.setStyleSheet(u"QLabel[cssClass=\"number-label\"] {\n"
-"	padding: 5px;\n"
-"	background-color: rgb(18, 65, 255);\n"
-"	border-radius: 5px;\n"
-"	font-style: italic;\n"
-"}")
+        font5 = QFont()
+        font5.setPointSize(13)
+        font5.setItalic(True)
+        self.lastAvYearsLabel.setFont(font5)
+        self.lastAvYearsLabel.setStyleSheet(u"")
 
         self.horizontalLayout_10.addWidget(self.lastAvYearsLabel)
 
@@ -351,7 +423,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 1119, 30))
+        self.menubar.setGeometry(QRect(0, 0, 1436, 30))
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QStatusBar(MainWindow)
         self.statusbar.setObjectName(u"statusbar")
@@ -371,6 +443,24 @@ class Ui_MainWindow(object):
         self.label_4.setText(QCoreApplication.translate("MainWindow", u"Componenti", None))
         self.newComponentBtn.setText(QCoreApplication.translate("MainWindow", u"Nuova", None))
         self.removeComponentBtn.setText(QCoreApplication.translate("MainWindow", u"Rimuovi", None))
+#if QT_CONFIG(tooltip)
+        self.label_10.setToolTip(QCoreApplication.translate("MainWindow", u"Disponibilit\u00e0 liquide disponibili all'ultimo bilancio", None))
+#endif // QT_CONFIG(tooltip)
+        self.label_10.setText(QCoreApplication.translate("MainWindow", u"Disponibilit\u00e0 liquide", None))
+        self.liquidAvailabilityLabel.setText(QCoreApplication.translate("MainWindow", u"1000\u20ac", None))
+        self.liquidAvailabilityLabel.setProperty(u"cssClass", QCoreApplication.translate("MainWindow", u"number-label", None))
+#if QT_CONFIG(tooltip)
+        self.label_13.setToolTip(QCoreApplication.translate("MainWindow", u"Totale esborso immediato del progetto nel primo mese", None))
+#endif // QT_CONFIG(tooltip)
+        self.label_13.setText(QCoreApplication.translate("MainWindow", u"Totale esborso progetto", None))
+        self.totalEsbLabel.setText(QCoreApplication.translate("MainWindow", u"1000\u20ac", None))
+        self.totalEsbLabel.setProperty(u"cssClass", QCoreApplication.translate("MainWindow", u"number-label", None))
+#if QT_CONFIG(tooltip)
+        self.label_15.setToolTip(QCoreApplication.translate("MainWindow", u"Totale finanziamenti (a debito e tramite soci) richiesti", None))
+#endif // QT_CONFIG(tooltip)
+        self.label_15.setText(QCoreApplication.translate("MainWindow", u"Totale finanziamenti", None))
+        self.totalFundingLabel.setText(QCoreApplication.translate("MainWindow", u"1000\u20ac", None))
+        self.totalFundingLabel.setProperty(u"cssClass", QCoreApplication.translate("MainWindow", u"number-label", None))
         self.groupBox_2.setTitle(QCoreApplication.translate("MainWindow", u"Parametri simulazione", None))
         self.label.setText(QCoreApplication.translate("MainWindow", u"Azienda selezionata", None))
 #if QT_CONFIG(tooltip)
@@ -378,6 +468,7 @@ class Ui_MainWindow(object):
 #endif // QT_CONFIG(tooltip)
         self.label_5.setText(QCoreApplication.translate("MainWindow", u"Numero di anni", None))
         self.label_6.setText(QCoreApplication.translate("MainWindow", u"Anno iniziale", None))
+        self.label_11.setText(QCoreApplication.translate("MainWindow", u"TextLabel", None))
 #if QT_CONFIG(tooltip)
         self.label_7.setToolTip(QCoreApplication.translate("MainWindow", u"Crescita spontanea del fatturato senza operazioni", None))
 #endif // QT_CONFIG(tooltip)
