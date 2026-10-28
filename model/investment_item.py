@@ -148,10 +148,10 @@ class FundingInvestment(AbstractInvestmentItem):
         return self.total_import
 
 class InvestmentProject:
-    def __init__(self, title: str, description: str, global_effects: list):
+    def __init__(self, title: str, description: str, global_effects: list, items: list[AbstractInvestmentItem] | None = None):
         self.title = title
         self.description = description
-        self.items: list[AbstractInvestmentItem] = []
+        self.items: list[AbstractInvestmentItem] = items or []
         self.global_effects = global_effects
 
     @staticmethod

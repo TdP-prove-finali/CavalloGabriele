@@ -18,13 +18,11 @@ class AssetDialog(QDialog):
         self.ui.maintenanceCostEdit.setValidator(QRegularExpressionValidator(regex, self.ui.maintenanceCostEdit))
 
     def accept(self, /):
-        print("Accept")
         t = self.ui.operationTitleEdit.text()
         c_l = self.ui.totalCostEdit.text()
         s = self.ui.durationSpinBox.text()
         o = self.ui.maintenanceCostEdit.text()
         r = self.ui.assetTypeCombo.currentIndex()
-        print(r)
 
         if check_empty(t) or check_empty(c_l) or check_empty(r):
             msgBox = QMessageBox()

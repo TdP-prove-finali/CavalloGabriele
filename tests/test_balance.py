@@ -1,6 +1,8 @@
 from controller.simulation_controller import SimulationWorker
+from dao.simulation.simulation_dao import SimulationDAO
 from model.investment_item import InvestmentProject
 from model.raw_company_data import BalanceSnaphot, BalanceLocation
+from model.sim_output import SimulationOutput
 from model.sim_state import SimulationCompleteModel, SimulationState, GlobalParameters
 from test_data import complete_company_1
 
@@ -25,27 +27,22 @@ def test_balance():
 
 def test_sim():
     b = complete_company_1
-    ctrl = SimulationWorker(
-        SimulationCompleteModel(
-            SimulationState(
-                b,
-                GlobalParameters(
+    ctrl = SimulationOutput(
+            global_parameters=GlobalParameters(
                     b.fiscal_code,
                     2,
                     2026,
                     organic_growth=0.5,
                     last_available_years=b.available_years,
                     sim_id=5
-                )
-            ),
-            InvestmentProject(
+                ),
+            balance=BalanceSnaphot.from_company_data(complete_company_1, (0, 0), 5, ""),
+            project=InvestmentProject(
                 "test",
                 "test",
                 []
             )
-        ),
-        None,
-        None
-    )
-    ctrl.start()
+        )
 
+    SimulationDAO.save_simulation(ctrl)
+    assert True

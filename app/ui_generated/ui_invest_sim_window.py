@@ -319,11 +319,6 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_9 = QHBoxLayout()
         self.horizontalLayout_9.setObjectName(u"horizontalLayout_9")
-        self.label_11 = QLabel(self.groupBox_2)
-        self.label_11.setObjectName(u"label_11")
-
-        self.horizontalLayout_9.addWidget(self.label_11)
-
         self.label_7 = QLabel(self.groupBox_2)
         self.label_7.setObjectName(u"label_7")
         self.label_7.setFont(font2)
@@ -468,7 +463,6 @@ class Ui_MainWindow(object):
 #endif // QT_CONFIG(tooltip)
         self.label_5.setText(QCoreApplication.translate("MainWindow", u"Numero di anni", None))
         self.label_6.setText(QCoreApplication.translate("MainWindow", u"Anno iniziale", None))
-        self.label_11.setText(QCoreApplication.translate("MainWindow", u"TextLabel", None))
 #if QT_CONFIG(tooltip)
         self.label_7.setToolTip(QCoreApplication.translate("MainWindow", u"Crescita spontanea del fatturato senza operazioni", None))
 #endif // QT_CONFIG(tooltip)

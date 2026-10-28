@@ -1,6 +1,7 @@
+import random
+
 from PySide6.QtCore import QThread, Slot, Qt
 from PySide6.QtWidgets import QDialog, QApplication, QMessageBox, QMenu
-
 from app.dialogs.asset_dialog import AssetDialog
 from app.dialogs.employee_hire_dialog import EmployeeHireDialog
 from app.dialogs.funding_dialog import FundingDialog
@@ -8,12 +9,14 @@ from app.dialogs.op_improvement_dialog import OperativeImprovementDialog
 from app.windows.investsimwindow import InvestSimWindow
 from controller.abstract import AbstractController
 from controller.simulation_controller import SimulationWorker
-from dao.util import format_number
+from dao.simulation.simulation_dao import SimulationDAO
+from dao.util import format_number, parse
 from model.invest_proj_model import InvestmentProjModel
 from model.investment_item import InvestmentProject
 from model.item_list_model import ItemListModel
 from model.main_model import MainModel
 from model.raw_company_data import BalanceSnaphot
+from model.sim_output import SimulationOutput
 from model.sim_state import GlobalParameters, SimulationState, SimulationCompleteModel
 
 class InvestProjectController(AbstractController[InvestSimWindow, InvestmentProjModel, MainModel]):
@@ -27,7 +30,6 @@ class InvestProjectController(AbstractController[InvestSimWindow, InvestmentProj
 
     def init(self):
         self.view.setWindowTitle("Nuovo progetto di investimento")
-        print(self.parent_model.company_data.available_years)
         model = ItemListModel(list_data = [])
         self.set_internal_pointer("model", model)
         self.view.ui.companyNameEdit.setText(self.parent_model.company_data.company_name)
@@ -128,6 +130,15 @@ class InvestProjectController(AbstractController[InvestSimWindow, InvestmentProj
         if self.thread is not None:
             return
 
+        params = GlobalParameters(
+            selected_company=self.parent_model.company_data.fiscal_code,
+            number_of_years=parse(self.view.ui.numberOfYears.text()),
+            initial_year=parse(self.view.ui.startingYearEdit.text()),
+            organic_growth=parse(self.view.ui.organicGrowthSpin.text()),
+            last_available_years=self.parent_model.company_data.available_years,
+            sim_id=SimulationDAO.create_sim_id()
+        )
+
         print("Avvio thread")
         self.view.ui.simStatusBar.setValue(0)
         self.view.ui.simStatusBar.setVisible(True)
@@ -135,19 +146,13 @@ class InvestProjectController(AbstractController[InvestSimWindow, InvestmentProj
         worker = SimulationWorker(SimulationCompleteModel(
             SimulationState(
                 self.parent_model.company_data,
-                GlobalParameters(
-                    self.parent_model.company_data.fiscal_code,
-                    2,
-                    2026,
-                    organic_growth=0.5,
-                    last_available_years=self.parent_model.company_data.available_years,
-                    sim_id=5
-                )
+                params
             ),
             InvestmentProject(
-                "test",
-                "test",
-                []
+                self.view.ui.projectTitleLineEdit.text(),
+                self.view.ui.projectDescription.toHtml(),
+                [],
+                items=self.model.components
             )
         ),)
         self.thread = thread
@@ -182,7 +187,7 @@ class InvestProjectController(AbstractController[InvestSimWindow, InvestmentProj
         print("In progress "+ str(progress))
 
     @Slot(object)
-    def on_finished(self, results: BalanceSnaphot) -> None:
+    def on_finished(self, results: SimulationOutput) -> None:
         """
         Segnale inviato quando la simulazione è terminata.
         Contiene l'ultimo snapshot di bilancio generato

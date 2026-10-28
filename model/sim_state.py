@@ -14,7 +14,8 @@ class GlobalParameters:
     sim_id: int
 
 class SimulationState:
-    def __init__(self, h_comp_data: CompanyData, global_parameters: GlobalParameters):
+    def __init__(self, h_comp_data: CompanyData,
+                 global_parameters: GlobalParameters):
         self.historical_company_data = h_comp_data
         self.global_parameters = global_parameters
         self.timestamp = (0, 0)
