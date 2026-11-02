@@ -27,16 +27,34 @@ Your abstract.
 \section{Introduction}
 Fonti utilizzate \href{https://www.agile-hr-analytics.com/hr-performance-kpis-guide/}{KPI performance dipendenti}
 Lomax \href{https://en.wikipedia.org/wiki/Lomax_distribution}{Distribuzione Lomax}
+Modello GBM \href{https://www.simtrade.fr/blog_simtrade/modeling-asset-prices-financial-markets-arithmetic-geometric-brownian-motions/}{Modello GBM}
 
 La mia bellissima tesina triennale
 
 \tableofcontents
+\section{Descrizione del dataset utilizzato}
+Il dataset utilizzato è AIDA Bureau Van Dijk, che contiene le informazioni di bilancio di tutte le principali società italiane. Tale base dati fornisce la possibilità di esportare le informazioni solo in Excel (tramite la licenza in possesso dal Politecnico di Torino) quindi è stato strutturato un modulo Python per permettere l'importazione dei dati dall'excel ad un database non-relazionale. 
+Il motivo di questa scelta è dovuta alla struttura del bilancio, che è variabile (a seconda delle regole contabili utilizzate, della dimensione dell'impresa, etc...) e può causare l'assenza di voci. 
+Utilizzando un database non relazionale è stato possibile gestire questa dinamicità, così come la diversa risoluzione dei dati contenuti (a seconda dell'impresa sono presenti annualità diverse). 
+Il database utilizzato è MongoDB.  
+
+\subsubsection{Struttura dati delle aziende}
+L'entità fondamentale su cui è costruito il programma è la CompanyData, che rappresenta i dati a disposizione su un'azienda. Per strutturarla, si è partiti dalla struttura dell'export di AIDA, che è diviso in macro-sezioni ognuna con un titolo ("anagrafica", "informazioni commerciali e legali", etc...)
+Anche la struttura del documento creato su MongoDB segue la stessa idea, ad ogni company corrisponde un insieme di sezioni titolate, ognuna delle quali contiene all'interno tutti i dati afferenti quella sezione.   
+Ognuna di queste sezioni, gestita dalla classe Section ha un titolo ed è memorizzata come un dizionario in cui le chiavi sono i nomi dei campi e i valori sono delle liste contenenti tutti i dati storici ordinati di quel campo.  
+L'ordine è fondamentale, sia orizzontalmente (ordine temporale) che verticalmente (ordine delle voci nei documenti) per ricostruire il bilancio dopo averlo caricato e permettere di visualizzarlo.  
+
+
+Per garantire anche l'ordine verticale, ad ogni voce di ogni documento viene associato un nome tecnico generato dinamicamente (non scritto nell'applicazione) secondo un criterio di trasformazione che parte dalla descrizione testuale della voce. Questo viene chiamato field\_name ed è un identificatore python valido, generato tramite un'apposita funzione. La caratteristica del field\_name è quella di permettere di ricostruire la posizione del campo nel documento, mantenendo i riferimenti di lettera e numero se presenti. 
+
 
 \section{Tipi di investimento supportati}
+L'applicazione supporta una selezione di "tipi di investimento" che raccolgono le caratteristiche delle operazioni più importanti che si possono pianificare. Ognuno di essi ha una serie di parametri di configurazione impostati dall'utente in un apposito dialogo e racchiude al suo interno una serie di effetti atomici applicati alle singole voci di bilancio. Oltre ad investimenti veri e propri, come l'assunzione di un dipendente o l'acquisto di cespiti, vengono anche fornite le principali metodologie di finanziamento di tali operazioni, in modo tale da rendere la simulazione effettivamente realistica. 
+Durante la configurazione del progetto, l'utente può visualizzare la liquidità disponibile al termine dell'ultimo anno, insieme ad una misura dell'esborso iniziale del progetto di investimento. 
 
 \subsection{Assunzione di nuovo dipendente}
 
-Questa tipologia di investimento rappresenta l'assunzione di un nuovo dipendente da parte dell'azienda. Viene modellizzato utilizzando un approccio causa-effetto, in cui la causa contiene tutti i dati di configurazione dell'investimento (dettagliati a breve) e l'effetto riassume le singole modifiche che avvengono a livello di bilancio.  
+Questa tipologia di investimento rappresenta l'assunzione di un nuovo dipendente da parte dell'azienda. Viene modellato utilizzando un approccio costo-effetto, in cui il costo contiene tutti i dati di configurazione dell'investimento (dettagliati a breve) e l'effetto riassume le singole modifiche che avvengono a livello di bilancio.  
 
 Per l'assunzione di un dipendente, l'azienda sostiene una serie di costi, modellate tramite queste variabili: 
 \begin{itemize}
@@ -60,7 +78,7 @@ Scopo del modello è anche quello di prevedere l'impatto di questa nuova assunzi
     \item A seconda del ruolo del dipendente, l'impatto in termini di produttività è diverso
 \end{enumerate}
 
-\subsection{Aumento della produttività aziendale}
+\subsubsection{Aumento della produttività aziendale}
 Nel punto \ref{item:productivity} si è anticipato che una nuova assunzione porta ad un aumento della produttività aziendale. In questa sezione si esplicherà meglio come è stato sviluppato questo aspetto del modello. 
 Un KPI molto utilizzato per valutare le performance dei dipendenti è il fatturato pro-capite, ossia:
 \[
@@ -85,7 +103,7 @@ Con:
 Come è possibile osservare nell'equazione \ref{eq:general}, la funzione $\alpha(t)$ smorza il valore medio di produttività di ogni dipendente, producendo al massimo il 100\% della produttività media. Esistono però dei casi in cui il dipendente produce di più della media, che vengono riassunti dalla variabile casuale $HP$. 
 Questa variabile casuale segue una distribuzione che raccoglie la maggior parte dei valori possibili vicino a 0 (perchè la maggior parte dei dipendenti produrrà al massimo la media) ma permette la presenza di "eccezioni" che producono anche di più della media e ne riassume la probabilità. 
 
-\subsection{Curva di apprendimento}
+\subsubsection{Curva di apprendimento}
 Come descritto al punto \ref{item:learning-curve}, un nuovo dipendente presenta una curva di apprendimento. Per strutturarla è stata sfruttata la metrica (largamente utilizzata nei reparti HR) del $TTP$ (Time To Productivity) che indica il tempo in mesi dall'assunzione necessario a far sì che il nuovo dipendente raggiunga la produttività massima in percentuale. 
 La produttività percentuale del dipendente, indicata con $\alpha(t)$ è una funzione che dipende dalla variabile $t$, indice del mese in cui la si vuole valutare. 
 
@@ -128,6 +146,60 @@ Una rappresentazione grafica è la seguente:
     \caption{Andamento della curva di apprendimento}
     \label{fig:placeholder}
 \end{figure}
+
+\section{Parametri globali della simulazione}
+Per l'esecuzione della simulazione possono essere impostati dei parametri globali, tra cui:
+\begin{enumerate}
+    \item \label{item:organic-growth} Crescita organica
+    \item Numero di anni
+\end{enumerate}
+
+\subsection{Crescita organica}
+I ricavi di un'azienda possono crescere anche senza modifiche struttuali della capacità produttiva. Questo parametro permette di personalizzare questa dinamica automatica, integrata di default nella simulazione. 
+Il modello utilizzato per rappresentare la crescita del fatturato di anno in anno è quello dell'Geometric Brownian Motion (GBM), largamente utilizzato nella finanza per simulare l'andamento dei prezzi di un asset rischioso, affetto da incertezza e su un determinato orizzonte temporale. La caratteristica fondamentale del GBM è che non permette valori di prezzo negativi, rendendolo adatto allo scopo. In questo caso, il "prezzo" dell'asset rappresenta il fatturato dell'azienda in un certo anno, di cui vogliamo modellare l'andamento e renderlo casuale. 
+Una seconda opzione sarebbe stata quella di utilizzare il modello ABM (Aritmetic Brownian Model), che però ammette valori negativi  generando dei fatturati $< 0$, chiaramente non realistici. 
+
+GBM è un processo stocastico non-negativo continuo i cui incrementi sono distributi secondo una normale. 
+Trattandosi di un modello continuo, applicato però ad una simulazione i cui eventi sono discreti, si è sfruttata la soluzione esatta per lo svolgimento di simulazioni Monte Carlo:
+
+Nota: la media $\mu$ e la varianza $\sigma^2$ sono assunti costanti nel tempo e non dipendenti da nessun fattore, impostati dall'utente nelle impostazioni. 
+
+La formula principale di calcolo è:
+\begin{equation}
+X_{t_{n+1}} = X_{t_n}
+\exp\left[
+\left(\mu-\frac{\sigma^2}{2}\right)\Delta t
++\sigma\sqrt{\Delta t}\,Z_n
+\right],
+\qquad Z_n\sim\mathcal{N}(0,1).
+\end{equation}
+L'unità temporale del modello è l'anno, nonostante la simulazione si svolga di mese in mese. 
+In cui:
+\begin{itemize}
+    \item $X$ rappresenta il livello di fatturato in euro all'istante di tempo successivo $t_{n+1}$ in termini assoluti. L'aumento invece si ricava da $X_{t_{n+1}} - X_{t_n}$
+    \item $\mu$ media della distribuzione, ossia il drift del fatturato $\mu \in [0,1] \subset \mathbb{R}$
+    \item $\sigma^2$ volatilità dei ricavi (per aziende giovani è molto alta, per aziende più strutturate può essere ridotta) $\sigma^2 \in [0,1] \subset \mathbb{R}$
+    \item $Z_n$ estrazione casuale di una variabile aleatoria normale standard
+\end{itemize}
+Questa formula viene applicata ad ogni anno della simulazione per ricalcolare la voce dei ricavi (o fatturato) presente in bilancio nel conto economico ed è configurabile nei parametri globali. 
+\subsubsection{Implementazione}
+Per realizzare il meccanismo in Python il valore dell'estrazione $Z_n$ viene ottenuto con il generatore di numpy, applicando la distribuzione normale con media 0 e varianza 1.
+Il valore della variabile aleatoria $X_{t_{n}}$ è invece ottenuto dalla colonna precedente del campo fatturato (o ricavi). 
+
+
+Riassumendo, il modello utilizzato per la crescita organica, grazie all'utilizzo della GBM, ammette crescite positive, negative o stagnanti ($= 0$) ma non permette al valore del fatturato complessivo di diventare negativo. 
+Un miglioramento successivo potrebbe essere quello di limitare anche il valore massimo del fatturato, sfruttando modelli per prevedere un livello di fatturato massimo a partire dai dati di bilancio. 
+
+\subsection{Numero di anni}
+La simulazione può essere svolta lungo un orizzonte temporale definito nel numero di anni a partire dall'ultimo presente nei bilanci storici. 
+Lo svolgimento dei calcoli e degli step discreti è però mensile, siccome il mese rappresenta l'unità più atomica di tutti gli effetti del progetto di investimento. 
+
+\section{Motore di simulazione}
+Il programma funziona grazie ad un motore di simulazione che è stato implementato ad hoc, sulla base del framework SimPy, che fornisce la struttura base di gestione dei processi e degli eventi. Di seguito viene descritta la struttura del motore e, successivamente, il dettaglio di tutte le tipologie possibili di componenti di investimento insieme.
+\subsection{Funzionamento generale}
+GG
+\subsection{Diagramma delle classi}
+GG
 
 \bibliographystyle{alpha}
 \bibliography{sample}
