@@ -325,17 +325,38 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_9.addWidget(self.label_7)
 
-        self.organicGrowthSpin = QDoubleSpinBox(self.groupBox_2)
-        self.organicGrowthSpin.setObjectName(u"organicGrowthSpin")
-        self.organicGrowthSpin.setFont(font2)
+        self.organicGRAvgEdit = QLineEdit(self.groupBox_2)
+        self.organicGRAvgEdit.setObjectName(u"organicGRAvgEdit")
+        sizePolicy2.setHeightForWidth(self.organicGRAvgEdit.sizePolicy().hasHeightForWidth())
+        self.organicGRAvgEdit.setSizePolicy(sizePolicy2)
 
-        self.horizontalLayout_9.addWidget(self.organicGrowthSpin)
+        self.horizontalLayout_9.addWidget(self.organicGRAvgEdit)
 
         self.label_8 = QLabel(self.groupBox_2)
         self.label_8.setObjectName(u"label_8")
         self.label_8.setFont(font2)
 
         self.horizontalLayout_9.addWidget(self.label_8)
+
+        self.horizontalSpacer_8 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.horizontalLayout_9.addItem(self.horizontalSpacer_8)
+
+        self.label_11 = QLabel(self.groupBox_2)
+        self.label_11.setObjectName(u"label_11")
+
+        self.horizontalLayout_9.addWidget(self.label_11)
+
+        self.organigGRVarEdit = QDoubleSpinBox(self.groupBox_2)
+        self.organigGRVarEdit.setObjectName(u"organigGRVarEdit")
+        self.organigGRVarEdit.setValue(0.400000000000000)
+
+        self.horizontalLayout_9.addWidget(self.organigGRVarEdit)
+
+        self.label_12 = QLabel(self.groupBox_2)
+        self.label_12.setObjectName(u"label_12")
+
+        self.horizontalLayout_9.addWidget(self.label_12)
 
         self.horizontalSpacer_11 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
@@ -418,7 +439,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 1436, 30))
+        self.menubar.setGeometry(QRect(0, 0, 1436, 33))
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QStatusBar(MainWindow)
         self.statusbar.setObjectName(u"statusbar")
@@ -466,8 +487,11 @@ class Ui_MainWindow(object):
 #if QT_CONFIG(tooltip)
         self.label_7.setToolTip(QCoreApplication.translate("MainWindow", u"Crescita spontanea del fatturato senza operazioni", None))
 #endif // QT_CONFIG(tooltip)
-        self.label_7.setText(QCoreApplication.translate("MainWindow", u"Crescita organica", None))
+        self.label_7.setText(QCoreApplication.translate("MainWindow", u"Crescita organica media", None))
+        self.organicGRAvgEdit.setText(QCoreApplication.translate("MainWindow", u"0,20", None))
         self.label_8.setText(QCoreApplication.translate("MainWindow", u"%", None))
+        self.label_11.setText(QCoreApplication.translate("MainWindow", u"Varianza", None))
+        self.label_12.setText(QCoreApplication.translate("MainWindow", u"%", None))
         self.label_9.setText(QCoreApplication.translate("MainWindow", u"Anni passati disponibili", None))
         self.lastAvYearsLabel.setText(QCoreApplication.translate("MainWindow", u"5", None))
         self.lastAvYearsLabel.setProperty(u"cssClass", QCoreApplication.translate("MainWindow", u"number-label", None))

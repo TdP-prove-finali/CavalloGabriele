@@ -32,7 +32,7 @@ def test_sim():
                     b.fiscal_code,
                     2,
                     2026,
-                    organic_growth=0.5,
+                    organic_growth_avg=0.5,
                     last_available_years=b.available_years,
                     sim_id=5
                 ),

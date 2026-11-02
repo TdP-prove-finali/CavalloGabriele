@@ -594,16 +594,20 @@
             <string>Crescita spontanea del fatturato senza operazioni</string>
            </property>
            <property name="text">
-            <string>Crescita organica</string>
+            <string>Crescita organica media</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QDoubleSpinBox" name="organicGrowthSpin">
-           <property name="font">
-            <font>
-             <pointsize>13</pointsize>
-            </font>
+          <widget class="QLineEdit" name="organicGRAvgEdit">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>0,20</string>
            </property>
           </widget>
          </item>
@@ -614,6 +618,40 @@
              <pointsize>13</pointsize>
             </font>
            </property>
+           <property name="text">
+            <string>%</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_8">
+           <property name="orientation">
+            <enum>Qt::Orientation::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_11">
+           <property name="text">
+            <string>Varianza</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QDoubleSpinBox" name="organigGRVarEdit">
+           <property name="value">
+            <double>0.400000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_12">
            <property name="text">
             <string>%</string>
            </property>
@@ -785,7 +823,7 @@
      <x>0</x>
      <y>0</y>
      <width>1436</width>
-     <height>30</height>
+     <height>33</height>
     </rect>
    </property>
   </widget>

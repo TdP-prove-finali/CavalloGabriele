@@ -1,5 +1,4 @@
 from enum import IntEnum
-
 from model.investment_effect import (InvestmentEffect,
                                      EffectFrequency,
                                      EffectDestination,

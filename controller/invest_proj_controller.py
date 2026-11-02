@@ -1,6 +1,5 @@
-import random
-
-from PySide6.QtCore import QThread, Slot, Qt
+from PySide6.QtCore import QThread, Slot, Qt, QRegularExpression
+from PySide6.QtGui import QRegularExpressionValidator
 from PySide6.QtWidgets import QDialog, QApplication, QMessageBox, QMenu
 from app.dialogs.asset_dialog import AssetDialog
 from app.dialogs.employee_hire_dialog import EmployeeHireDialog
@@ -15,7 +14,6 @@ from model.invest_proj_model import InvestmentProjModel
 from model.investment_item import InvestmentProject
 from model.item_list_model import ItemListModel
 from model.main_model import MainModel
-from model.raw_company_data import BalanceSnaphot
 from model.sim_output import SimulationOutput
 from model.sim_state import GlobalParameters, SimulationState, SimulationCompleteModel
 
@@ -29,6 +27,7 @@ class InvestProjectController(AbstractController[InvestSimWindow, InvestmentProj
         self.worker = None
 
     def init(self):
+        regex = QRegularExpression(r"-?\d+(?:[.,]\d+)?")
         self.view.setWindowTitle("Nuovo progetto di investimento")
         model = ItemListModel(list_data = [])
         self.set_internal_pointer("model", model)
@@ -38,6 +37,7 @@ class InvestProjectController(AbstractController[InvestSimWindow, InvestmentProj
         self.view.ui.stopSimBtn.setVisible(False)
         self.view.ui.projectComponentsListView.setModel(model)
         self.view.ui.startSimBtn.clicked.connect(self.run_simulation)
+        self.view.ui.organicGRAvgEdit.setValidator(QRegularExpressionValidator(regex, self.view.ui.organicGRAvgEdit))
 
         menu = QMenu(self.view.ui.newComponentBtn)
         action1 = menu.addAction("Assunzione dipendente")
@@ -49,12 +49,15 @@ class InvestProjectController(AbstractController[InvestSimWindow, InvestmentProj
         action3.triggered.connect(self.handleCreateFinancial)
         action4.triggered.connect(self.handleCreateEffic)
 
-        v = self.parent_model.company_data.stato_patrimoniale["subsections"]["attivo"]["civ_tot_dispon_liquide"][0] * 1.00
-        if "migl" in self.parent_model.company_data.stato_patrimoniale["moneta"][0]:
-            v = v * 1000
-        self.view.ui.liquidAvailabilityLabel.setText(format_number(v) + " €")
-        self.__update_stats()
+        v = self.parent_model.company_data.stato_patrimoniale["subsections"]["attivo"]["civ_tot_dispon_liquide"][0]
+        if v is None:
+            self.view.ui.liquidAvailabilityLabel.setText("n.d. €")
+        else:
+            if "migl" in self.parent_model.company_data.stato_patrimoniale["moneta"][0]:
+                v = v * 1000
+            self.view.ui.liquidAvailabilityLabel.setText(format_number(v) + " €")
 
+        self.__update_stats()
         self.view.ui.newComponentBtn.setMenu(menu)
         super().init()
 
@@ -134,12 +137,12 @@ class InvestProjectController(AbstractController[InvestSimWindow, InvestmentProj
             selected_company=self.parent_model.company_data.fiscal_code,
             number_of_years=parse(self.view.ui.numberOfYears.text()),
             initial_year=parse(self.view.ui.startingYearEdit.text()),
-            organic_growth=parse(self.view.ui.organicGrowthSpin.text()),
+            organic_growth_avg=parse(self.view.ui.organicGRAvgEdit.text()),
+            organic_growth_var=parse(self.view.ui.organigGRVarEdit.text()),
             last_available_years=self.parent_model.company_data.available_years,
             sim_id=SimulationDAO.create_sim_id()
         )
 
-        print("Avvio thread")
         self.view.ui.simStatusBar.setValue(0)
         self.view.ui.simStatusBar.setVisible(True)
         thread = QThread(None)
