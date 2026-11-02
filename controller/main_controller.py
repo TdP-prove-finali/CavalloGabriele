@@ -1,5 +1,7 @@
 from PySide6.QtCore import QMargins
 from PySide6.QtWidgets import QMessageBox, QHeaderView, QTableView, QHBoxLayout, QWidget
+
+from app.charts.chart import create_balance_chart, create_chart_error
 from app.dialogs.balance_detail_dialog import BalanceDetailDialog
 from app.widget.resizable_vert_header import ResizableVerticalHeader
 from app.windows.investsimwindow import InvestSimWindow
@@ -55,6 +57,7 @@ class MainController(AbstractController[MainWindow, MainModel, None]):
             self.loadCETView()
             self.loadSPTView()
             self.loadIndiciesTables()
+            self.loadPieChart()
 
     def handleExpandBalance(self):
         dial = BalanceDetailDialog()
@@ -130,7 +133,35 @@ class MainController(AbstractController[MainWindow, MainModel, None]):
         data.itersections(create_sec_tab)
 
     def loadPieChart(self):
-        pass
+        c = self.model.company_data
+        attivo = c.stato_patrimoniale["subsections"]["attivo"]
+        patrim = c.stato_patrimoniale["subsections"]["passivo"]["subsections"]["patrimonio_netto"]
+        debiti = c.stato_patrimoniale["subsections"]["passivo"]["subsections"]["debiti"]
+        i = attivo["b_totale_immobilizzazioni_sepind_di_quelle_conc_in_loc_finanz"][0]
+        ac = attivo["c_attivo_circolante"][0]
+        pn = patrim["a_totale_patrimonio_netto"][0]
+        pb = debiti["d_debiti_a_breve"][0]
+        pl = debiti["d_debiti_a_oltre"][0]
+        ra = attivo["d_ratei_e_risconti"][0] or 0
+        rp = debiti["e_ratei_e_risconti"][0] or 0
+        tfr = patrim["c_trattamento_di_fine_rapporto"][0] or 0
+        fndrs = patrim["b_totale_fondi_rischi"][0] or 0
+
+        if i is None or ac is None or pn is None or pb is None or pl is None:
+            create_chart_error(self.view.ui.struttura_sp_tab)
+            return
+
+        create_balance_chart(self.view.ui.struttura_sp_tab,
+                             immobilizzazioni=i,
+                             attivo_circolante=ac,
+                             patrimonio_netto=pn,
+                             passivita_breve=pb,
+                             passivita_medio_lungo=pl,
+                             ratei_risconti_attivi=ra,
+                             ratei_risconti_passivi=rp,
+                             fondo_tfr=tfr,
+                             fondi_rischi=fndrs
+                             )
 
     def handleClose(self, event):
         self.view.close()
