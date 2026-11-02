@@ -325,10 +325,8 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_9.addWidget(self.label_7)
 
-        self.organicGRAvgEdit = QLineEdit(self.groupBox_2)
+        self.organicGRAvgEdit = QDoubleSpinBox(self.groupBox_2)
         self.organicGRAvgEdit.setObjectName(u"organicGRAvgEdit")
-        sizePolicy2.setHeightForWidth(self.organicGRAvgEdit.sizePolicy().hasHeightForWidth())
-        self.organicGRAvgEdit.setSizePolicy(sizePolicy2)
 
         self.horizontalLayout_9.addWidget(self.organicGRAvgEdit)
 
@@ -488,7 +486,6 @@ class Ui_MainWindow(object):
         self.label_7.setToolTip(QCoreApplication.translate("MainWindow", u"Crescita spontanea del fatturato senza operazioni", None))
 #endif // QT_CONFIG(tooltip)
         self.label_7.setText(QCoreApplication.translate("MainWindow", u"Crescita organica media", None))
-        self.organicGRAvgEdit.setText(QCoreApplication.translate("MainWindow", u"0,20", None))
         self.label_8.setText(QCoreApplication.translate("MainWindow", u"%", None))
         self.label_11.setText(QCoreApplication.translate("MainWindow", u"Varianza", None))
         self.label_12.setText(QCoreApplication.translate("MainWindow", u"%", None))

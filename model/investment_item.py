@@ -1,8 +1,9 @@
 from enum import IntEnum
+
+from model.balance_snap import BalanceLocation
 from model.investment_effect import (InvestmentEffect,
                                      EffectFrequency,
-                                     EffectDestination,
-                                     ValueMode, EffectType)
+                                    EffectType)
 
 
 class AbstractInvestmentItem:
@@ -55,15 +56,28 @@ class EmployeeHireInvestment(AbstractInvestmentItem):
 
         # TODO: Raffinare gli effetti
         effects.append(InvestmentEffect(
-            0, EffectType.INCREASE, ValueMode.CONSTANT, "costi_operativi", EffectFrequency.MONTHLY, EffectDestination.CONTO_ECON, value_constant=total_monthly_cost),
+            title="stipendio-mensile",
+            inv_type=EffectType.CONST,
+            field_name="b9a_salari_e_stipendi",
+            frequency=EffectFrequency.MONTHLY,
+            where=BalanceLocation.CE,
+            value_constant=total_monthly_cost),
         )
         effects.append(InvestmentEffect(
-            1, EffectType.INCREASE, ValueMode.CONSTANT, "costi_operativi", EffectFrequency.ANNUAL,
-            EffectDestination.CONTO_ECON, value_constant=self.tfr_quote),
+            title="accantonamento-tfr",
+            inv_type=EffectType.CONST,
+            field_name="b9c_tratt_fine_rapporto",
+            frequency=EffectFrequency.ANNUAL,
+            where=BalanceLocation.CE,
+            value_constant=self.tfr_quote),
         )
         effects.append(InvestmentEffect(
-            1, EffectType.INCREASE, ValueMode.CONSTANT, "costi_operativi", EffectFrequency.ONCE,
-            EffectDestination.CONTO_ECON, value_constant=onboarding_cost),
+            title="onboarding-cost",
+            inv_type=EffectType.CONST,
+            field_name="b9e_altri_costi",
+            frequency=EffectFrequency.ONCE,
+            where=BalanceLocation.CE,
+            value_constant=onboarding_cost),
         )
 
         super().__init__(title, id, self.type, effects)

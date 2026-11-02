@@ -16,13 +16,16 @@ class SimulationWorker(QObject):
         self.model = model
 
     def simulation_init(self):
+        """
+        Inizializza la simulazione aggiungendo gli effetti globali
+        :return:
+        """
         g = OrganicGrowthEffect(self.model.simulation_state.global_parameters.organic_growth_avg, self.model.simulation_state.global_parameters.organic_growth_var, "organic-growth")
         self.model.project.global_effects.append(g)
 
     @Slot()
     def start(self):
         m: SimulationCompleteModel = self.model
-        total_step = m.simulation_state.global_parameters.number_of_years * 12
         self.simulation_init()
 
         def effect_spawner(env):
@@ -42,6 +45,28 @@ class SimulationWorker(QObject):
                     elif effect.frequency == EffectFrequency.ANNUAL and m.simulation_state.current_month % 12 == 0:
                         print("Eseguo l'effetto annuale " + effect.title)
                         effect.apply(self.model.simulation_state)
+                    elif effect.frequency == EffectFrequency.ONCE and m.simulation_state.current_month == 0:
+                        print("Eseguo effetto once " + effect.title)
+                        effect.apply(self.model.simulation_state)
+
+                for item in self.model.project.items:   # Effetti legati alle componenti di investimento impostate
+                    print(f"Applicazione componente {item}")
+                    for effect in item.effects:
+                        if effect.frequency == EffectFrequency.MONTHLY:
+                            print("Eseguo l'effetto mensile " + effect.title)
+                            effect.apply(self.model.simulation_state)
+                        elif effect.frequency == EffectFrequency.ANNUAL and m.simulation_state.current_month % 12 == 0:
+                            print("Eseguo l'effetto annuale " + effect.title)
+                            effect.apply(self.model.simulation_state)
+                        elif effect.frequency == EffectFrequency.BI_MONTHLY and m.simulation_state.current_month % 2 == 0:
+                            print("Eseguo l'effetto bimestrale " + effect.title)
+                            effect.apply(self.model.simulation_state)
+                        elif effect.frequency == EffectFrequency.TRI_MONTHLY and m.simulation_state.current_month % 3 == 0:
+                            print("Eseguo l'effetto trimestrale " + effect.title)
+                            effect.apply(self.model.simulation_state)
+                        elif effect.frequency == EffectFrequency.ONCE and m.simulation_state.current_month == 0:
+                            print("Eseguo effetto once " + effect.title)
+                            effect.apply(self.model.simulation_state)
 
                 yield env.timeout(1)
                 m.simulation_state.current_month += 1
@@ -49,10 +74,18 @@ class SimulationWorker(QObject):
 
         self.model.env = simpy.Environment()
         self.model.env.process(effect_spawner(self.model.env))
-        # Aggiungere i process-generator
         self.model.env.run(until=m.simulation_state.global_parameters.number_of_years * 12)
+        # Aggregare i risultati per anno e non per mese
+        final_snap = self.model.simulation_state.working_snapshot.aggregate_by_year()
+        final_snap.calc_terminal_fields()
+        final_snap.calc_indicies()
+
+        # Verifiche finali dei dati
+        if not final_snap.verify_integrity():
+            raise Exception("Errore interno, la simulazione ha prodotto un bilancio non valido")
+
         output = SimulationOutput(
-            balance=self.model.simulation_state.working_snapshot,
+            balance=final_snap,
             project=self.model.project,
             global_parameters=self.model.simulation_state.global_parameters
         )

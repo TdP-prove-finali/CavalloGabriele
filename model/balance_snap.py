@@ -98,7 +98,7 @@ class BalanceSnaphot:
         raise ValueError("Non è stato possibile trovare il campo " + field_name + " nella posizione " + where)
 
     def get_field_data(self, where: BalanceLocation, field_name):
-        """Restituisce il valore del campo alla colonna giusta"""
+        """Restituisce il valore del campo oppure None se non esiste"""
         if where == BalanceLocation.CE:
             return self.conto_economico.get(field_name)
         elif where == BalanceLocation.SP_ATTIVO:
@@ -107,6 +107,8 @@ class BalanceSnaphot:
             return self.stato_patrimoniale["subsections"]["passivo"]["subsections"]["debiti"].get(field_name)
         elif where == BalanceLocation.SP_PASSIVO_PATRIM:
             return self.stato_patrimoniale["subsections"]["passivo"]["subsections"]["patrimonio_netto"].get(field_name)
+
+        return None
 
     def calc_indicies(self):
         """Calcola gli indici di bilancio"""
@@ -120,6 +122,17 @@ class BalanceSnaphot:
         """
         # TODO: Implement
         pass
+
+    def aggregate_by_year(self):
+        """
+        Restituisce un nuovo snapshot di bilancio in cui i dati non sono aggregati per mesi ma per anni
+        Orizzontalmente, le colonne sono aggregate in ogni anno. Tutti i valori non modificati in un certo mese
+        vengono lasciati a 0 per far sì che ricompaia il valore storico nella voce, senza perdita di dati o duplicazione.
+        Tutti gli effetti indicano nella colonna corrispondente solo il nuovo valore, se presente.
+        :return:
+        """
+        # TODO: Implement
+        return self
 
     def for_each_ce_field(self, function: Callable):
         for key in list(self.conto_economico.keys()):
