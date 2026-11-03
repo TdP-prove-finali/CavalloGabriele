@@ -79,6 +79,7 @@ class MainController(AbstractController[MainWindow, MainModel, None]):
         self.view.ui.statoPatrimTView.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Interactive)
         header = ResizableVerticalHeader(self.view.ui.statoPatrimTView)
         self.view.ui.statoPatrimTView.setVerticalHeader(header)
+        self.view.ui.statoPatrimTView.resizeColumnsToContents()
         header.setVisible(True)
 
     def loadCETView(self):

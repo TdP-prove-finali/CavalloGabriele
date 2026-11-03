@@ -84,12 +84,25 @@ class InvestmentEffect:
                 raise Exception(
                     "Per un effetto di incremento è necessario specificare un importo di cui aumentare il campo attraverso value_constant")
 
-            state.working_snapshot.set_field_value(
+            prev_value = state.working_snapshot.get_field_value(
                 field_name=self.field_name,
-                location=self.where,
-                value=val,
+                where=self.where,
                 month=state.current_month + 1
             )
+            if prev_value is None or prev_value == '' or prev_value == 0:
+                state.working_snapshot.set_field_value(
+                    field_name=self.field_name,
+                    location=self.where,
+                    value=val,
+                    month=state.current_month + 1
+                )
+            elif type(prev_value) is int or type(prev_value) is float:      # Se il campo contiene già un valore, significa che un altro effetto ci ha già lavorato. Sovrascrivendolo perderei quell'effetto, quindi viene sommato
+                state.working_snapshot.set_field_value(
+                    field_name=self.field_name,
+                    location=self.where,
+                    value=val + prev_value,
+                    month=state.current_month + 1
+                )
         elif self.type == EffectType.VAL_FUNCT:
             func: Callable = self.value_func
             if func is None:
@@ -133,5 +146,5 @@ class OrganicGrowthEffect(InvestmentEffect):
             (self.average - self.variance / 2) * dt
             + sqrt(self.variance * dt) * Z_n
         )
-        state.working_snapshot.set_field_value(self.field_name, BalanceLocation.CE, X_tn1, month=current_month + 1)
+        state.working_snapshot.set_field_value(self.field_name, BalanceLocation.CE, X_tn1 - prev_value, month=current_month + 1)
         return state.working_snapshot

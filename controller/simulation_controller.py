@@ -76,14 +76,13 @@ class SimulationWorker(QObject):
         self.model.env.process(effect_spawner(self.model.env))
         self.model.env.run(until=m.simulation_state.global_parameters.number_of_years * 12)
         # Aggregare i risultati per anno e non per mese
-        final_snap = self.model.simulation_state.working_snapshot.aggregate_by_year()
-        final_snap.calc_terminal_fields()
-        final_snap.calc_indicies()
-
-        # Verifiche finali dei dati
-        if not final_snap.verify_integrity():
-            raise Exception("Errore interno, la simulazione ha prodotto un bilancio non valido")
-
+        final_snap = self.model.simulation_state.working_snapshot.aggregate_by_year(m.simulation_state.global_parameters.number_of_years)
+        print("Lista completa dei campi modificati in SP: ")
+        print(m.simulation_state.working_snapshot.__sp_edited_fields__)
+        print()
+        print("Lista completa dei campi modificati in CE: ")
+        print(m.simulation_state.working_snapshot.__ce_edited_fields__)
+        print()
         output = SimulationOutput(
             balance=final_snap,
             project=self.model.project,

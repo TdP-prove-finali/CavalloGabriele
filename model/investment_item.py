@@ -6,6 +6,7 @@ from model.investment_effect import (InvestmentEffect,
                                     EffectType)
 
 
+# TODO: Gestire l'unità di misura del denaro in modo comodo (se i dati sono in migliaia mettere /1000 altrimenti i conti non tornano
 class AbstractInvestmentItem:
     def __init__(self, title: str, id: int, type: str, effects: list[InvestmentEffect]):
         self.title = title
@@ -79,6 +80,14 @@ class EmployeeHireInvestment(AbstractInvestmentItem):
             where=BalanceLocation.CE,
             value_constant=onboarding_cost),
         )
+        effects.append(InvestmentEffect(
+            title="employee-number",
+            inv_type=EffectType.CONST,
+            field_name="dipendenti",
+            frequency=EffectFrequency.ANNUAL,
+            value_constant=1,
+            where=BalanceLocation.CE
+        ))
 
         super().__init__(title, id, self.type, effects)
 
