@@ -1,7 +1,7 @@
 from controller.simulation_controller import SimulationWorker
 from dao.simulation.simulation_dao import SimulationDAO
+from model.balance_snap import BalanceSnaphot, BalanceLocation
 from model.investment_item import InvestmentProject
-from model.raw_company_data import BalanceSnaphot, BalanceLocation
 from model.sim_output import SimulationOutput
 from model.sim_state import SimulationCompleteModel, SimulationState, GlobalParameters
 from test_data import complete_company_1
@@ -9,7 +9,7 @@ from test_data import complete_company_1
 
 def test_balance():
     b = complete_company_1
-    snapshot = BalanceSnaphot.from_company_data(b, (0, 0), 1, "")
+    snapshot = BalanceSnaphot.from_company_data(b, 0, 1, "")
     assert snapshot.conto_economico == b.conto_economico
     assert snapshot.verify_integrity() == True
     snapshot.create_column("test")
@@ -34,9 +34,10 @@ def test_sim():
                     2026,
                     organic_growth_avg=0.5,
                     last_available_years=b.available_years,
-                    sim_id=5
+                    sim_id=5,
+                organic_growth_var=0.3,
                 ),
-            balance=BalanceSnaphot.from_company_data(complete_company_1, (0, 0), 5, ""),
+            balance=BalanceSnaphot.from_company_data(complete_company_1, 0, 5, ""),
             project=InvestmentProject(
                 "test",
                 "test",
@@ -46,3 +47,62 @@ def test_sim():
 
     SimulationDAO.save_simulation(ctrl)
     assert True
+
+def test_parent():
+    b = complete_company_1
+    snapshot = BalanceSnaphot.from_company_data(b, 0, 1, "")
+    assert snapshot.__get_uppermost_field_parent__("c15_tot_proventi_da_partecip", BalanceLocation.CE) == "c_totale_proventi_e_oneri_finanziari"
+    assert snapshot.__get_uppermost_field_parent__("c_totale_proventi_e_oneri_finanziari", BalanceLocation.CE) == "c_totale_proventi_e_oneri_finanziari"
+    assert snapshot.__get_uppermost_field_parent__("b9f_tfr_plus_quiescenza_plus_altri_costi", BalanceLocation.CE) == "b_costi_della_produzione"
+    assert snapshot.__get_uppermost_field_parent__("valore_aggiunto", BalanceLocation.CE) is None
+    assert snapshot.__get_uppermost_field_parent__("rivalut_di_attivita_finanziarie_per_la_gestione_accentrata_della_tesoreria", BalanceLocation.CE) is None
+    assert snapshot.__get_uppermost_field_parent__("_20_totale_imposte_sul_reddito_correnti_differite_e_anticipate", BalanceLocation.CE) is None
+    assert snapshot.__get_uppermost_field_parent__("a2_plus_a3_totale_variazioni", BalanceLocation.CE) == "a_tot_val_della_produzione"
+    assert snapshot.__get_uppermost_field_parent__("e_ratei_e_risconti", BalanceLocation.SP_PASSIVO_DEBITI) == "e_ratei_e_risconti"
+    assert snapshot.__get_uppermost_field_parent__("d6_acconti_entro", BalanceLocation.SP_PASSIVO_DEBITI) == "d_totale_debiti"
+    assert snapshot.__get_uppermost_field_parent__("d3_soci_per_finanziamenti_entro", BalanceLocation.SP_PASSIVO_DEBITI) == "d_totale_debiti"
+    assert snapshot.__get_uppermost_field_parent__("totale_passivo", BalanceLocation.SP_PASSIVO_DEBITI) is None
+    assert snapshot.get_children("d_totale_debiti", BalanceLocation.SP_PASSIVO_DEBITI) == [
+ 'd1_obbligni_entro',
+ 'd1_obbligni_oltre',
+ 'd2_obbligni_convert_entro',
+ 'd2_obbligni_convert_oltre',
+ 'd3_soci_per_finanziamenti_entro',
+ 'd3_soci_per_finanziamenti_oltre',
+ 'd4_banche_entro_lesercizio',
+ 'd4_banche_oltre_lesercizio',
+ 'd5_altri_finanziatori_entro',
+ 'd5_altri_finanziatori_oltre',
+ 'd6_acconti_entro',
+ 'd6_acconti_oltre',
+ 'd7_fornitori_entro',
+ 'd7_fornitori_oltre',
+ 'd8_titoli_di_credito_entro',
+ 'd8_titoli_di_credito_oltre',
+ 'd9_imprese_controllate_entro',
+ 'd9_imprese_controllate_oltre',
+ 'd10_imprese_collegate_entro',
+ 'd10_imprese_collegate_oltre',
+ 'd11_controllanti_entro',
+ 'd11_controllanti_oltre',
+ 'd11bis_debiti_vs_imprese_sottoposte_al_controllo_delle_controllanti_entro',
+ 'd11bis_debiti_vs_imprese_sottoposte_al_controllo_delle_controllanti_oltre',
+ 'd12_debiti_tributari_entro',
+ 'd12_debiti_tributari_oltre',
+ 'd13_istituti_previdenza_entro',
+ 'd13_istituti_previdenza_oltre',
+ 'd14_altri_debiti_entro',
+ 'd14_altri_debiti_oltre',
+ 'd_debiti_a_breve',
+ 'd_debiti_a_oltre']
+
+    assert snapshot.get_children("d1_obbligni_entro", BalanceLocation.SP_PASSIVO_DEBITI) == []
+
+    try:
+         snapshot.__get_uppermost_field_parent__("d18a_rivalut_di_partec", True)    # La ricerca del parent di un campo che non esiste deve lanciare un'eccezione
+         assert False
+    except:
+        assert True
+
+
+

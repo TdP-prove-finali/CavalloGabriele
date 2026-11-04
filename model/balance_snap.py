@@ -1,8 +1,7 @@
 from copy import deepcopy
 from enum import IntEnum
-from numbers import Number
 from typing import Callable, Any
-
+import re
 from model.raw_company_data import CompanyData
 
 class BalanceLocation(IntEnum):
@@ -186,7 +185,11 @@ class BalanceSnaphot:
 
     def calc_terminal_fields(self):
         """
-        Calcola le voci finali del documento come la cassa e i totali
+        Calcola le voci finali del documento come la cassa e i totali.
+        Partendo dai field_name dei campi che sono stati modificati, risale al parent di ognuno di loro e lo ricalcola.
+        Metodo 1:
+        * Prendere tutti i campi figli del punto, sommarli, impostarli al primo parent, prendere tutti i parent dello stesso livello e risommarli.
+
         :return:
         """
         # TODO: Implement
@@ -268,6 +271,46 @@ class BalanceSnaphot:
 
         visit(self.stato_patrimoniale)
 
+    def for_each_debiti_field(self,
+                          function: Callable[[str, list[Any]], None | list[Any]],
+                          substitute: bool = False
+                          ):
+        """
+        Applica una trasformazione a tutti i campi dei debiti dello stato patrimoniale, opzionalmente sostituendo i valori di tale campo.
+        Può essere utilizzata anche per effettuare ricerche di campi
+        :param function: Funzione da applicare. Se viene impostato substitute a True il valore di ritorno deve essere la lista dei nuovi valori del campo.
+        :param substitute:
+        :return:
+        """
+        def visit(section: dict[str, Any]) -> None:
+            for key, value in section.items():
+                if not substitute:
+                    function(key, value)
+                else:
+                    section[key] = function(key, value)
+
+        visit(self.stato_patrimoniale["subsections"]["passivo"]["subsections"]["debiti"])
+
+    def for_each_patrim_field(self,
+                          function: Callable[[str, list[Any]], None | list[Any]],
+                          substitute: bool = False
+                          ):
+        """
+        Applica una trasformazione a tutti i campi del patrimonio netto dello stato patrimoniale, opzionalmente sostituendo i valori di tale campo.
+        Può essere utilizzata anche per effettuare ricerche di campi
+        :param function: Funzione da applicare. Se viene impostato substitute a True il valore di ritorno deve essere la lista dei nuovi valori del campo.
+        :param substitute:
+        :return:
+        """
+        def visit(section: dict[str, Any]) -> None:
+            for key, value in section.items():
+                if not substitute:
+                    function(key, value)
+                else:
+                    section[key] = function(key, value)
+
+        visit(self.stato_patrimoniale["subsections"]["passivo"]["subsections"]["patrimonio_netto"])
+
     @staticmethod
     def copy_last_balance(company_data):
         result = deepcopy(company_data)
@@ -316,6 +359,91 @@ class BalanceSnaphot:
             available_years=self.available_columns,
             effect_pointer=self.effect_pointer
         )
+
+    def get_children(self, field_name: str, where: BalanceLocation) -> list[str]:
+        """Restituisce tutti i field_name che sono figli del field_name specificato, se esistono, andando al massimo fino alla profondità 1 (figli
+        di primo livello)
+        """
+        is_numbered_field = re.compile(r"^[a-z](?:\d{1,2}(?:bis|[a-z])?)?_")
+        number_group = re.compile(r"^[a-z](\d{1,2})(?=bis_|[a-z]_|_)")
+
+        if is_numbered_field.match(field_name):
+            match = re.match(
+                r"^(?P<numero>[a-z](?:\d{1,2}(?:bis|[a-z])?)?)_",
+                field_name
+            )
+
+            if match:
+                numerazione = match.group("numero")     # Numerazione completa del campo
+                p_match = re.match(number_group, field_name)      # Solo il numero opzionale se presente
+                parent_number = int(p_match.group(1)) if p_match else None
+                results = []
+
+                def search_child(key: str, _):
+                    if key == field_name:
+                        return
+
+                    m2 = re.match(number_group, key)
+                    key_number = int(m2.group(1)) if m2 else None
+                    if (is_numbered_field.match(key)
+                            and key.startswith(numerazione)):
+                        if parent_number is None:
+                            results.append(key)
+                        elif parent_number is not None and key_number is not None and parent_number == key_number:
+                            results.append(key)
+
+                if where == BalanceLocation.SP_PASSIVO_DEBITI:
+                    self.for_each_debiti_field(search_child)
+                elif where == BalanceLocation.SP_PASSIVO_PATRIM:
+                    self.for_each_patrim_field(search_child)
+                elif where == BalanceLocation.CE:
+                    self.for_each_ce_field(search_child)
+
+                return results
+            else:
+                raise Exception("Impossibile estrarre la numerazione dal campo " + field_name)
+        else:
+            raise Exception("Il campo passato non ha figli perchè non è numerato. " + field_name)
+
+    def __get_uppermost_field_parent__(self, field_name: str, where: BalanceLocation):
+        """
+        Restituisce il parent di un punto (lettera a cui appartiene) oppure
+        None se non appartiene ad una lettera. Nota: se il campo appartiene ad un sotto-punto
+        di un sotto-punto viene restituito l'uppermost parent (cioè il punto più in alto).
+        Se vengono trovati più campi uppermost con la stessa lettera (ad esempio la lettera d nello SP/debiti) viene
+        restituito il primo trovato in ordine.
+        :param field_name: Nome del campo
+        :return: Il field_name del campo parent
+        """
+        is_numbered_field = re.compile(r"^[a-z](?:\d{1,2}(?:bis|[a-z])?)?_")
+
+        if is_numbered_field.match(field_name):
+            # Questo field name ha un parent
+            letter = field_name[0]    # Il primo carattere è sempre la lettera a cui appartiene il punto
+            # cerco il campo nel documento giusto
+            matches = []
+
+            def search_field(key, _):
+                is_top_level = re.compile(r"^[a-z]_")
+                if is_top_level.match(key) and key[0] == letter:
+                    matches.append(key)
+
+            if where == BalanceLocation.SP_PASSIVO_PATRIM:
+                self.for_each_patrim_field(search_field, False)
+            elif where == BalanceLocation.SP_PASSIVO_DEBITI:
+                self.for_each_debiti_field(search_field, False)
+            else:
+                self.for_each_ce_field(search_field, False)
+
+            if len(matches) == 1:
+                return matches[0]
+            elif len(matches) > 1:
+                print("WARNING: La ricerca del parent per " + field_name + " ha prodotto più di 1 risultato: " + str(matches))
+                return matches[0]
+
+            raise Exception("La ricerca del parent per il field " + field_name + " non ha portato a nessun risultato.")
+        else:
+            return None
 
     def advanced_copy(self,
                       stato_patrimon_transformer: Callable[[str, list[Any]], list[Any]],
