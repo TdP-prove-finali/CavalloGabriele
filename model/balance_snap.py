@@ -163,7 +163,7 @@ class BalanceSnaphot:
         elif where == BalanceLocation.SP_PASSIVO_PATRIM:
             return self.stato_patrimoniale["subsections"]["passivo"]["subsections"]["patrimonio_netto"].get(field_name)[month]
 
-        raise ValueError("Non è stato possibile trovare il campo " + field_name + " nella posizione " + where)
+        raise ValueError("Non è stato possibile trovare il campo " + field_name + " nella posizione " + str(where))
 
     def get_field_data(self, where: BalanceLocation, field_name):
         """Restituisce il valore del campo oppure None se non esiste"""
@@ -364,46 +364,52 @@ class BalanceSnaphot:
         """Restituisce tutti i field_name che sono figli del field_name specificato, se esistono, andando al massimo fino alla profondità 1 (figli
         di primo livello)
         """
-        is_numbered_field = re.compile(r"^[a-z](?:\d{1,2}(?:bis|[a-z])?)?_")
-        number_group = re.compile(r"^[a-z](\d{1,2})(?=bis_|[a-z]_|_)")
+        field_name_regex = re.compile(
+            r"^(?P<lettera>[a-z])"
+            r"(?P<numero>\d{1,2})?"
+            r"(?P<sottolettera>[a-z])?"
+            r"(?P<specificazione>bis|ter|quater|_di_cui)?"
+            r"(?=_|$)"
+        )
+        match = field_name_regex.match(field_name)
+        if match:       # Controllo che sia un campo numerato altrimenti non ha figli
+            # Prendo il numero del campo se presente dopo la lettera
+            parent_numeration = match.group("numero") if match.group("numero") is not None else None    # Numerazione completa del campo
+            parent_token = match.group(0)
+            results = []
 
-        if is_numbered_field.match(field_name):
-            match = re.match(
-                r"^(?P<numero>[a-z](?:\d{1,2}(?:bis|[a-z])?)?)_",
-                field_name
-            )
+            def search_child(key: str, _):
+                if key == field_name:
+                    return
+                key_match = field_name_regex.match(key)
+                if not key_match:
+                    return
 
-            if match:
-                numerazione = match.group("numero")     # Numerazione completa del campo
-                p_match = re.match(number_group, field_name)      # Solo il numero opzionale se presente
-                parent_number = int(p_match.group(1)) if p_match else None
-                results = []
+                letter = key_match.group("lettera")
+                key_number = int(key_match.group("numero")) if key_match.group("numero") is not None else None
+                subletter = key_match.group("sottolettera")
+                has_subletter = key_match.group("sottolettera") is not None
+                has_specification = key_match.group("specificazione") is not None
+                specification = key_match.group("specificazione")
 
-                def search_child(key: str, _):
-                    if key == field_name:
-                        return
+                if key.startswith(parent_token):   # Controlla che il campo sia numerato e che inizi con tutte le informazioni che già si hanno, aggiungendo un sotto-punto
+                    if parent_numeration is None and (key_number is not None or has_subletter == True or has_specification == True):
+                        # Il parent non aveva un numero, solo la lettera e la nuova chiave, oltre che avere la stessa lettera aggiunge qualcosa (numero, sotto-lettera, bis/ter/quater)
+                        results.append(key)
+                    elif parent_numeration is not None and key_number is not None and parent_numeration == key_number and (has_subletter == True or has_specification == True):
+                        # Il parent ha già una lettera e un numero che coincidono con quella del campo attuale. Deve aggiungere un dettaglio ulteriore, quindi una sotto-lettera o una specificazione
+                        results.append(key)
 
-                    m2 = re.match(number_group, key)
-                    key_number = int(m2.group(1)) if m2 else None
-                    if (is_numbered_field.match(key)
-                            and key.startswith(numerazione)):
-                        if parent_number is None:
-                            results.append(key)
-                        elif parent_number is not None and key_number is not None and parent_number == key_number:
-                            results.append(key)
+            if where == BalanceLocation.SP_PASSIVO_DEBITI:
+                self.for_each_debiti_field(search_child)
+            elif where == BalanceLocation.SP_PASSIVO_PATRIM:
+                self.for_each_patrim_field(search_child)
+            elif where == BalanceLocation.CE:
+                self.for_each_ce_field(search_child)
 
-                if where == BalanceLocation.SP_PASSIVO_DEBITI:
-                    self.for_each_debiti_field(search_child)
-                elif where == BalanceLocation.SP_PASSIVO_PATRIM:
-                    self.for_each_patrim_field(search_child)
-                elif where == BalanceLocation.CE:
-                    self.for_each_ce_field(search_child)
-
-                return results
-            else:
-                raise Exception("Impossibile estrarre la numerazione dal campo " + field_name)
+            return results
         else:
-            raise Exception("Il campo passato non ha figli perchè non è numerato. " + field_name)
+            raise Exception("Impossibile estrarre la numerazione dal campo " + field_name)
 
     def __get_uppermost_field_parent__(self, field_name: str, where: BalanceLocation):
         """
@@ -444,6 +450,47 @@ class BalanceSnaphot:
             raise Exception("La ricerca del parent per il field " + field_name + " non ha portato a nessun risultato.")
         else:
             return None
+
+    def for_each_child(self,
+                       field_name: str,
+                       where: BalanceLocation,
+                       function: Callable[[str, list[Any]], list[Any] | None],
+                       overwrite: bool = False):
+        child_fields: list[str] = self.get_children(field_name, where)
+        for field in child_fields:
+            res = function(field, self.get_field_data(where, field))
+            if overwrite:
+                self.set_field_data(
+                    field_name, where, res
+                )
+
+    def sum_children_values(self, field_name: str, where: BalanceLocation) -> list[float]:
+        """
+        Calcola la somma di tutti i campi figli di field_name
+        Restituisce il vettore con la somma di tutti i campi, con tanti elementi quante sono le colonne presenti
+        nello snapshot
+        :param field_name:
+        :param where:
+        :return:
+        """
+        children = self.get_children(field_name, where)
+        results = []
+        for column_index in range(0, self.available_columns):
+            s_c = 0
+            for child_key in children:
+                val = self.get_field_value(where=where, field_name=child_key, month=column_index)
+                s_c += val
+            results.append(s_c)
+
+        return results
+
+    def set_field_data(self, field_name: str, where: BalanceLocation, data: list[Any]):
+        if where == BalanceLocation.CE:
+            self.stato_patrimoniale[field_name] = data
+        elif where == BalanceLocation.SP_PASSIVO_DEBITI:
+            self.stato_patrimoniale["subsections"]["passivo"]["subsections"]["debiti"][field_name] = data
+        elif where == BalanceLocation.SP_PASSIVO_PATRIM:
+            self.stato_patrimoniale["subsections"]["passivo"]["subsections"]["patrimonio_netto"][field_name] = data
 
     def advanced_copy(self,
                       stato_patrimon_transformer: Callable[[str, list[Any]], list[Any]],

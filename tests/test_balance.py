@@ -92,9 +92,7 @@ def test_parent():
  'd13_istituti_previdenza_entro',
  'd13_istituti_previdenza_oltre',
  'd14_altri_debiti_entro',
- 'd14_altri_debiti_oltre',
- 'd_debiti_a_breve',
- 'd_debiti_a_oltre']
+ 'd14_altri_debiti_oltre']
 
     assert snapshot.get_children("d1_obbligni_entro", BalanceLocation.SP_PASSIVO_DEBITI) == []
 
@@ -104,5 +102,36 @@ def test_parent():
     except:
         assert True
 
+    assert (snapshot.sum_children_values(field_name="d_totale_debiti",
+                            where=BalanceLocation.SP_PASSIVO_DEBITI) ==
+            snapshot.get_field_data(field_name="d_totale_debiti", where=BalanceLocation.SP_PASSIVO_DEBITI))
+
+    assert (snapshot.sum_children_values(field_name="a_tot_val_della_produzione",
+                            where=BalanceLocation.CE) ==
+            snapshot.get_field_data(field_name="a_tot_val_della_produzione", where=BalanceLocation.CE))
+
+    assert snapshot.get_children("b_costi_della_produzione", BalanceLocation.CE) == ['b6_materie_prime_e_consumo',
+ 'b7_servizi',
+ 'b8_godimento_beni_di_terzi',
+ 'b9_totale_costi_del_personale',
+ 'b9a_salari_e_stipendi',
+ 'b9b_oneri_sociali',
+ 'b9c_tratt_fine_rapporto',
+ 'b9d_tratt_di_quiescenza',
+ 'b9e_altri_costi',
+ 'b9f_tfr_plus_quiescenza_plus_altri_costi',
+ 'b10_tot_ammortamenti_e_svalut',
+ 'b10a_amm_immob_immat',
+ 'b10b_amm_immob_mat',
+ 'b10c_altre_svalut_immob',
+ 'b10d_svalut_crediti',
+ 'b11_variazione_materie',
+ 'b12_accantonamenti_per_rischi',
+ 'b13_altri_accantonamenti',
+ 'b14_oneri_diversi_di_gestione']
+
+    assert (snapshot.sum_children_values(field_name="b_costi_della_produzione",
+                            where=BalanceLocation.CE) ==
+            snapshot.get_field_data(field_name="b_costi_della_produzione", where=BalanceLocation.CE))
 
 
