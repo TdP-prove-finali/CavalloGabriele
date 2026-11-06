@@ -4,13 +4,22 @@ from openpyxl.cell import Cell
 from openpyxl.utils import get_column_letter
 from openpyxl.worksheet.worksheet import Worksheet
 
-from dao.util import remove_accents
+from dao.util import remove_accents, has_valid_numbering, extract_numbering_token, create_o_number, extract_o_number, \
+    is_specification_field, extract_complete_numbering
 from model.raw_company_data import RawCompanyData
 from openpyxl import load_workbook
 from model.section import Section
 
 class RawCompanyBalanceImporter:
     __translations__ = {}       # Traduzioni condivise di tutti gli identificatori di campo con il corrispettivo descrittore completo
+
+    __force_top_level__ = [
+        "TOTALE PROVENTI/ONERI STRAORDINARI",
+        "RISULTATO OPERATIVO",
+        "TOTALE ATTIVO",
+        "TOTALE PASSIVO",
+
+    ]
 
     """
     Classe per gestire l'importazione delle informazioni di un'azienda presenti in un file excel
@@ -480,7 +489,8 @@ class RawCompanyBalanceImporter:
             data=self.data.copy()
         )
 
-    def __get_field_name(self, cellContent: str, previous: str | None = None) -> str:
+    def __get_field_name(self, cellContent: str, previous: str | None = None,
+                         no_numeration_block: bool = False) -> str:
         """
         Restituisce un nome di campo valido per una voce dell'excel, verificando che possa essere utilizzato come identificatore
         python in un dizionario.
@@ -504,10 +514,6 @@ class RawCompanyBalanceImporter:
                               .replace("-", "minus")
                               )
 
-        if cellContent.find(
-                "di cui:") >= 0 and previous is not None:  # Per i campi di dettaglio (di cui) aggiunge il nome completo del campo a cui fanno riferimento
-            field_name = previous + "__" + field_name
-
         # Evita identificatori che iniziano con una cifra
         if field_name and field_name[0].isdigit():
             field_name = f"_{field_name}"
@@ -521,6 +527,29 @@ class RawCompanyBalanceImporter:
             raise ValueError(
                 f"Nome campo non valido: {cellContent!r} -> {field_name!r}"
             )
+
+        if cellContent.strip() in self.__force_top_level__:
+            # Alcuni campi, sempre presenti, nonostante si trovino dopo una lettera non appartengono a nessun punto
+            # e voglio che siano numerati in modo sequenziale senza figurare come figli di qualche altro punto (ad esempio il totale attivo non è figlio della lettera precedente). Senza questo meccanismo verrebbe imputato come figlio della lettera prima
+            # perchè non contiene una sua numerazione e viene prima di un campo che invece la ha.
+            field_name = f"{create_o_number(1)}{field_name}"
+        elif is_specification_field(cellContent) and previous is not None and extract_complete_numbering(previous) is not None:
+            # Quando viene trovato un campo "di cui" viene ereditata la numerazione (qualunque essa sia) dal precedente, anche su più livelli
+            prev_num = extract_complete_numbering(previous)
+            field_name = f"{prev_num}_dc_{field_name}"
+        elif not has_valid_numbering(field_name) and has_valid_numbering(previous):
+            # Possono accadere dei campi che non hanno una numerazione ma che dovrebbero averla
+            # viene preso il blocco di numerazione del campo precedente (se presente) e viene aggiunto un numero incrementale
+            # per tutti i campi che non la hanno, separato da _o{numero}_ in modo tale da essere riconoscibile e ordinabile
+            num_tk = extract_numbering_token(previous)
+            o_num_prev = extract_o_number(previous) or 0
+            o_num_prev += 1
+            field_name = f"{num_tk}{create_o_number(o_num_prev)}{field_name}"
+        elif not has_valid_numbering(field_name) and previous is not None and not has_valid_numbering(previous) and extract_o_number(previous) is not None:
+            # di default viene incrementato il numero artificiale del precedente
+            o_num_prev = extract_o_number(previous)
+            o_num_prev += 1
+            field_name = f"{create_o_number(o_num_prev)}{field_name}"
 
         self.__translations__[field_name] = cellContent
         return field_name

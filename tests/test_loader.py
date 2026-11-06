@@ -83,7 +83,6 @@ def test_preproc_company():
     translations = RawCompanyBalanceImporter.get_translations()
     c.import_from_excel()
     raw_company = c.company
-    assert raw_company == raw_company
     complete_company = CompanyPreprocessorDAO.process_company_data(raw_company)
     assert complete_company.fiscal_code == "07237600965"
     assert complete_company == complete_company_1
