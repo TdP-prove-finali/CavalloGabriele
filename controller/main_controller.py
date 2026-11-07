@@ -9,7 +9,7 @@ from controller.balance_detail_controller import BalanceDetailController
 from controller.invest_proj_controller import InvestProjectController
 from model.abstract_sec_model import AbstractSectionTableModel
 from model.invest_proj_model import InvestmentProjModel
-from model.section import SPSection, IndiciesSection
+from model.section import SPSection, IndiciesSection, get_value_by_partial_key
 from model.sp_table_model import SPTableModel
 from app.windows.mainwindow import MainWindow
 from controller.abstract import AbstractController
@@ -134,19 +134,20 @@ class MainController(AbstractController[MainWindow, MainModel, None]):
         data.itersections(create_sec_tab)
 
     def loadPieChart(self):
+        # TODO: Refactor data access
         c = self.model.company_data
         attivo = c.stato_patrimoniale["subsections"]["attivo"]
         patrim = c.stato_patrimoniale["subsections"]["passivo"]["subsections"]["patrimonio_netto"]
         debiti = c.stato_patrimoniale["subsections"]["passivo"]["subsections"]["debiti"]
-        i = attivo["b_totale_immobilizzazioni_sepind_di_quelle_conc_in_loc_finanz"][0]
-        ac = attivo["c_attivo_circolante"][0]
-        pn = patrim["a_totale_patrimonio_netto"][0]
-        pb = debiti["d_debiti_a_breve"][0]
-        pl = debiti["d_debiti_a_oltre"][0]
-        ra = attivo["d_ratei_e_risconti"][0] or 0
-        rp = debiti["e_ratei_e_risconti"][0] or 0
-        tfr = patrim["c_trattamento_di_fine_rapporto"][0] or 0
-        fndrs = patrim["b_totale_fondi_rischi"][0] or 0
+        i = get_value_by_partial_key(attivo, "totale_immobilizzazioni_sepind_di_quelle_conc_in_loc_finanz")[0]
+        ac = get_value_by_partial_key(attivo, "attivo_circolante")[0]
+        pn = get_value_by_partial_key(patrim, "totale_patrimonio_netto")[0]
+        pb = get_value_by_partial_key(debiti, "debiti_a_breve")[0]
+        pl = get_value_by_partial_key(debiti, "debiti_a_oltre")[0]
+        ra = get_value_by_partial_key(attivo, "ratei_e_risconti")[0] or 0
+        rp = get_value_by_partial_key(debiti, "ratei_e_risconti")[0] or 0
+        tfr = get_value_by_partial_key(patrim, "trattamento_di_fine_rapporto")[0] or 0
+        fndrs = get_value_by_partial_key(patrim, "b_totale_fondi_rischi")[0] or 0
 
         if i is None or ac is None or pn is None or pb is None or pl is None:
             create_chart_error(self.view.ui.struttura_sp_tab)

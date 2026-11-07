@@ -1,7 +1,14 @@
 from copy import deepcopy
 from enum import IntEnum
 from typing import Callable, Any
+import networkx as nx
 import re
+
+from networkx.algorithms.traversal import dfs_edges
+from networkx.classes import Graph, DiGraph
+
+from dao.util import step_up_field, extract_field_identif
+from model.node import Node, NodeType
 from model.raw_company_data import CompanyData
 
 class BalanceLocation(IntEnum):
@@ -9,6 +16,27 @@ class BalanceLocation(IntEnum):
     SP_PASSIVO_DEBITI = 1,
     SP_PASSIVO_PATRIM = 2,
     CE = 3
+
+
+def get_matching_node(numeration: str, graph: DiGraph) -> Node | None:
+    """Restituisce il nodo che ha esattamente la stessa numerazione di quella indicata. """
+    c_num = numeration + "_" if not numeration.endswith("_") else numeration
+
+    for node in graph.nodes:
+        if extract_field_identif(node.field_name) == c_num:
+            return node
+
+    return None
+
+def get_matching_field_name(numeration: str, field_names: list[str]) -> str | None:
+    """Restituisce il field_name che ha esattamente la numerazione indicata. """
+    c_num = numeration + "_" if not numeration.endswith("_") else numeration
+
+    for field_name in field_names:
+        if extract_field_identif(field_name) == c_num:
+            return field_name
+
+    return None
 
 class BalanceSnaphot:
     def __init__(self,
@@ -20,25 +48,21 @@ class BalanceSnaphot:
                  available_years: int,
                  effect_pointer: str | None
                  ):
-        self.stato_patrimoniale = stato_patrimoniale
-        self.conto_economico = conto_economico
+        self.sp_id_map: dict[str, Node] = {}
+        self.ce_id_map: dict[str, Node] = {}
+        self.stato_patrimoniale: DiGraph = self.create_sp_graph(stato_patrimoniale)
+        self.conto_economico: DiGraph = self.__create_ce_graph(conto_economico)
         self.indici = indici
         self.timestamp = timestamp
         self.sim_id = sim_id
         self.effect_pointer = effect_pointer
         self.available_columns = available_years
         self.__integrity__: bool | None = None
-        self.__ce_edited_fields__ = []     # Lista con i nomi di tutti i campi i cui valori sono stati modificati a mano
-        self.__sp_edited_fields__ = []     # Lista con i nomi di tutti i campi i cui valori sono stati modificati a mano
         # In automatico, i campi da ricalcolare vengono ricavati a partire dai campi che sono stati modificati, secondo la seguente logica:
         # modificato un campo che appartiene alla lettera A (ad esempio A.1) viene ricalcolato il totale alla lettera A
         # e' però necessario specificare anche dei campi che non appartengono a questa logica ma che devono lo stesso essere ricalcolati, come l'utile nel CE o i totali attivo e passivo in SP
         # inoltre alcuni campi per coerenza sono impostati come "no-copy", ossia nonostante nel bilancio storico sia presente un valore iniziale verrà sempre utilizzato 0. Questo è utile per campi
         # che specificano operazioni straordinarie che la simulazione non ripete
-        self.__sp_need_recalc_fields = [
-            "totale_passivo",
-            "totale_attivo"
-        ]
         self.__ce_need_recalc_fields = [
             "risultato_prima_delle_imposte"
         ]
@@ -76,6 +100,90 @@ class BalanceSnaphot:
             "imposte_relative_a_esercizi_precedenti",
         ]
 
+    def create_sp_graph(self, stato_patrimoniale: dict[str, Any]) -> DiGraph:
+        graph = nx.DiGraph()
+        sp = Node.virtual("stato_patrimoniale")
+        att = Node.virtual("attivo")
+        pss = Node.virtual("passivo")
+        dbt = Node.virtual("debiti")
+        ptrm = Node.virtual("patrimonio_netto")
+        graph.add_node(sp)
+        graph.add_node(att)
+        graph.add_edge(sp, att)
+        graph.add_node(pss)
+        graph.add_edge(sp, pss)
+        graph.add_node(dbt)
+        graph.add_edge(pss, dbt)
+        graph.add_node(ptrm)
+        graph.add_edge(pss, ptrm)
+
+        self.__create_section_graph(att, stato_patrimoniale["subsections"]["attivo"], graph, self.sp_id_map)
+        self.__create_section_graph(dbt, stato_patrimoniale["subsections"]["passivo"]["subsections"]["debiti"], graph, self.sp_id_map)
+        self.__create_section_graph(ptrm, stato_patrimoniale["subsections"]["passivo"]["subsections"]["patrimonio_netto"], graph, self.sp_id_map)
+
+        return graph
+
+    def __create_ce_graph(self, conto_economico: dict[str, Any]) -> DiGraph:
+        graph = DiGraph()
+        ce = Node.virtual("conto_economico")
+        graph.add_node(ce)
+        self.__create_section_graph(ce, conto_economico, graph, self.ce_id_map)
+        return graph
+
+    def __create_section_graph(self, section_node: Node,
+                               section: dict[str, Any],
+                               graph: DiGraph,
+                               id_map: dict[str, Any]
+                               ):
+        section_keys = list(section.keys())
+        created_keys = []
+
+        for field_name, values in section.items():
+            # fare un controllo per evitare di creare due volte lo stesso nodo
+            if field_name == "subsections":
+                continue
+
+            if field_name in created_keys:
+                continue
+
+            prev_ident = step_up_field(field_name)
+            node = Node(
+                type=NodeType.FIELD,
+                field_name=field_name,
+                value=values.copy(),
+                flags=[]
+            )
+            graph.add_node(node)
+            id_map[node.name] = node
+            created_keys.append(field_name)
+            if prev_ident is not "":
+                parent_node = get_matching_node(prev_ident, graph)
+                if parent_node is None:
+                    # questo può succedere se il nodo padre non è ancora stato creato. Controllo nella lista delle chiavi se esiste il nodo padre e
+                    # nel caso lo creo.
+                    key_match = get_matching_field_name(prev_ident, section_keys)
+                    if key_match is not None:
+                        # creo il nodo relativo anche a quella key
+                        parent = Node(
+                            type=NodeType.VIRTUAL,
+                            field_name=key_match,
+                            value=section[key_match].copy(),
+                            flags=[],
+                        )
+                        graph.add_node(parent)
+                        id_map[parent.name] = parent
+                        created_keys.append(key_match)
+                        graph.add_edge(parent, node)
+                    else:
+                        raise Exception(f"Impossibile trovare il field_name del parent di {field_name} la cui numerazione è {prev_ident}")
+                else:
+                    # collego il nuovo nodo a quello padre per creare l'albero
+                    graph.add_edge(parent_node, node)
+                    print(f"- {node} è figlio di {parent_node} -")
+            elif prev_ident == "":
+                print(f"- {node} è figlio di {section_node} - ")
+                graph.add_edge(section_node, node)
+
     def verify_integrity(self) -> bool:
         """Verifica l'integrità del bilancio e la quadratura"""
         def verify_row(_, values):
@@ -94,11 +202,15 @@ class BalanceSnaphot:
 
     @property
     def sp_totale_attivo(self):
-        return self.stato_patrimoniale["subsections"]["attivo"]["totale_attivo"]
+        # TODO
+        #return self.stato_patrimoniale["subsections"]["attivo"]["totale_attivo"]
+        return 0
 
     @property
     def sp_totale_passivo(self):
-        return self.stato_patrimoniale["subsections"]["passivo"]["subsections"]["debiti"]["totale_passivo"]
+        # TODO
+        #return self.stato_patrimoniale["subsections"]["passivo"]["subsections"]["debiti"]["totale_passivo"]
+        return 0
 
     def create_column(self, title):
         """Crea una nuova colonna nei dati (tipicamente per un nuovo mese della simulazione) e inizializza tutti i campi a 0, assicurando
@@ -240,12 +352,14 @@ class BalanceSnaphot:
 
     def for_each_ce_field(self, function: Callable[[str, list[Any]], None | list[Any]],
                           substitute: bool = False):
-        for key in list(self.conto_economico.keys()):
-            if key != "subsections":
-                if not substitute:
-                    function(key, self.conto_economico[key])
-                else:
-                    self.conto_economico[key] = function(key, self.conto_economico[key])
+        for node in self.conto_economico.nodes:
+            if node.type == NodeType.VIRTUAL:
+                continue
+
+            if not substitute:
+                function(node.field_name, node.value)
+            else:
+                node.value = function(node.field_name, node.value)
 
     def for_each_sp_field(self,
                           function: Callable[[str, list[Any]], None | list[Any]],
@@ -257,19 +371,14 @@ class BalanceSnaphot:
         :param substitute:
         :return:
         """
-        def visit(section: dict[str, Any]) -> None:
-            for key, value in section.items():
+        for node in self.stato_patrimoniale.nodes:
+            if node.type == NodeType.VIRTUAL:
+                continue
 
-                if key == "subsections":
-                    for subsection in value.values():
-                        visit(subsection)
-                else:
-                    if not substitute:
-                        function(key, value)
-                    else:
-                        section[key] = function(key, value)
-
-        visit(self.stato_patrimoniale)
+            if not substitute:
+                function(node.field_name, node.value)
+            else:
+                node.value = function(node.field_name, node.value)
 
     def for_each_debiti_field(self,
                           function: Callable[[str, list[Any]], None | list[Any]],
@@ -360,9 +469,10 @@ class BalanceSnaphot:
             effect_pointer=self.effect_pointer
         )
 
-    def get_children(self, field_name: str, where: BalanceLocation) -> list[str]:
-        """Restituisce tutti i field_name che sono figli del field_name specificato, se esistono, andando al massimo fino alla profondità 1 (figli
-        di primo livello)
+    def get_children(self, field_name: str, where: BalanceLocation, first_level: bool = False) -> list[str]:
+        """Restituisce tutti i field_name che sono figli del field_name specificato, se esistono.
+        Di default, scorre tutti i figli a qualunque livello si trovino.
+        Tramite il parametro :param first_level è possibile ottenere solo i figli di primo livello
         """
         field_name_regex = re.compile(
             r"^(?P<lettera>[a-z])"

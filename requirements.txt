@@ -1,6 +1,7 @@
 dnspython==2.8.0
 et_xmlfile==2.0.0
 iniconfig==2.3.0
+networkx==3.7
 Nuitka==4.2.2
 numpy==2.5.3
 openpyxl==3.1.5

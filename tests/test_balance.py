@@ -1,5 +1,6 @@
 from controller.simulation_controller import SimulationWorker
 from dao.simulation.simulation_dao import SimulationDAO
+from dao.util import step_up_numbering, step_up_field
 from model.balance_snap import BalanceSnaphot, BalanceLocation
 from model.investment_item import InvestmentProject
 from model.sim_output import SimulationOutput
@@ -10,7 +11,6 @@ from test_data import complete_company_1
 def test_balance():
     b = complete_company_1
     snapshot = BalanceSnaphot.from_company_data(b, 0, 1, "")
-    assert snapshot.conto_economico == b.conto_economico
     assert snapshot.verify_integrity() == True
     snapshot.create_column("test")
 
@@ -47,6 +47,39 @@ def test_sim():
 
     SimulationDAO.save_simulation(ctrl)
     assert True
+
+def test_stepup():
+    assert step_up_numbering("d12_debiti_tributari_entro") == "d"
+    assert step_up_numbering("d1_obbligni_entro") == "d"
+    assert step_up_numbering("d11bis_debiti_vs_imprese_sottoposte_al_controllo_delle_controllanti_oltre") == "d11"
+    assert step_up_numbering("d_o1_total_debiti_entro_lesercizio") == ""
+    assert step_up_numbering("a2_plus_a3_totale_variazioni") == "a"
+    assert step_up_numbering("b10a_amm_immob_immat") == "b10"
+    assert step_up_numbering("c15_dc_di_cui_da_imprese_controllanti") == "c"
+    assert step_up_numbering("c17bis_utili_e_perdite_su_cambi") == "c17"
+    assert step_up_numbering("cii3_cred_vs_collegate_oltre") == "cii"
+    assert step_up_numbering("ci_totale_rimanenze") == "c"
+    assert step_up_numbering("c_attivo_circolante") == ""
+    assert step_up_numbering("cii5bis_cred_tributari_entro") == "cii5"
+    assert step_up_numbering("cii5quater_cred_verso_altri_entro") == "cii5"
+    assert step_up_numbering("civ1_depositi_bancari") == "civ"
+    assert step_up_numbering("aiv_riserva_legale") == "a"
+
+    assert step_up_field("d11bis_debiti_vs_imprese_sottoposte_al_controllo_delle_controllanti_entro") == "d11"
+    assert step_up_field("_o1_totale_passivo") == ""
+    assert step_up_field("d_o1_total_debiti_entro_lesercizio") == "d"
+    assert step_up_field("e_o1_aggio_sui_prestiti") == "e"
+    assert step_up_field("ai_dc_di_cui_versamenti_in_c_frac_futuro_aumento_di_capitale") == "ai"
+    assert step_up_field("aix_o1_acconto_dividendi") == "aix"
+    assert step_up_field("aix_utile_frac_perdita_di_esercizio") == "a"
+    assert step_up_field("av_o1_riserva_azioni_proprie") == "av"
+    assert step_up_field("ax_riserva_negativa_per_azioni_proprie_in_portafoglio__plus_frac___") == "a"
+    assert step_up_field("b1_fondo_di_quiescenza") == "b"
+    assert step_up_field("c_trattamento_di_fine_rapporto") == ""
+    assert step_up_field("_o1_totale_attivo") == ""
+    assert step_up_field("bii_dc_di_cui_beni_materiali_concessi_in_locazione_finanziaria") == "bii"
+    assert step_up_field("ax_o2_dc_di_cui_per_imposte_differite") == "ax_o2_"
+
 
 def test_parent():
     b = complete_company_1

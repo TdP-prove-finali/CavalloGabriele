@@ -14,6 +14,22 @@ def clear_section(section: dict[str, Any]):
 def find_key_by_token(data: dict, token: str) -> str | None:
     return next((key for key in data if token in key), None)
 
+def get_value_by_partial_key(
+    data: dict,
+    search_string: str
+):
+    """
+    Restituisce il valore della prima chiave che contiene search_string.
+    """
+    return next(
+        (
+            value
+            for key, value in data.items()
+            if search_string in key
+        ),
+        None
+    )
+
 # Rappresenta una sezione generica del file excel con tutti i dati della company
 @dataclass
 class Section:
