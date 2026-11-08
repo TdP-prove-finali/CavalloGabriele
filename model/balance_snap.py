@@ -3,12 +3,9 @@ from enum import IntEnum
 from typing import Callable, Any
 import networkx as nx
 import re
-
-from networkx.algorithms.traversal import dfs_edges
 from networkx.classes import Graph, DiGraph
-
-from dao.util import step_up_field, extract_field_identif
-from model.node import Node, NodeType
+from dao.util import step_up_field, extract_field_identif, SECTION_HEAD
+from model.node import Node, NodeType, Flag
 from model.raw_company_data import CompanyData
 
 class BalanceLocation(IntEnum):
@@ -38,20 +35,29 @@ def get_matching_field_name(numeration: str, field_names: list[str]) -> str | No
 
     return None
 
+def serialize_id_map(id_map: dict[str, Node])->dict[str, Any]:
+    d = {}
+    for name, node in id_map.items():
+        d[node.field_name] = node.value
+
+    return d
+
 class BalanceSnaphot:
     def __init__(self,
-                 stato_patrimoniale: dict[str, Any],
-                 conto_economico: dict[str, Any],
+                 stato_patrimoniale: DiGraph,
+                 conto_economico: DiGraph,
+                 sp_id_map: dict[str, Node],
+                 ce_id_map: dict[str, Node],
                  indici: dict[str, Any],
                  timestamp: int,
                  sim_id: int,
                  available_years: int,
                  effect_pointer: str | None
                  ):
-        self.sp_id_map: dict[str, Node] = {}
-        self.ce_id_map: dict[str, Node] = {}
-        self.stato_patrimoniale: DiGraph = self.create_sp_graph(stato_patrimoniale)
-        self.conto_economico: DiGraph = self.__create_ce_graph(conto_economico)
+        self.sp_id_map: dict[str, Node] = sp_id_map
+        self.ce_id_map: dict[str, Node] = ce_id_map
+        self.stato_patrimoniale: DiGraph = stato_patrimoniale
+        self.conto_economico: DiGraph = conto_economico
         self.indici = indici
         self.timestamp = timestamp
         self.sim_id = sim_id
@@ -100,13 +106,20 @@ class BalanceSnaphot:
             "imposte_relative_a_esercizi_precedenti",
         ]
 
-    def create_sp_graph(self, stato_patrimoniale: dict[str, Any]) -> DiGraph:
+    @staticmethod
+    def create_sp_graph(stato_patrimoniale: dict[str, Any]) -> tuple[DiGraph, dict]:
+        id_map = {}
         graph = nx.DiGraph()
         sp = Node.virtual("stato_patrimoniale")
         att = Node.virtual("attivo")
         pss = Node.virtual("passivo")
         dbt = Node.virtual("debiti")
         ptrm = Node.virtual("patrimonio_netto")
+        id_map["attivo"] = att
+        id_map["passivo"] = pss
+        id_map["debiti"] = dbt
+        id_map["patrimonio_netto"] = ptrm
+
         graph.add_node(sp)
         graph.add_node(att)
         graph.add_edge(sp, att)
@@ -117,36 +130,34 @@ class BalanceSnaphot:
         graph.add_node(ptrm)
         graph.add_edge(pss, ptrm)
 
-        self.__create_section_graph(att, stato_patrimoniale["subsections"]["attivo"], graph, self.sp_id_map)
-        self.__create_section_graph(dbt, stato_patrimoniale["subsections"]["passivo"]["subsections"]["debiti"], graph, self.sp_id_map)
-        self.__create_section_graph(ptrm, stato_patrimoniale["subsections"]["passivo"]["subsections"]["patrimonio_netto"], graph, self.sp_id_map)
+        BalanceSnaphot.__create_section_graph(att, stato_patrimoniale["subsections"]["attivo"], graph, id_map)
+        BalanceSnaphot.__create_section_graph(dbt, stato_patrimoniale["subsections"]["passivo"]["subsections"]["debiti"], graph, id_map)
+        BalanceSnaphot.__create_section_graph(ptrm, stato_patrimoniale["subsections"]["passivo"]["subsections"]["patrimonio_netto"], graph, id_map)
 
-        return graph
+        return (graph, id_map)
 
-    def __create_ce_graph(self, conto_economico: dict[str, Any]) -> DiGraph:
+    @staticmethod
+    def create_ce_graph(conto_economico: dict[str, Any]) -> tuple[DiGraph, dict]:
         graph = DiGraph()
         ce = Node.virtual("conto_economico")
         graph.add_node(ce)
-        self.__create_section_graph(ce, conto_economico, graph, self.ce_id_map)
-        return graph
+        id_map = {"conto_economico": ce}
+        BalanceSnaphot.__create_section_graph(ce, conto_economico, graph, id_map)
+        return (graph, id_map)
 
-    def __create_section_graph(self, section_node: Node,
+    @staticmethod
+    def __create_section_graph(section_node: Node,
                                section: dict[str, Any],
                                graph: DiGraph,
                                id_map: dict[str, Any]
                                ):
-        section_keys = list(section.keys())
-        created_keys = []
 
+        # prima creo tutti i nodi e poi li collego tutti
         for field_name, values in section.items():
             # fare un controllo per evitare di creare due volte lo stesso nodo
             if field_name == "subsections":
                 continue
 
-            if field_name in created_keys:
-                continue
-
-            prev_ident = step_up_field(field_name)
             node = Node(
                 type=NodeType.FIELD,
                 field_name=field_name,
@@ -155,38 +166,31 @@ class BalanceSnaphot:
             )
             graph.add_node(node)
             id_map[node.name] = node
-            created_keys.append(field_name)
-            if prev_ident is not "":
+
+        for name, node in id_map.items():
+            if name in SECTION_HEAD:
+                continue
+
+            prev_ident = step_up_field(node.field_name)
+            if prev_ident != "":
                 parent_node = get_matching_node(prev_ident, graph)
+                if node.field_name == parent_node.field_name:     # Evita la creazione di cicli
+                    print("Ciclo")
+                    continue
+
                 if parent_node is None:
-                    # questo può succedere se il nodo padre non è ancora stato creato. Controllo nella lista delle chiavi se esiste il nodo padre e
-                    # nel caso lo creo.
-                    key_match = get_matching_field_name(prev_ident, section_keys)
-                    if key_match is not None:
-                        # creo il nodo relativo anche a quella key
-                        parent = Node(
-                            type=NodeType.VIRTUAL,
-                            field_name=key_match,
-                            value=section[key_match].copy(),
-                            flags=[],
-                        )
-                        graph.add_node(parent)
-                        id_map[parent.name] = parent
-                        created_keys.append(key_match)
-                        graph.add_edge(parent, node)
-                    else:
-                        raise Exception(f"Impossibile trovare il field_name del parent di {field_name} la cui numerazione è {prev_ident}")
-                else:
-                    # collego il nuovo nodo a quello padre per creare l'albero
-                    graph.add_edge(parent_node, node)
-                    print(f"- {node} è figlio di {parent_node} -")
+                    raise Exception("Impossibile trovare il nodo parent di questo nodo")
+
+                # collego il nuovo nodo a quello padre per creare l'albero
+                graph.add_edge(parent_node, node)
+                print(f"- {node} è figlio di {parent_node} -")
             elif prev_ident == "":
                 print(f"- {node} è figlio di {section_node} - ")
                 graph.add_edge(section_node, node)
 
     def verify_integrity(self) -> bool:
         """Verifica l'integrità del bilancio e la quadratura"""
-        def verify_row(_, values):
+        def verify_row(_, values, node):
             assert len(values) == self.available_columns
 
         try:
@@ -215,7 +219,7 @@ class BalanceSnaphot:
     def create_column(self, title):
         """Crea una nuova colonna nei dati (tipicamente per un nuovo mese della simulazione) e inizializza tutti i campi a 0, assicurando
         che tutti i vettori dei valori dei campi di tutti i documenti contengano lo stesso numero di elementi orizzontali"""
-        def value_factory(key, value):
+        def value_factory(key, value, node):
             if key == "data":
                 value.append(title)
             elif len(value) > 0 and type(value[0]) is int:
@@ -242,51 +246,32 @@ class BalanceSnaphot:
 
         return None
 
-    def __mark_edited(self, field_name, sp):
-        if sp and field_name not in self.__sp_edited_fields__:
-            self.__sp_edited_fields__.append(field_name)
-        elif not sp and field_name not in self.__ce_edited_fields__:
-            self.__ce_edited_fields__.append(field_name)
-
     def set_field_value(self, field_name: str, location: BalanceLocation, value: Any, month: int):
         """Imposta il valore del campo identificato da
         :param field_name alla colonna month """
-        if location == BalanceLocation.SP_ATTIVO:
-            self.stato_patrimoniale["subsections"]["attivo"][field_name][month] = value
-            self.__mark_edited(field_name, True)
-        elif location == BalanceLocation.SP_PASSIVO_DEBITI:
-            self.stato_patrimoniale["subsections"]["passivo"]["subsections"]["debiti"][field_name][month] = value
-            self.__mark_edited(field_name, True)
-        elif location == BalanceLocation.SP_PASSIVO_PATRIM:
-            self.stato_patrimoniale["subsections"]["passivo"]["subsections"]["patrimonio_netto"][field_name][month] = value
-            self.__mark_edited(field_name, True)
+        if location in [BalanceLocation.SP_ATTIVO, BalanceLocation.SP_PASSIVO_DEBITI, BalanceLocation.SP_PASSIVO_PATRIM]:
+            self.sp_id_map[field_name].value[month] = value
+            self.sp_id_map[field_name].set_flag(Flag.UPDATED)
         elif location == BalanceLocation.CE:
-            self.conto_economico[field_name][month] = value
-            self.__mark_edited(field_name, False)
+            self.ce_id_map[field_name].value[month] = value
+            self.ce_id_map[field_name].set_flag(Flag.UPDATED)
 
-    def get_field_value(self, where: BalanceLocation, field_name, month):
-        """Restituisce il valore del campo alla colonna giusta"""
+    def get_field_value(self, field_name, where: BalanceLocation, month):
+        """Restituisce il valore del campo alla colonna giusta. Il field_name deve essere passato senza la numerazione. """
         if where == BalanceLocation.CE:
-            return self.conto_economico.get(field_name)[month]
-        elif where == BalanceLocation.SP_ATTIVO:
-            return self.stato_patrimoniale["subsections"]["attivo"].get(field_name)[month]
-        elif where == BalanceLocation.SP_PASSIVO_DEBITI:
-            return self.stato_patrimoniale["subsections"]["passivo"]["subsections"]["debiti"].get(field_name)[month]
-        elif where == BalanceLocation.SP_PASSIVO_PATRIM:
-            return self.stato_patrimoniale["subsections"]["passivo"]["subsections"]["patrimonio_netto"].get(field_name)[month]
+            return self.ce_id_map.get(field_name).value[month]
+        elif where in [BalanceLocation.SP_ATTIVO, BalanceLocation.SP_PASSIVO_DEBITI, BalanceLocation.SP_PASSIVO_PATRIM]:
+            return self.sp_id_map.get(field_name).value[month]
 
         raise ValueError("Non è stato possibile trovare il campo " + field_name + " nella posizione " + str(where))
 
     def get_field_data(self, where: BalanceLocation, field_name):
         """Restituisce il valore del campo oppure None se non esiste"""
-        if where == BalanceLocation.CE:
-            return self.conto_economico.get(field_name)
-        elif where == BalanceLocation.SP_ATTIVO:
-            return self.stato_patrimoniale["subsections"]["attivo"].get(field_name)
-        elif where == BalanceLocation.SP_PASSIVO_DEBITI:
-            return self.stato_patrimoniale["subsections"]["passivo"]["subsections"]["debiti"].get(field_name)
-        elif where == BalanceLocation.SP_PASSIVO_PATRIM:
-            return self.stato_patrimoniale["subsections"]["passivo"]["subsections"]["patrimonio_netto"].get(field_name)
+        if where in [BalanceLocation.SP_ATTIVO, BalanceLocation.SP_PASSIVO_DEBITI,
+                        BalanceLocation.SP_PASSIVO_PATRIM]:
+            return self.sp_id_map[field_name].value
+        elif where == BalanceLocation.CE:
+            return self.ce_id_map[field_name].value
 
         return None
 
@@ -316,7 +301,7 @@ class BalanceSnaphot:
         :return:
         """
 
-        def aggr(key, values: list[Any]):
+        def aggr(key, values: list[Any], node: Node):
             histor_value = values[0]
             groups = [values[i:i + 12] for i in range(1, len(values), 12)]
 
@@ -324,7 +309,7 @@ class BalanceSnaphot:
             new_cols = []
 
             for g in groups:
-                if key in self.__sp_no_copy or key in self.__ce_no_copy or key in self.__sp_need_recalc_fields or key in self.__ce_need_recalc_fields:
+                if key in self.__sp_no_copy or key in self.__ce_no_copy or key in self.__ce_need_recalc_fields:
                     s = 0       # Tutti i campi che non possono essere copiati o che necessitano esplicitamente di essere ricalcolati vengono inizializzati a 0 e poi gestiti successivamente
 
                 for item in g:
@@ -350,19 +335,19 @@ class BalanceSnaphot:
             aggr, aggr, number_of_years + 1
         )
 
-    def for_each_ce_field(self, function: Callable[[str, list[Any]], None | list[Any]],
+    def for_each_ce_field(self, function: Callable[[str, list[Any], Node], None | list[Any]],
                           substitute: bool = False):
         for node in self.conto_economico.nodes:
             if node.type == NodeType.VIRTUAL:
                 continue
 
             if not substitute:
-                function(node.field_name, node.value)
+                function(node.name, node.value, node)
             else:
-                node.value = function(node.field_name, node.value)
+                node.value = function(node.name, node.value, node)
 
     def for_each_sp_field(self,
-                          function: Callable[[str, list[Any]], None | list[Any]],
+                          function: Callable[[str, list[Any], Node], None | list[Any]],
                           substitute: bool = False
                           ):
         """
@@ -376,9 +361,9 @@ class BalanceSnaphot:
                 continue
 
             if not substitute:
-                function(node.field_name, node.value)
+                function(node.name, node.value, node)
             else:
-                node.value = function(node.field_name, node.value)
+                node.value = function(node.name, node.value, node)
 
     def for_each_debiti_field(self,
                           function: Callable[[str, list[Any]], None | list[Any]],
@@ -462,6 +447,8 @@ class BalanceSnaphot:
         return BalanceSnaphot(
             stato_patrimoniale=self.stato_patrimoniale.copy(),
             conto_economico=self.conto_economico.copy(),
+            ce_id_map=self.ce_id_map.copy(),
+            sp_id_map=self.sp_id_map.copy(),
             indici=self.indici.copy(),
             timestamp=self.timestamp,
             sim_id=self.sim_id,
@@ -469,97 +456,20 @@ class BalanceSnaphot:
             effect_pointer=self.effect_pointer
         )
 
-    def get_children(self, field_name: str, where: BalanceLocation, first_level: bool = False) -> list[str]:
-        """Restituisce tutti i field_name che sono figli del field_name specificato, se esistono.
-        Di default, scorre tutti i figli a qualunque livello si trovino.
-        Tramite il parametro :param first_level è possibile ottenere solo i figli di primo livello
+    def get_children(self, field_name: str, where: BalanceLocation) -> list[Node]:
         """
-        field_name_regex = re.compile(
-            r"^(?P<lettera>[a-z])"
-            r"(?P<numero>\d{1,2})?"
-            r"(?P<sottolettera>[a-z])?"
-            r"(?P<specificazione>bis|ter|quater|_di_cui)?"
-            r"(?=_|$)"
-        )
-        match = field_name_regex.match(field_name)
-        if match:       # Controllo che sia un campo numerato altrimenti non ha figli
-            # Prendo il numero del campo se presente dopo la lettera
-            parent_numeration = match.group("numero") if match.group("numero") is not None else None    # Numerazione completa del campo
-            parent_token = match.group(0)
-            results = []
-
-            def search_child(key: str, _):
-                if key == field_name:
-                    return
-                key_match = field_name_regex.match(key)
-                if not key_match:
-                    return
-
-                letter = key_match.group("lettera")
-                key_number = int(key_match.group("numero")) if key_match.group("numero") is not None else None
-                subletter = key_match.group("sottolettera")
-                has_subletter = key_match.group("sottolettera") is not None
-                has_specification = key_match.group("specificazione") is not None
-                specification = key_match.group("specificazione")
-
-                if key.startswith(parent_token):   # Controlla che il campo sia numerato e che inizi con tutte le informazioni che già si hanno, aggiungendo un sotto-punto
-                    if parent_numeration is None and (key_number is not None or has_subletter == True or has_specification == True):
-                        # Il parent non aveva un numero, solo la lettera e la nuova chiave, oltre che avere la stessa lettera aggiunge qualcosa (numero, sotto-lettera, bis/ter/quater)
-                        results.append(key)
-                    elif parent_numeration is not None and key_number is not None and parent_numeration == key_number and (has_subletter == True or has_specification == True):
-                        # Il parent ha già una lettera e un numero che coincidono con quella del campo attuale. Deve aggiungere un dettaglio ulteriore, quindi una sotto-lettera o una specificazione
-                        results.append(key)
-
-            if where == BalanceLocation.SP_PASSIVO_DEBITI:
-                self.for_each_debiti_field(search_child)
-            elif where == BalanceLocation.SP_PASSIVO_PATRIM:
-                self.for_each_patrim_field(search_child)
-            elif where == BalanceLocation.CE:
-                self.for_each_ce_field(search_child)
-
-            return results
-        else:
-            raise Exception("Impossibile estrarre la numerazione dal campo " + field_name)
-
-    def __get_uppermost_field_parent__(self, field_name: str, where: BalanceLocation):
+        Restituisce tutti i campi che sono figli di primo livello del campo field_name
+        :param field_name: Nome (senza numerazione) del campo da cui partire
+        :param where: Posizione del campo
+        :return:
         """
-        Restituisce il parent di un punto (lettera a cui appartiene) oppure
-        None se non appartiene ad una lettera. Nota: se il campo appartiene ad un sotto-punto
-        di un sotto-punto viene restituito l'uppermost parent (cioè il punto più in alto).
-        Se vengono trovati più campi uppermost con la stessa lettera (ad esempio la lettera d nello SP/debiti) viene
-        restituito il primo trovato in ordine.
-        :param field_name: Nome del campo
-        :return: Il field_name del campo parent
-        """
-        is_numbered_field = re.compile(r"^[a-z](?:\d{1,2}(?:bis|[a-z])?)?_")
+        source: Node = self.ce_id_map[field_name] if where == BalanceLocation.CE else self.sp_id_map[field_name]
+        graph: DiGraph = self.conto_economico if where == BalanceLocation.CE else self.stato_patrimoniale
+        l = []
+        for s, d in list(graph.out_edges(source)):
+            l.append(d)
 
-        if is_numbered_field.match(field_name):
-            # Questo field name ha un parent
-            letter = field_name[0]    # Il primo carattere è sempre la lettera a cui appartiene il punto
-            # cerco il campo nel documento giusto
-            matches = []
-
-            def search_field(key, _):
-                is_top_level = re.compile(r"^[a-z]_")
-                if is_top_level.match(key) and key[0] == letter:
-                    matches.append(key)
-
-            if where == BalanceLocation.SP_PASSIVO_PATRIM:
-                self.for_each_patrim_field(search_field, False)
-            elif where == BalanceLocation.SP_PASSIVO_DEBITI:
-                self.for_each_debiti_field(search_field, False)
-            else:
-                self.for_each_ce_field(search_field, False)
-
-            if len(matches) == 1:
-                return matches[0]
-            elif len(matches) > 1:
-                print("WARNING: La ricerca del parent per " + field_name + " ha prodotto più di 1 risultato: " + str(matches))
-                return matches[0]
-
-            raise Exception("La ricerca del parent per il field " + field_name + " non ha portato a nessun risultato.")
-        else:
-            return None
+        return l
 
     def for_each_child(self,
                        field_name: str,
@@ -603,8 +513,8 @@ class BalanceSnaphot:
             self.stato_patrimoniale["subsections"]["passivo"]["subsections"]["patrimonio_netto"][field_name] = data
 
     def advanced_copy(self,
-                      stato_patrimon_transformer: Callable[[str, list[Any]], list[Any]],
-                      conto_economico_transformer: Callable[[str, list[Any]], list[Any]],
+                      stato_patrimon_transformer: Callable[[str, list[Any], Node], list[Any]],
+                      conto_economico_transformer: Callable[[str, list[Any], Node], list[Any]],
                       new_column_count: int
                       ):
         """
@@ -629,6 +539,9 @@ class BalanceSnaphot:
         tot_cp.timestamp = self.timestamp
         return tot_cp
 
+    def serialize(self) -> tuple[dict, dict]:
+        return (serialize_id_map(self.sp_id_map), serialize_id_map(self.ce_id_map))
+
     @staticmethod
     def from_company_data(data: CompanyData,
                           timestamp: int,
@@ -637,20 +550,33 @@ class BalanceSnaphot:
                           single_year: bool = True
                           ):
         """
-        Crea uno snapshot dei dati a partire dal company data complessivo
-        :param data:
+        Crea uno snapshot dei dati a partire dal company data complessivo. Crea in automatico il grafo
+        :param data: Dati completi della company
+        :param timestamp: Mese corrente della simulazione
+        :param effect_pointer Nome dell'effetto che ha richiesto la modifica
+        :param sim_id: Id della simulazione
         :param single_year: Permette di specificare opzionalmente un anno singolo da mantenere, altrimenti verranno mantenuti tutti
-        :return:
+        :return: Una nuova istanza di BalanceSnapshot
         """
         if not single_year:
-            return BalanceSnaphot(data.stato_patrimoniale.copy(), data.conto_economico.copy(), data.indici.copy(), timestamp, sim_id, data.available_years, effect_pointer)
+            sp_dict = data.stato_patrimoniale.copy()
+            ce_dict = data.conto_economico.copy()
+            l = data.available_years
         else:
-            return BalanceSnaphot(
-                stato_patrimoniale=BalanceSnaphot.copy_last_balance(data.stato_patrimoniale),
-                conto_economico=BalanceSnaphot.copy_last_balance(data.conto_economico),
-                indici=data.indici.copy(),
-                timestamp=timestamp,
-                sim_id=sim_id,
-                available_years=1,
-                effect_pointer=effect_pointer
-            )
+            sp_dict = BalanceSnaphot.copy_last_balance(data.stato_patrimoniale)
+            ce_dict = BalanceSnaphot.copy_last_balance(data.conto_economico)
+            l = 1
+
+        sp_graph, sp_id_map = BalanceSnaphot.create_sp_graph(sp_dict)
+        ce_graph, ce_id_map = BalanceSnaphot.create_ce_graph(ce_dict)
+        return BalanceSnaphot(
+            stato_patrimoniale=sp_graph,
+            conto_economico=ce_graph,
+            sp_id_map=sp_id_map,
+            ce_id_map=ce_id_map,
+            timestamp=timestamp,
+            sim_id=sim_id,
+            effect_pointer=effect_pointer,
+            available_years=l,
+            indici=data.indici.copy()
+        )

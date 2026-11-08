@@ -59,7 +59,7 @@ class EmployeeHireInvestment(AbstractInvestmentItem):
         effects.append(InvestmentEffect(
             title="stipendio-mensile",
             inv_type=EffectType.CONST,
-            field_name="b9a_salari_e_stipendi",
+            field_name="salari_e_stipendi",
             frequency=EffectFrequency.MONTHLY,
             where=BalanceLocation.CE,
             value_constant=total_monthly_cost),
@@ -67,7 +67,7 @@ class EmployeeHireInvestment(AbstractInvestmentItem):
         effects.append(InvestmentEffect(
             title="accantonamento-tfr",
             inv_type=EffectType.CONST,
-            field_name="b9c_tratt_fine_rapporto",
+            field_name="tratt_fine_rapporto",
             frequency=EffectFrequency.ANNUAL,
             where=BalanceLocation.CE,
             value_constant=self.tfr_quote),
@@ -75,7 +75,7 @@ class EmployeeHireInvestment(AbstractInvestmentItem):
         effects.append(InvestmentEffect(
             title="onboarding-cost",
             inv_type=EffectType.CONST,
-            field_name="b9e_altri_costi",
+            field_name="altri_costi",
             frequency=EffectFrequency.ONCE,
             where=BalanceLocation.CE,
             value_constant=onboarding_cost),

@@ -4,6 +4,7 @@ from enum import Enum
 from typing import get_type_hints
 from bson import ObjectId
 from dao.mongodb_connector import MongoDBConnector
+from model.balance_snap import BalanceSnaphot
 from model.sim_output import SimulationOutput
 from dataclasses import is_dataclass, fields
 
@@ -32,6 +33,11 @@ class SimulationDAO:
 
     @staticmethod
     def to_mongo_dict(obj):
+        """
+        Serializza le informazioni della simulazione in modo ricorsivo.
+        :param obj: Dati da serializzare
+        :return:
+        """
         active = {}
         SKIP = object()
 
@@ -39,6 +45,13 @@ class SimulationDAO:
             # Tipi primitivi
             if value is None or type(value) in (str, int, float, bool):
                 return value
+
+            if isinstance(value, BalanceSnaphot):
+                sp, ce = value.serialize()
+                return serialize({
+                    "conto_economico": ce,
+                    "stato_patrimoniale": sp
+                })
 
             # Tipi BSON compatibili
             if isinstance(value, (datetime, ObjectId)):

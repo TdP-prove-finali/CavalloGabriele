@@ -2,6 +2,8 @@ import unicodedata
 import math
 import re
 
+SECTION_HEAD = ["attivo", "passivo", "patrimonio_netto", "debiti", "conto_economico"]
+
 def remove_accents(text: str) -> str:   # Toglie tutti gli accenti da una stringa
     text = text.lower()
     return ''.join(
@@ -91,7 +93,7 @@ def step_up_field(field_name: str)-> str:
     elif ntk is not None:
         return step_up_numbering(ntk)
 
-    if field_name in ["data", "moneta", "periodo"]:
+    if field_name in ["data", "moneta", "periodo", "ics"] or field_name in SECTION_HEAD:
         return ""
 
     raise Exception(f"Numerazione non riconosciuta per il campo {field_name}")

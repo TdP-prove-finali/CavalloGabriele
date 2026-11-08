@@ -129,7 +129,7 @@ class OrganicGrowthEffect(InvestmentEffect):
     def __init__(self, avg, var, title):
         self.average = avg
         self.variance = var
-        super().__init__(title, EffectType.INCREASE,"a1_ricavi_vendite_e_prestazioni",
+        super().__init__(title, EffectType.INCREASE,"ricavi_vendite_e_prestazioni",
                          EffectFrequency.ANNUAL,
                          BalanceLocation.CE)
 

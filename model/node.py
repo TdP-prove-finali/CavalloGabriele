@@ -50,6 +50,10 @@ class Node:
     def has_data(self):
         return self.value != []
 
+    def set_flag(self, value: Flag):
+        if value not in self.flags:
+            self.flags.append(value)
+
     @staticmethod
     def virtual(field_name):
         return Node(
