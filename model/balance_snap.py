@@ -8,6 +8,8 @@ from dao.util import step_up_field, extract_field_identif, SECTION_HEAD, Balance
 from model.node import Node, NodeType, Flag
 from model.raw_company_data import CompanyData
 
+PRIVATE_FIELDS = ["data", "moneta", "periodo", "subsections"]
+
 def get_matching_node(numeration: str, graph: DiGraph, where: BalanceLocation) -> Node | None:
     """Restituisce il nodo che ha esattamente la stessa numerazione di quella indicata e che si trova esattamente nella stessa sezione
     del documento. Il parametro where serve per distinguere campi che hanno la stessa numerazione ma si trovano in sezioni diverse del bilancio. . """
@@ -174,7 +176,7 @@ class BalanceSnaphot:
         # prima creo tutti i nodi e poi li collego tutti
         for field_name, values in section.items():
             # fare un controllo per evitare di creare due volte lo stesso nodo
-            if field_name == "subsections":
+            if field_name in PRIVATE_FIELDS:
                 continue
 
             node = Node(

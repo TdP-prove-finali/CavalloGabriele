@@ -4,10 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d1f57556-a68b-4407-9511-95d58864d413" name="Changes" comment="Fix debiti SP">
+    <list default="true" id="d1f57556-a68b-4407-9511-95d58864d413" name="Changes" comment="Fix e test su campi aggregati del bilancio">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dao/data_import/balance_dao.py" beforeDir="false" afterPath="$PROJECT_DIR$/dao/data_import/balance_dao.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dao/util.py" beforeDir="false" afterPath="$PROJECT_DIR$/dao/util.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/balance_snap.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/balance_snap.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tests/test_balance.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_balance.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tests/test_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_data.py" afterDir="false" />
     </list>
@@ -59,10 +60,13 @@
   "keyToString": {
     "Python tests.Python tests for test_balance.test_attivo.executor": "Run",
     "Python tests.Python tests for test_balance.test_balance.executor": "Run",
+    "Python tests.Python tests for test_balance.test_conto_economico.executor": "Run",
+    "Python tests.Python tests for test_balance.test_debiti.executor": "Run",
     "Python tests.Python tests for test_balance.test_parent.executor": "Run",
     "Python tests.Python tests for test_balance.test_patrimonio_netto.executor": "Run",
     "Python tests.Python tests for test_balance.test_sim.executor": "Run",
     "Python tests.Python tests for test_balance.test_stato_patrimoniale.executor": "Run",
+    "Python tests.Python tests for test_balance.test_stato_patrimoniale_passivo.executor": "Run",
     "Python tests.Python tests for test_balance.test_stepup.executor": "Run",
     "Python tests.Python tests for test_loader.test_company_brief.executor": "Run",
     "Python tests.Python tests for test_loader.test_company_mongodb_roundtrip.executor": "Run",
@@ -78,6 +82,7 @@
     "Python tests.Python tests for test_loader.test_serialization.executor": "Run",
     "Python tests.Python tests for test_main.test_connection.executor": "Run",
     "Python tests.Python tests for tests.test_main.test_calcolo_esempio.executor": "Run",
+    "Python tests.Python tests in test_balance.py.executor": "Run",
     "Python tests.Python tests in test_loader.py.executor": "Debug",
     "Python.main.executor": "Run",
     "RunOnceActivity.MCP Project settings loaded": "true",
@@ -117,7 +122,7 @@
       <recent name="$PROJECT_DIR$/dataset/test" />
     </key>
   </component>
-  <component name="RunManager" selected="Python tests.Python tests for test_balance.test_attivo">
+  <component name="RunManager" selected="Python tests.Python tests in test_balance.py">
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="CavalloGabriele" />
       <option name="ENV_FILES" value="" />
@@ -142,7 +147,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="Python tests for test_balance.test_attivo" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+    <configuration name="Python tests for test_balance.test_conto_economico" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
       <module name="CavalloGabriele" />
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -155,11 +160,11 @@
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="RUN_TOOL" value="" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;test_balance.test_attivo&quot;" />
+      <option name="_new_target" value="&quot;test_balance.test_conto_economico&quot;" />
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
-    <configuration name="Python tests for test_balance.test_debiti" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+    <configuration name="Python tests for test_loader.test_loader" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
       <module name="CavalloGabriele" />
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -172,11 +177,11 @@
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="RUN_TOOL" value="" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;test_balance.test_debiti&quot;" />
+      <option name="_new_target" value="&quot;test_loader.test_loader&quot;" />
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
-    <configuration name="Python tests for test_balance.test_patrimonio_netto" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+    <configuration name="Python tests for test_loader.test_loader2" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
       <module name="CavalloGabriele" />
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -189,11 +194,11 @@
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="RUN_TOOL" value="" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;test_balance.test_patrimonio_netto&quot;" />
+      <option name="_new_target" value="&quot;test_loader.test_loader2&quot;" />
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
-    <configuration name="Python tests for test_balance.test_stato_patrimoniale_passivo" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+    <configuration name="Python tests for test_loader.test_preproc_company" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
       <module name="CavalloGabriele" />
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -206,11 +211,11 @@
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="RUN_TOOL" value="" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;test_balance.test_stato_patrimoniale_passivo&quot;" />
+      <option name="_new_target" value="&quot;test_loader.test_preproc_company&quot;" />
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
-    <configuration name="Python tests for test_balance.test_stepup" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+    <configuration name="Python tests in test_balance.py" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
       <module name="CavalloGabriele" />
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -223,17 +228,17 @@
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="RUN_TOOL" value="" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;test_balance.test_stepup&quot;" />
-      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
+      <option name="_new_target" value="&quot;$PROJECT_DIR$/tests/test_balance.py&quot;" />
+      <option name="_new_targetType" value="&quot;PATH&quot;" />
       <method v="2" />
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python tests.Python tests for test_balance.test_attivo" />
-        <item itemvalue="Python tests.Python tests for test_balance.test_stato_patrimoniale_passivo" />
-        <item itemvalue="Python tests.Python tests for test_balance.test_patrimonio_netto" />
-        <item itemvalue="Python tests.Python tests for test_balance.test_debiti" />
-        <item itemvalue="Python tests.Python tests for test_balance.test_stepup" />
+        <item itemvalue="Python tests.Python tests in test_balance.py" />
+        <item itemvalue="Python tests.Python tests for test_loader.test_preproc_company" />
+        <item itemvalue="Python tests.Python tests for test_loader.test_loader2" />
+        <item itemvalue="Python tests.Python tests for test_loader.test_loader" />
+        <item itemvalue="Python tests.Python tests for test_balance.test_conto_economico" />
       </list>
     </recent_temporary>
   </component>
@@ -279,15 +284,7 @@
       <workItem from="1793714377992" duration="7292000" />
       <workItem from="1793783046137" duration="40737000" />
       <workItem from="1794161849653" duration="4108000" />
-      <workItem from="1794225935459" duration="16758000" />
-    </task>
-    <task id="LOCAL-00036" summary="Caricamento lista company e UI per importazione">
-      <option name="closed" value="true" />
-      <created>1791580753346</created>
-      <option name="number" value="00036" />
-      <option name="presentableId" value="LOCAL-00036" />
-      <option name="project" value="LOCAL" />
-      <updated>1791580753346</updated>
+      <workItem from="1794225935459" duration="19085000" />
     </task>
     <task id="LOCAL-00037" summary="UI Compilata">
       <option name="closed" value="true" />
@@ -673,14 +670,21 @@
       <option name="project" value="LOCAL" />
       <updated>1794239729277</updated>
     </task>
-    <option name="localTasksCounter" value="85" />
+    <task id="LOCAL-00085" summary="Fix e test su campi aggregati del bilancio">
+      <option name="closed" value="true" />
+      <created>1794244291918</created>
+      <option name="number" value="00085" />
+      <option name="presentableId" value="LOCAL-00085" />
+      <option name="project" value="LOCAL" />
+      <updated>1794244291918</updated>
+    </task>
+    <option name="localTasksCounter" value="86" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Implementa finestra progetto investimento e migliora architettura controller MVC" />
     <MESSAGE value="Skelethon UI dipendenti" />
     <MESSAGE value="Ragionamenti matematici sul modello assunzione dipendenti" />
     <MESSAGE value="Dialogo assunzione dipendenti" />
@@ -705,29 +709,30 @@
     <MESSAGE value="Aggiunge contesto globale per numerazione campi top-level nello stesso documento" />
     <MESSAGE value="Implementa regole di esclusione arbitraria campi da import" />
     <MESSAGE value="Fix debiti SP" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix debiti SP" />
+    <MESSAGE value="Fix e test su campi aggregati del bilancio" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix e test su campi aggregati del bilancio" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dao/data_import/balance_dao.py</url>
-          <line>592</line>
+          <line>594</line>
           <option name="timeStamp" value="55" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dao/data_import/balance_dao.py</url>
-          <line>347</line>
+          <line>349</line>
           <option name="timeStamp" value="56" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/dao/data_import/balance_dao.py</url>
-          <line>565</line>
+          <line>567</line>
           <option name="timeStamp" value="57" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/tests/test_balance.py</url>
-          <line>144</line>
+          <line>146</line>
           <option name="timeStamp" value="58" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -746,7 +751,7 @@
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/CavalloGabriele$.coverage" NAME=" Coverage Results" MODIFIED="1794244071788" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
+    <SUITE FILE_PATH="coverage/CavalloGabriele$.coverage" NAME=" Coverage Results" MODIFIED="1794246403520" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/CavalloGabriele$main.coverage" NAME="main Coverage Results" MODIFIED="1794163290529" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

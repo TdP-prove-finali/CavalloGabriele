@@ -72,7 +72,7 @@ def step_up_numbering(old_numeration: str, where: BalanceLocation | None = None)
         sub_letter = match.group("sottolettera") or None
         spec = match.group("specificazione") or None
 
-        if spec is not None and where is not None and where == BalanceLocation.SP_PASSIVO_DEBITI:
+        if spec is not None and where is not None and (where == BalanceLocation.SP_PASSIVO_DEBITI or where == BalanceLocation.CE):
             return f"{letter}"
         elif spec is not None:
             return f"{letter}{number or ""}{sub_letter or ""}"
@@ -114,7 +114,7 @@ def step_up_field(field_name: str, where: BalanceLocation | None = None)-> str:
     if dc:
         return f"{ntk or ""}{create_o_number(ha) if ha is not None else ""}"
     elif ha is not None:    # I campi con numerazione artificiale possono essere campi top-level oppure collegati ad un campo con numerazione
-        if where == BalanceLocation.SP_ATTIVO:
+        if where == BalanceLocation.SP_ATTIVO or where == BalanceLocation.CE:
             if ntk is not None and len(ntk) == 1:   # Ho solo la lettera nella numerazione
                 return ntk
             elif ntk is not None and len(ntk) > 1:

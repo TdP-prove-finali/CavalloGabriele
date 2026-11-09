@@ -83,6 +83,8 @@ def test_stepup():
     assert step_up_field("_o1_totale_attivo") == ""
     assert step_up_field("bii_dc_di_cui_beni_materiali_concessi_in_locazione_finanziaria") == "bii"
     assert step_up_field("ax_o2_dc_di_cui_per_imposte_differite") == "ax_o2_"
+    assert step_up_field("b10c_o1_b10aplusbplusc_amm_e_svalut_delle_immob", BalanceLocation.CE) == "b10"
+
 
     assert extract_complete_numbering("cii_o1_crediti_per_imposte_anticipate") == "cii_o1"
 
@@ -253,6 +255,101 @@ def test_attivo():
         r += c1.value[0]
 
     assert snapshot.get_field_value("totale_immobilizzazioni_sepind_di_quelle_conc_in_loc_finanz", BalanceLocation.SP_ATTIVO, 0) == r
+
+def test_conto_economico():
+    b = complete_company_1
+    snapshot = BalanceSnaphot.from_company_data(b, 0, 1, "")
+    children = snapshot.get_children("conto_economico", BalanceLocation.CE)
+
+    assert list(map(lambda it: it.field_name, children)) == ['_o10_imposte_differite_e_anticipate',
+ '_o11_imposte_differite__plus_frac___',
+ '_o12_imposte_anticipate__plus_frac___',
+ '_o13_prov__oneri__da_adesione_al_regime_di_trasparenza_fiscale',
+ '_o14__21_utile_frac_perdita_di_esercizio',
+ '_o15_dipendenti',
+ '_o1_risultato_operativo',
+ '_o2_valore_aggiunto',
+ '_o3_totale_proventi_frac_oneri_straordinari',
+ '_o4_proventi_straordinari',
+ '_o5_oneri_straordinari',
+ '_o6_risultato_prima_delle_imposte',
+ '_o7__20_totale_imposte_sul_reddito_correnti_differite_e_anticipate',
+ '_o8_imposte_correnti',
+ '_o9_imposte_relative_a_esercizi_precedenti',
+ 'a_tot_val_della_produzione',
+ 'b_costi_della_produzione',
+ 'c_totale_proventi_e_oneri_finanziari',
+ 'd_totale_rettifiche_att_finanz']
+
+    assert snapshot.get_field_value("risultato_operativo", BalanceLocation.CE, 0) == snapshot.get_field_value("tot_val_della_produzione", BalanceLocation.CE, 0) - snapshot.get_field_value("costi_della_produzione", BalanceLocation.CE, 0)
+
+    c2 = snapshot.get_children("costi_della_produzione", BalanceLocation.CE)
+
+    assert list(map(lambda it: it.field_name, c2)) == ['b10_tot_ammortamenti_e_svalut',
+ 'b11_variazione_materie',
+ 'b12_accantonamenti_per_rischi',
+ 'b13_altri_accantonamenti',
+ 'b14_oneri_diversi_di_gestione',
+ 'b6_materie_prime_e_consumo',
+ 'b7_servizi',
+ 'b8_godimento_beni_di_terzi',
+ 'b9_totale_costi_del_personale']
+
+    r = 0
+    for c1 in c2:
+        r += c1.value[0]
+
+    assert snapshot.get_field_value("costi_della_produzione",
+                                    BalanceLocation.CE, 0) == r
+
+    c3 = snapshot.get_children("tot_val_della_produzione", BalanceLocation.CE)
+
+    assert list(map(lambda it: it.field_name, c3)) == ['a1_ricavi_vendite_e_prestazioni',
+ 'a2_plus_a3_totale_variazioni',
+ 'a2_var_rimanenze_prodotti',
+ 'a3_variazione_lavori',
+ 'a4_incrementi_di_immob',
+ 'a5_altri_ricavi',
+ 'a5_o1_contributi_in_conto_esercizio']
+
+    r = 0
+    for c1 in c3:
+        r += c1.value[0]
+
+    assert snapshot.get_field_value("tot_val_della_produzione",
+                                    BalanceLocation.CE, 0) == r
+
+    c4 = snapshot.get_children("totale_proventi_e_oneri_finanziari", BalanceLocation.CE)
+
+    assert list(map(lambda it: it.field_name, c4)) == ['c15_tot_proventi_da_partecip',
+ 'c16_tot_altri_proventi',
+ 'c17_totale_oneri_finanziari',
+ 'c17bis_utili_e_perdite_su_cambi']
+
+    r = 0
+    for c1 in c4:
+        if "oneri" in c1.field_name:
+            r -= c1.value[0]
+        else:
+            r += c1.value[0]
+
+    assert snapshot.get_field_value("totale_proventi_e_oneri_finanziari",
+                                    BalanceLocation.CE, 0) == r
+
+    c5 = snapshot.get_children("totale_rettifiche_att_finanz", BalanceLocation.CE)
+    assert list(map(lambda it: it.field_name, c5)) == ['d18_tot_rivalutazioni', 'd19_tot_svalutazioni']
+
+    r = 0
+    for c1 in c5:
+        if "svalutazioni" in c1.field_name:
+            r -= c1.value[0]
+        else:
+            r += c1.value[0]
+
+    assert snapshot.get_field_value("totale_rettifiche_att_finanz",
+                                    BalanceLocation.CE, 0) == r
+
+
 
 
 

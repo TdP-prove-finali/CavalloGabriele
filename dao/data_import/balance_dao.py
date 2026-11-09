@@ -41,7 +41,9 @@ class RawCompanyBalanceImporter:
             "crediti_a_oltre": BalanceLocation.SP_ATTIVO,
             "crediti_per_imposte_anticipate": BalanceLocation.SP_ATTIVO,
             "crediti_fin_a_breve": BalanceLocation.SP_ATTIVO,
-            "crediti_fin_a_oltre": BalanceLocation.SP_ATTIVO
+            "crediti_fin_a_oltre": BalanceLocation.SP_ATTIVO,
+            "utile_frac_perdita_di_esercizio_di_pert_di_terzi": BalanceLocation.CE,
+            "utile_frac_perdita_di_esercizio_di_pert_del_gruppo": BalanceLocation.CE
         }
 
     @classmethod
