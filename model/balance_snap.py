@@ -41,11 +41,14 @@ def get_matching_field_name(numeration: str, field_names: list[str]) -> str | No
 
     return None
 
-def serialize_id_map(id_map: dict[str, Node])->dict[str, Any]:
+def serialize_id_map(id_map: dict[str, Node], where: BalanceLocation)->dict[str, Any]:
     d = {}
     for name, node in id_map.items():
-        d[node.field_name] = node.value
+        if node.type != NodeType.VIRTUAL and not node.name in PRIVATE_FIELDS:
+            d[node.field_name] = node.value
 
+    if where != BalanceLocation.CE:
+        d["subsections"] = {}
     return d
 
 class BalanceSnaphot:
@@ -175,8 +178,7 @@ class BalanceSnaphot:
 
         # prima creo tutti i nodi e poi li collego tutti
         for field_name, values in section.items():
-            # fare un controllo per evitare di creare due volte lo stesso nodo
-            if field_name in PRIVATE_FIELDS:
+            if field_name == "subsections":
                 continue
 
             node = Node(
@@ -188,9 +190,10 @@ class BalanceSnaphot:
             )
             graph.add_node(node)
             if id_map.get(node.name) is not None:
-                print(f"WARNING: Il campo {node} non è univoco. ")
-
-            id_map[node.name] = node
+                print(f"WARNING: Il campo {node} non è univoco. Verrà utilizzato il suo field_name completo {field_name}")
+                id_map[node.field_name] = node
+            else:
+                id_map[node.name] = node
 
         for name, node in id_map.items():
             if name in SECTION_HEAD:
@@ -221,9 +224,6 @@ class BalanceSnaphot:
         try:
             self.for_each_ce_field(verify_row)
             self.for_each_sp_field(verify_row)
-
-            if self.sp_totale_attivo != self.sp_totale_passivo:
-                print("Warning: Controllo quadratura patrimoniale non passato")
 
             return True
         except:
@@ -281,7 +281,7 @@ class BalanceSnaphot:
         elif location == BalanceLocation.SP_PASSIVO_PATRIM:
             return self.sp_patrim_id_map
 
-        raise Exception("Location non associata ad una id map")
+        raise Exception(f"Location {location} non associata ad una id map")
 
     def set_field_value(self, field_name: str, location: BalanceLocation, value: Any, month: int):
         """Imposta il valore del campo identificato da
@@ -296,15 +296,10 @@ class BalanceSnaphot:
         id_map = self.__get_id_map(where)
         return id_map[field_name].value[month]
 
-    def get_field_data(self, where: BalanceLocation, field_name):
+    def get_field_data(self, field_name, where: BalanceLocation):
         """Restituisce il valore del campo oppure None se non esiste"""
-        if where in [BalanceLocation.SP_ATTIVO, BalanceLocation.SP_PASSIVO_DEBITI,
-                        BalanceLocation.SP_PASSIVO_PATRIM]:
-            return self.sp_attivo_id_map[field_name].value
-        elif where == BalanceLocation.CE:
-            return self.ce_id_map[field_name].value
-
-        return None
+        id_map = self.__get_id_map(where)
+        return id_map[field_name].value
 
     def calc_indicies(self):
         """Calcola gli indici di bilancio"""
@@ -480,6 +475,8 @@ class BalanceSnaphot:
             conto_economico=self.conto_economico.copy(),
             ce_id_map=self.ce_id_map.copy(),
             sp_attivo_id_map=self.sp_attivo_id_map.copy(),
+            sp_debiti_id_map=self.sp_debiti_id_map.copy(),
+            sp_patrim_id_map=self.sp_patrim_id_map.copy(),
             indici=self.indici.copy(),
             timestamp=self.timestamp,
             sim_id=self.sim_id,
@@ -505,11 +502,19 @@ class BalanceSnaphot:
     def for_each_child(self,
                        field_name: str,
                        where: BalanceLocation,
-                       function: Callable[[str, list[Any]], list[Any] | None],
+                       function: Callable[[str, list[Any], Node], list[Any] | None],
                        overwrite: bool = False):
-        child_fields: list[str] = self.get_children(field_name, where)
-        for field in child_fields:
-            res = function(field, self.get_field_data(where, field))
+        """
+        Esegue una funzione su tutti i figli di un nodo. Questa funzione può opzionalmente calcolare qualcosa e sostituire il vecchio valore del campo.
+        :param field_name:
+        :param where:
+        :param function:
+        :param overwrite:
+        :return:
+        """
+        child_fields: list[Node] = self.get_children(field_name, where)
+        for node in child_fields:
+            res = function(node.name, self.get_field_data(node.name, where), node)
             if overwrite:
                 self.set_field_data(
                     field_name, where, res
@@ -536,12 +541,18 @@ class BalanceSnaphot:
         return results
 
     def set_field_data(self, field_name: str, where: BalanceLocation, data: list[Any]):
-        if where == BalanceLocation.CE:
-            self.stato_patrimoniale[field_name] = data
-        elif where == BalanceLocation.SP_PASSIVO_DEBITI:
-            self.stato_patrimoniale["subsections"]["passivo"]["subsections"]["debiti"][field_name] = data
-        elif where == BalanceLocation.SP_PASSIVO_PATRIM:
-            self.stato_patrimoniale["subsections"]["passivo"]["subsections"]["patrimonio_netto"][field_name] = data
+        """
+        Imposta tutti i valori del campo direttamente
+        :param field_name:
+        :param where:
+        :param data:
+        :return:
+        """
+        if len(data) != self.available_columns:
+            raise Exception("Non è possibile impostare i valori di un campo con un numero di colonne diverse da quelle degli altri campi. Prima creare una nuova colonna con create_column()")
+
+        id_map = self.__get_id_map(where)
+        id_map[field_name].value = data
 
     def advanced_copy(self,
                       stato_patrimon_transformer: Callable[[str, list[Any], Node], list[Any]],
@@ -571,7 +582,25 @@ class BalanceSnaphot:
         return tot_cp
 
     def serialize(self) -> tuple[dict, dict]:
-        return (serialize_id_map(self.sp_attivo_id_map), serialize_id_map(self.ce_id_map))
+        """
+        Serializza lo snapshot di bilancio (che è un grafo) in una tupla contenente due dizionari che possono essere salvati su MongoDB.
+        Restituisce, nell'ordine,
+        :return:
+        """
+        return ({
+            "data": self.get_field_data("data", BalanceLocation.CE),
+            "moneta": self.get_field_data("moneta", BalanceLocation.CE),
+            "periodo": self.get_field_data("periodo", BalanceLocation.CE),
+            "subsections":
+                    {"attivo": serialize_id_map(self.sp_attivo_id_map, BalanceLocation.SP_ATTIVO),
+                  "passivo": {
+                      "subsections":
+                          {"debiti": serialize_id_map(self.sp_debiti_id_map, BalanceLocation.SP_PASSIVO_DEBITI),
+                           "patrimonio_netto": serialize_id_map(self.sp_patrim_id_map, BalanceLocation.SP_PASSIVO_PATRIM)},
+                  }
+                  }}, {"data": self.get_field_data("data", BalanceLocation.CE),
+            "moneta": self.get_field_data("moneta", BalanceLocation.CE),
+            "periodo": self.get_field_data("periodo", BalanceLocation.CE),} | serialize_id_map(self.ce_id_map, BalanceLocation.CE))
 
     @staticmethod
     def from_company_data(data: CompanyData,

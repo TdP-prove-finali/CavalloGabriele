@@ -1,7 +1,9 @@
+
 from dao.simulation.simulation_dao import SimulationDAO
 from dao.util import step_up_numbering, step_up_field, extract_complete_numbering, BalanceLocation
 from model.balance_snap import BalanceSnaphot
 from model.investment_item import InvestmentProject
+from model.node import Node, NodeType
 from model.sim_output import SimulationOutput
 from model.sim_state import GlobalParameters
 from test_data import complete_company_1
@@ -19,6 +21,35 @@ def test_balance():
     assert snapshot.get_field_value("crediti_verso_soci", BalanceLocation.SP_ATTIVO, month=0) == 200
     assert snapshot.get_field_value("totale_patrimonio_netto", BalanceLocation.SP_PASSIVO_PATRIM, month=0) == 300
     assert snapshot.get_field_value("soci_per_finanziamenti_entro", BalanceLocation.SP_PASSIVO_DEBITI, month=0) == 30000000
+
+    # verifico manualmente che il nodo corrispondente nel grafo sia stato aggiornato
+    for node in list(snapshot.stato_patrimoniale.nodes):
+        if node.name == "soci_per_finanziamenti_entro":
+            assert node.value[0] == 30000000
+        elif node.name == "totale_patrimonio_netto":
+            assert node.value[0] == 300
+
+    # verifico che accedendo alla id-map manualmente e modificando un'informazione sul nodo come il valore si aggiorni il grafo
+    snapshot.sp_debiti_id_map["soci_per_finanziamenti_entro"].value[0] = 42
+    for node in list(snapshot.stato_patrimoniale.nodes):
+        if node.name == "soci_per_finanziamenti_entro":
+            assert node.value[0] == 42
+        elif node.name == "totale_patrimonio_netto":
+            assert node.value[0] == 300
+
+    node1 = snapshot.sp_debiti_id_map["soci_per_finanziamenti_entro"]
+    node2 = None
+    for node in list(snapshot.stato_patrimoniale.nodes):
+        if node.name == "soci_per_finanziamenti_entro":
+            node2 = node
+
+    # verifico che prendendo il nodo dalla id-map si ottenga un puntatore al nodo del grafo
+    assert node2 is not None
+    assert node1.field_name == node2.field_name
+    assert node1.value == node2.value
+
+    snapshot.set_field_data("soci_per_finanziamenti_entro", BalanceLocation.SP_PASSIVO_DEBITI, [42, 42])
+    assert node2.value == [42, 42]
 
     try:
         snapshot.set_field_value("ciao", BalanceLocation.CE, 300, 4, 0)
@@ -217,14 +248,14 @@ def test_attivo():
 
     c3 = snapshot.get_children("totale_attivita_finanziarie", BalanceLocation.SP_ATTIVO)
 
-    assert list(map(lambda it: it.field_name, c3)) == ['ciii6_altri_titoli',
- 'ciii4bis_azioni_proprie',
- 'ciii5_strumenti_finanziari_derivati_attivi',
- 'ciii1_partecni_in_controllate',
+    assert list(map(lambda it: it.field_name, c3)) == ['ciii1_partecni_in_controllate',
  'ciii2_partecni_in_collegate',
  'ciii3_partecni_in_controllanti',
  'ciii3bis_partecni_in_imprese_sottoposte_al_controllo_delle_controllanti',
  'ciii4_altre_partecni',
+ 'ciii4bis_azioni_proprie',
+ 'ciii5_strumenti_finanziari_derivati_attivi',
+ 'ciii6_altri_titoli',
  'ciii7_attivita_finanziarie_per_la_gestione_accentrata_della_tesoreria']
     r = 0
     for c1 in c3:
@@ -279,7 +310,10 @@ def test_conto_economico():
  'a_tot_val_della_produzione',
  'b_costi_della_produzione',
  'c_totale_proventi_e_oneri_finanziari',
- 'd_totale_rettifiche_att_finanz']
+ 'd_totale_rettifiche_att_finanz',
+ 'data',
+ 'moneta',
+ 'periodo']
 
     assert snapshot.get_field_value("risultato_operativo", BalanceLocation.CE, 0) == snapshot.get_field_value("tot_val_della_produzione", BalanceLocation.CE, 0) - snapshot.get_field_value("costi_della_produzione", BalanceLocation.CE, 0)
 
@@ -349,7 +383,26 @@ def test_conto_economico():
     assert snapshot.get_field_value("totale_rettifiche_att_finanz",
                                     BalanceLocation.CE, 0) == r
 
+def test_serialize():
+    b = complete_company_1
+    snapshot = BalanceSnaphot.from_company_data(b, 0, 1, "", single_year=False)
+    assert snapshot.get_field_value("cred_vs_controllate_entro", BalanceLocation.SP_ATTIVO, 0) is not None
+    sp, ce = snapshot.serialize()
 
+    for node in list(snapshot.stato_patrimoniale.nodes()):
+        if node.type != NodeType.VIRTUAL:
+            assert (sp.get(node.field_name) is not None or
+                    sp["subsections"]["attivo"].get(node.field_name) is not None or
+                    sp["subsections"]["passivo"]["subsections"]["debiti"].get(node.field_name) is not None or
+                    sp["subsections"]["passivo"]["subsections"]["patrimonio_netto"].get(node.field_name) is not None)
+
+    for node in list(snapshot.conto_economico.nodes()):
+        if node.type != NodeType.VIRTUAL:
+            assert ce.get(node.field_name) is not None
+
+    # verifico la compatibilità con la raw company iniziale (voglio che abbiano la stessa struttura in memoria)
+    assert complete_company_1.stato_patrimoniale == sp
+    assert complete_company_1.conto_economico == ce
 
 
 
