@@ -1,6 +1,29 @@
 import unicodedata
 import math
 import re
+from enum import IntEnum
+
+class BalanceLocation(IntEnum):
+    SP_ATTIVO = 0,
+    SP_PASSIVO_DEBITI = 1,
+    SP_PASSIVO_PATRIM = 2,
+    CE = 3,
+    SP_PASSIVO = 4,
+    SP = 5
+
+    @staticmethod
+    def from_str(input: str):
+        d = {
+            "attivo": BalanceLocation.SP_ATTIVO,
+            "passivo": BalanceLocation.SP_PASSIVO,
+            "debiti": BalanceLocation.SP_PASSIVO_DEBITI,
+            "patrimonio_netto": BalanceLocation.SP_PASSIVO_PATRIM,
+            "conto_economico": BalanceLocation.CE
+        }
+        if d.get(input) is None:
+            raise Exception("BalanceLocation non riconosciuta")
+
+        return d.get(input)
 
 SECTION_HEAD = ["attivo", "passivo", "patrimonio_netto", "debiti", "conto_economico"]
 
@@ -34,7 +57,7 @@ ROMAN_FIELD_REGEX = re.compile(
     r"(?=_|$)"
 )
 
-def step_up_numbering(old_numeration: str) -> str:
+def step_up_numbering(old_numeration: str, where: BalanceLocation | None = None) -> str:
     """
     Restituisce la numerazione del parent a cui appartiene il campo, gestendo sia la numerazione araba che quella romana
 
@@ -49,7 +72,9 @@ def step_up_numbering(old_numeration: str) -> str:
         sub_letter = match.group("sottolettera") or None
         spec = match.group("specificazione") or None
 
-        if spec is not None:
+        if spec is not None and where is not None and where == BalanceLocation.SP_PASSIVO_DEBITI:
+            return f"{letter}"
+        elif spec is not None:
             return f"{letter}{number or ""}{sub_letter or ""}"
         elif sub_letter is not None:
             return f"{letter}{number or ""}"
@@ -68,7 +93,7 @@ def step_up_numbering(old_numeration: str) -> str:
         spec = match.group("specificazione") or None
 
         if spec is not None:
-            return f"{letter}{number or ""}{sub_number or ""}{sub_letter or ""}"
+            return f"{letter}{number or ""}"
         elif sub_letter is not None:
             return f"{letter}{number or ""}{sub_number or ""}"
         elif sub_number is not None:
@@ -80,7 +105,7 @@ def step_up_numbering(old_numeration: str) -> str:
 
     raise Exception("Numerazione non riconosciuta")
 
-def step_up_field(field_name: str)-> str:
+def step_up_field(field_name: str, where: BalanceLocation | None = None)-> str:
     """Dato un field_name completo restituisce l'identificatore del campo parent, applicando le giuste regole"""
     dc = is_specification_field(field_name)
     ha = extract_o_number(field_name)
@@ -89,9 +114,9 @@ def step_up_field(field_name: str)-> str:
     if dc:
         return f"{ntk or ""}{create_o_number(ha) if ha is not None else ""}"
     elif ha is not None:    # I campi con numerazione artificiale possono essere campi top-level oppure collegati ad un campo con numerazione
-        return f"{ntk or ""}"
+        return f"{ntk[0] if ntk is not None and len(ntk) > 0 else ""}"
     elif ntk is not None:
-        return step_up_numbering(ntk)
+        return step_up_numbering(ntk, where)
 
     if field_name in ["data", "moneta", "periodo", "ics"] or field_name in SECTION_HEAD:
         return ""
@@ -126,6 +151,11 @@ def extract_o_number(field_name: str) -> int | None:
 def create_o_number(number: int) -> str:
     return f"_o{number}_"
 
+def extract_only_name(field_name: str)-> str:
+    """Restituisce il nome del campo senza la numerazione (originale o artificiale)"""
+    return (field_name.removeprefix(
+        extract_complete_numbering(field_name) or "")
+            .removeprefix("_"))
 
 def extract_complete_numbering(field_name: str) -> str | None:
     """

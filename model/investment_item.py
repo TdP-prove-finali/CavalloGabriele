@@ -1,9 +1,9 @@
 from enum import IntEnum
 
-from model.balance_snap import BalanceLocation
 from model.investment_effect import (InvestmentEffect,
                                      EffectFrequency,
                                     EffectType)
+from model.node import BalanceLocation
 
 
 # TODO: Gestire l'unità di misura del denaro in modo comodo (se i dati sono in migliaia mettere /1000 altrimenti i conti non tornano

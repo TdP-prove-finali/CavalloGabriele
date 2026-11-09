@@ -1,12 +1,10 @@
-from controller.simulation_controller import SimulationWorker
 from dao.simulation.simulation_dao import SimulationDAO
-from dao.util import step_up_numbering, step_up_field
-from model.balance_snap import BalanceSnaphot, BalanceLocation
+from dao.util import step_up_numbering, step_up_field, extract_complete_numbering, BalanceLocation
+from model.balance_snap import BalanceSnaphot
 from model.investment_item import InvestmentProject
 from model.sim_output import SimulationOutput
-from model.sim_state import SimulationCompleteModel, SimulationState, GlobalParameters
+from model.sim_state import GlobalParameters
 from test_data import complete_company_1
-
 
 def test_balance():
     b = complete_company_1
@@ -63,59 +61,74 @@ def test_stepup():
     assert step_up_numbering("cii3_cred_vs_collegate_oltre") == "cii"
     assert step_up_numbering("ci_totale_rimanenze") == "c"
     assert step_up_numbering("c_attivo_circolante") == ""
-    assert step_up_numbering("cii5bis_cred_tributari_entro") == "cii5"
-    assert step_up_numbering("cii5quater_cred_verso_altri_entro") == "cii5"
+    assert step_up_numbering("cii5bis_cred_tributari_entro") == "cii"
+    assert step_up_numbering("cii5quater_cred_verso_altri_entro") == "cii"
     assert step_up_numbering("civ1_depositi_bancari") == "civ"
     assert step_up_numbering("aiv_riserva_legale") == "a"
 
-    assert step_up_field("d11bis_debiti_vs_imprese_sottoposte_al_controllo_delle_controllanti_entro") == "d11"
+    assert step_up_field("d11bis_debiti_vs_imprese_sottoposte_al_controllo_delle_controllanti_entro", BalanceLocation.SP_PASSIVO_DEBITI) == "d"
     assert step_up_field("_o1_totale_passivo") == ""
     assert step_up_field("d_o1_total_debiti_entro_lesercizio") == "d"
+    assert step_up_field("d9_o1_imprese_controllate_oltre") == "d"
     assert step_up_field("e_o1_aggio_sui_prestiti") == "e"
     assert step_up_field("ai_dc_di_cui_versamenti_in_c_frac_futuro_aumento_di_capitale") == "ai"
-    assert step_up_field("aix_o1_acconto_dividendi") == "aix"
+    assert step_up_field("aix_o1_acconto_dividendi") == "a"
     assert step_up_field("aix_utile_frac_perdita_di_esercizio") == "a"
-    assert step_up_field("av_o1_riserva_azioni_proprie") == "av"
+    assert step_up_field("av_o1_riserva_azioni_proprie") == "a"
     assert step_up_field("ax_riserva_negativa_per_azioni_proprie_in_portafoglio__plus_frac___") == "a"
     assert step_up_field("b1_fondo_di_quiescenza") == "b"
     assert step_up_field("c_trattamento_di_fine_rapporto") == ""
     assert step_up_field("_o1_totale_attivo") == ""
     assert step_up_field("bii_dc_di_cui_beni_materiali_concessi_in_locazione_finanziaria") == "bii"
     assert step_up_field("ax_o2_dc_di_cui_per_imposte_differite") == "ax_o2_"
+    assert extract_complete_numbering("cii_o1_crediti_per_imposte_anticipate") == "cii_o1"
 
 
-def test_parent():
+def test_debiti():
     b = complete_company_1
     snapshot = BalanceSnaphot.from_company_data(b, 0, 1, "")
-    assert list(map(lambda it: it.field_name, snapshot.get_children("totale_debiti", BalanceLocation.SP_PASSIVO_DEBITI))) == [
- 'd1_obbligni_entro',
- 'd1_obbligni_oltre',
- 'd2_obbligni_convert_entro',
- 'd2_obbligni_convert_oltre',
- 'd3_soci_per_finanziamenti_entro',
- 'd3_soci_per_finanziamenti_oltre',
- 'd4_banche_entro_lesercizio',
- 'd4_banche_oltre_lesercizio',
- 'd5_altri_finanziatori_entro',
- 'd5_altri_finanziatori_oltre',
- 'd6_acconti_entro',
- 'd6_acconti_oltre',
- 'd7_fornitori_entro',
- 'd7_fornitori_oltre',
- 'd8_titoli_di_credito_entro',
- 'd8_titoli_di_credito_oltre',
- 'd9_imprese_controllate_entro',
- 'd9_imprese_controllate_oltre',
- 'd10_imprese_collegate_entro',
- 'd10_imprese_collegate_oltre',
+    children = snapshot.get_children("totale_debiti", BalanceLocation.SP_PASSIVO_DEBITI)
+    assert list(map(lambda it: it.field_name, children)) == ['d10_imprese_collegate_entro',
+ 'd10_o1_imprese_collegate_oltre',
  'd11_controllanti_entro',
- 'd11_controllanti_oltre',
+ 'd11_o1_controllanti_oltre',
  'd11bis_debiti_vs_imprese_sottoposte_al_controllo_delle_controllanti_entro',
- 'd11bis_debiti_vs_imprese_sottoposte_al_controllo_delle_controllanti_oltre',
+ 'd11bis_o1_debiti_vs_imprese_sottoposte_al_controllo_delle_controllanti_oltre',
  'd12_debiti_tributari_entro',
- 'd12_debiti_tributari_oltre',
+ 'd12_o1_debiti_tributari_oltre',
  'd13_istituti_previdenza_entro',
- 'd13_istituti_previdenza_oltre',
+ 'd13_o1_istituti_previdenza_oltre',
  'd14_altri_debiti_entro',
- 'd14_altri_debiti_oltre']
+ 'd14_o1_altri_debiti_oltre',
+ 'd1_o1_obbligni_oltre',
+ 'd1_obbligni_entro',
+ 'd2_o1_obbligni_convert_oltre',
+ 'd2_obbligni_convert_entro',
+ 'd3_o1_soci_per_finanziamenti_oltre',
+ 'd3_soci_per_finanziamenti_entro',
+ 'd4_banche_entro_lesercizio',
+ 'd4_o1_banche_oltre_lesercizio',
+ 'd5_altri_finanziatori_entro',
+ 'd5_o1_altri_finanziatori_oltre',
+ 'd6_acconti_entro',
+ 'd6_o1_acconti_oltre',
+ 'd7_fornitori_entro',
+ 'd7_o1_fornitori_oltre',
+ 'd8_o1_titoli_di_credito_oltre',
+ 'd8_titoli_di_credito_entro',
+ 'd9_imprese_controllate_entro',
+ 'd9_o1_imprese_controllate_oltre']
 
+    r = sum(map(lambda it: it.value[0], children))
+    assert snapshot.get_field_value("totale_debiti", BalanceLocation.SP_PASSIVO_DEBITI, 0) == r
+
+    # Verifico che siano tutte foglie
+    for child in children:
+        assert len(snapshot.get_children(child.name, BalanceLocation.SP_PASSIVO_DEBITI)) == 0
+
+
+def test_patrimonio_netto():
+    b = complete_company_1
+    snapshot = BalanceSnaphot.from_company_data(b, 0, 1, "")
+    children = snapshot.get_children("patrimonio_netto", BalanceLocation.SP_PASSIVO_PATRIM)
+    assert children == []

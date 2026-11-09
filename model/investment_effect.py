@@ -2,7 +2,8 @@ from enum import Enum
 from math import exp, sqrt
 from typing import Callable, Any
 
-from model.balance_snap import BalanceSnaphot, BalanceLocation
+from dao.util import BalanceLocation
+from model.balance_snap import BalanceSnaphot
 from model.sim_state import SimulationState
 import numpy as np
 

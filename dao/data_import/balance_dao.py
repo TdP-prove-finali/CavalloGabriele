@@ -5,8 +5,7 @@ from openpyxl.utils import get_column_letter
 from openpyxl.worksheet.worksheet import Worksheet
 
 from dao.util import remove_accents, has_valid_numbering, extract_numbering_token, create_o_number, extract_o_number, \
-    is_specification_field, extract_complete_numbering, extract_only_name
-from model.node import BalanceLocation
+    is_specification_field, extract_complete_numbering, extract_only_name, BalanceLocation
 from model.raw_company_data import RawCompanyData, GlobalNumberContext
 from openpyxl import load_workbook
 from model.section import Section

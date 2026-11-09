@@ -4,24 +4,28 @@ from typing import Callable, Any
 import networkx as nx
 import re
 from networkx.classes import Graph, DiGraph
-from dao.util import step_up_field, extract_field_identif, SECTION_HEAD
+from dao.util import step_up_field, extract_field_identif, SECTION_HEAD, BalanceLocation
 from model.node import Node, NodeType, Flag
 from model.raw_company_data import CompanyData
 
-class BalanceLocation(IntEnum):
-    SP_ATTIVO = 0,
-    SP_PASSIVO_DEBITI = 1,
-    SP_PASSIVO_PATRIM = 2,
-    CE = 3
-
-
-def get_matching_node(numeration: str, graph: DiGraph) -> Node | None:
-    """Restituisce il nodo che ha esattamente la stessa numerazione di quella indicata. """
+def get_matching_node(numeration: str, graph: DiGraph, where: BalanceLocation) -> Node | None:
+    """Restituisce il nodo che ha esattamente la stessa numerazione di quella indicata e che si trova esattamente nella stessa sezione
+    del documento. Il parametro where serve per distinguere campi che hanno la stessa numerazione ma si trovano in sezioni diverse del bilancio. . """
     c_num = numeration + "_" if not numeration.endswith("_") else numeration
-
+    results = []
     for node in graph.nodes:
-        if extract_field_identif(node.field_name) == c_num:
-            return node
+        if extract_field_identif(node.field_name) == c_num and where == node.where:
+            results.append(node)
+
+    if len(results) > 1:
+        print(f"WARNING: Ci sono più nodi che fanno match con la numerazione {numeration} nella sezione {where.__str__()}")
+        print(results)
+
+        for r in results:
+            if r.field_name.find("totale") >= 0:
+                return r        # Di default viene restituito il campo che contiene un totale
+    else:
+        return results[0]
 
     return None
 
@@ -46,7 +50,9 @@ class BalanceSnaphot:
     def __init__(self,
                  stato_patrimoniale: DiGraph,
                  conto_economico: DiGraph,
-                 sp_id_map: dict[str, Node],
+                 sp_attivo_id_map: dict[str, Node],
+                 sp_debiti_id_map: dict[str, Node],
+                 sp_patrim_id_map: dict[str, Node],
                  ce_id_map: dict[str, Node],
                  indici: dict[str, Any],
                  timestamp: int,
@@ -54,7 +60,9 @@ class BalanceSnaphot:
                  available_years: int,
                  effect_pointer: str | None
                  ):
-        self.sp_id_map: dict[str, Node] = sp_id_map
+        self.sp_attivo_id_map: dict[str, Node] = sp_attivo_id_map
+        self.sp_debiti_id_map: dict[str, Node] = sp_debiti_id_map
+        self.sp_patrim_id_map: dict[str, Node] = sp_patrim_id_map
         self.ce_id_map: dict[str, Node] = ce_id_map
         self.stato_patrimoniale: DiGraph = stato_patrimoniale
         self.conto_economico: DiGraph = conto_economico
@@ -107,18 +115,28 @@ class BalanceSnaphot:
         ]
 
     @staticmethod
-    def create_sp_graph(stato_patrimoniale: dict[str, Any]) -> tuple[DiGraph, dict]:
+    def create_sp_graph(stato_patrimoniale: dict[str, Any]) -> tuple[DiGraph, dict, dict, dict]:
+        """
+        Crea il grafo dello stato patrimoniale e lo restituisce, insieme alle 3 id-map delle sezioni attivo, debiti, patrimonio netto
+        :param stato_patrimoniale:
+        :return:
+        """
         id_map = {}
         graph = nx.DiGraph()
-        sp = Node.virtual("stato_patrimoniale")
-        att = Node.virtual("attivo")
-        pss = Node.virtual("passivo")
-        dbt = Node.virtual("debiti")
-        ptrm = Node.virtual("patrimonio_netto")
+        sp = Node.virtual("stato_patrimoniale", BalanceLocation.SP)
+        att = Node.virtual("attivo", BalanceLocation.SP_ATTIVO)
+        pss = Node.virtual("passivo", BalanceLocation.SP_PASSIVO)
+        dbt = Node.virtual("debiti", BalanceLocation.SP_PASSIVO_DEBITI)
+        ptrm = Node.virtual("patrimonio_netto", BalanceLocation.SP_PASSIVO_PATRIM)
         id_map["attivo"] = att
         id_map["passivo"] = pss
-        id_map["debiti"] = dbt
-        id_map["patrimonio_netto"] = ptrm
+
+        att_id_map = id_map.copy()
+        pss_dbt_id_map = id_map.copy()
+        pss_ptrm_id_map = id_map.copy()
+
+        pss_dbt_id_map["debiti"] = dbt
+        pss_ptrm_id_map["patrimonio_netto"] = ptrm
 
         graph.add_node(sp)
         graph.add_node(att)
@@ -130,26 +148,27 @@ class BalanceSnaphot:
         graph.add_node(ptrm)
         graph.add_edge(pss, ptrm)
 
-        BalanceSnaphot.__create_section_graph(att, stato_patrimoniale["subsections"]["attivo"], graph, id_map)
-        BalanceSnaphot.__create_section_graph(dbt, stato_patrimoniale["subsections"]["passivo"]["subsections"]["debiti"], graph, id_map)
-        BalanceSnaphot.__create_section_graph(ptrm, stato_patrimoniale["subsections"]["passivo"]["subsections"]["patrimonio_netto"], graph, id_map)
+        BalanceSnaphot.__create_section_graph(att, stato_patrimoniale["subsections"]["attivo"], graph, att_id_map, BalanceLocation.SP_ATTIVO)
+        BalanceSnaphot.__create_section_graph(dbt, stato_patrimoniale["subsections"]["passivo"]["subsections"]["debiti"], graph, pss_dbt_id_map, BalanceLocation.SP_PASSIVO_DEBITI)
+        BalanceSnaphot.__create_section_graph(ptrm, stato_patrimoniale["subsections"]["passivo"]["subsections"]["patrimonio_netto"], graph, pss_ptrm_id_map, BalanceLocation.SP_PASSIVO_PATRIM)
 
-        return (graph, id_map)
+        return (graph, att_id_map, pss_dbt_id_map, pss_ptrm_id_map)
 
     @staticmethod
     def create_ce_graph(conto_economico: dict[str, Any]) -> tuple[DiGraph, dict]:
         graph = DiGraph()
-        ce = Node.virtual("conto_economico")
+        ce = Node.virtual("conto_economico", BalanceLocation.CE)
         graph.add_node(ce)
         id_map = {"conto_economico": ce}
-        BalanceSnaphot.__create_section_graph(ce, conto_economico, graph, id_map)
+        BalanceSnaphot.__create_section_graph(ce, conto_economico, graph, id_map, BalanceLocation.CE)
         return (graph, id_map)
 
     @staticmethod
     def __create_section_graph(section_node: Node,
                                section: dict[str, Any],
                                graph: DiGraph,
-                               id_map: dict[str, Any]
+                               id_map: dict[str, Any],
+                               where: BalanceLocation
                                ):
 
         # prima creo tutti i nodi e poi li collego tutti
@@ -162,18 +181,22 @@ class BalanceSnaphot:
                 type=NodeType.FIELD,
                 field_name=field_name,
                 value=values.copy(),
-                flags=[]
+                flags=[],
+                where=where
             )
             graph.add_node(node)
+            if id_map.get(node.name) is not None:
+                print(f"WARNING: Il campo {node} non è univoco. ")
+
             id_map[node.name] = node
 
         for name, node in id_map.items():
             if name in SECTION_HEAD:
                 continue
 
-            prev_ident = step_up_field(node.field_name)
+            prev_ident = step_up_field(node.field_name, where)
             if prev_ident != "":
-                parent_node = get_matching_node(prev_ident, graph)
+                parent_node = get_matching_node(prev_ident, graph, where)
                 if node.field_name == parent_node.field_name:     # Evita la creazione di cicli
                     print("Ciclo")
                     continue
@@ -246,30 +269,36 @@ class BalanceSnaphot:
 
         return None
 
+    def __get_id_map(self, location: BalanceLocation) -> dict[str, Node]:
+        if location == BalanceLocation.CE:
+            return self.ce_id_map
+        elif location == BalanceLocation.SP_ATTIVO:
+            return self.sp_attivo_id_map
+        elif location == BalanceLocation.SP_PASSIVO_DEBITI:
+            return self.sp_debiti_id_map
+        elif location == BalanceLocation.SP_PASSIVO_PATRIM:
+            return self.sp_patrim_id_map
+
+        raise Exception("Location non associata ad una id map")
+
     def set_field_value(self, field_name: str, location: BalanceLocation, value: Any, month: int):
         """Imposta il valore del campo identificato da
-        :param field_name alla colonna month """
-        if location in [BalanceLocation.SP_ATTIVO, BalanceLocation.SP_PASSIVO_DEBITI, BalanceLocation.SP_PASSIVO_PATRIM]:
-            self.sp_id_map[field_name].value[month] = value
-            self.sp_id_map[field_name].set_flag(Flag.UPDATED)
-        elif location == BalanceLocation.CE:
-            self.ce_id_map[field_name].value[month] = value
-            self.ce_id_map[field_name].set_flag(Flag.UPDATED)
+        :param field_name alla colonna month nella sezione giusta del bilancio"""
+        id_map = self.__get_id_map(location)
+
+        id_map[field_name].value[month] = value
+        id_map[field_name].set_flag(Flag.UPDATED)
 
     def get_field_value(self, field_name, where: BalanceLocation, month):
         """Restituisce il valore del campo alla colonna giusta. Il field_name deve essere passato senza la numerazione. """
-        if where == BalanceLocation.CE:
-            return self.ce_id_map.get(field_name).value[month]
-        elif where in [BalanceLocation.SP_ATTIVO, BalanceLocation.SP_PASSIVO_DEBITI, BalanceLocation.SP_PASSIVO_PATRIM]:
-            return self.sp_id_map.get(field_name).value[month]
-
-        raise ValueError("Non è stato possibile trovare il campo " + field_name + " nella posizione " + str(where))
+        id_map = self.__get_id_map(where)
+        return id_map[field_name].value[month]
 
     def get_field_data(self, where: BalanceLocation, field_name):
         """Restituisce il valore del campo oppure None se non esiste"""
         if where in [BalanceLocation.SP_ATTIVO, BalanceLocation.SP_PASSIVO_DEBITI,
                         BalanceLocation.SP_PASSIVO_PATRIM]:
-            return self.sp_id_map[field_name].value
+            return self.sp_attivo_id_map[field_name].value
         elif where == BalanceLocation.CE:
             return self.ce_id_map[field_name].value
 
@@ -448,7 +477,7 @@ class BalanceSnaphot:
             stato_patrimoniale=self.stato_patrimoniale.copy(),
             conto_economico=self.conto_economico.copy(),
             ce_id_map=self.ce_id_map.copy(),
-            sp_id_map=self.sp_id_map.copy(),
+            sp_attivo_id_map=self.sp_attivo_id_map.copy(),
             indici=self.indici.copy(),
             timestamp=self.timestamp,
             sim_id=self.sim_id,
@@ -463,7 +492,7 @@ class BalanceSnaphot:
         :param where: Posizione del campo
         :return:
         """
-        source: Node = self.ce_id_map[field_name] if where == BalanceLocation.CE else self.sp_id_map[field_name]
+        source: Node = self.__get_id_map(where)[field_name]
         graph: DiGraph = self.conto_economico if where == BalanceLocation.CE else self.stato_patrimoniale
         l = []
         for s, d in list(graph.out_edges(source)):
@@ -540,7 +569,7 @@ class BalanceSnaphot:
         return tot_cp
 
     def serialize(self) -> tuple[dict, dict]:
-        return (serialize_id_map(self.sp_id_map), serialize_id_map(self.ce_id_map))
+        return (serialize_id_map(self.sp_attivo_id_map), serialize_id_map(self.ce_id_map))
 
     @staticmethod
     def from_company_data(data: CompanyData,
@@ -567,12 +596,14 @@ class BalanceSnaphot:
             ce_dict = BalanceSnaphot.copy_last_balance(data.conto_economico)
             l = 1
 
-        sp_graph, sp_id_map = BalanceSnaphot.create_sp_graph(sp_dict)
+        sp_graph, att, dbt, ptrm = BalanceSnaphot.create_sp_graph(sp_dict)
         ce_graph, ce_id_map = BalanceSnaphot.create_ce_graph(ce_dict)
         return BalanceSnaphot(
             stato_patrimoniale=sp_graph,
             conto_economico=ce_graph,
-            sp_id_map=sp_id_map,
+            sp_attivo_id_map=att,
+            sp_debiti_id_map=dbt,
+            sp_patrim_id_map=ptrm,
             ce_id_map=ce_id_map,
             timestamp=timestamp,
             sim_id=sim_id,

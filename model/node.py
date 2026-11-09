@@ -1,30 +1,7 @@
-
 from dataclasses import dataclass
 from enum import IntEnum
 from typing import Any
-from dao.util import extract_complete_numbering
-
-class BalanceLocation(IntEnum):
-    SP_ATTIVO = 0,
-    SP_PASSIVO_DEBITI = 1,
-    SP_PASSIVO_PATRIM = 2,
-    CE = 3,
-    SP_PASSIVO = 4,
-    SP = 5
-
-    @staticmethod
-    def from_str(input: str):
-        d = {
-            "attivo": BalanceLocation.SP_ATTIVO,
-            "passivo": BalanceLocation.SP_PASSIVO,
-            "debiti": BalanceLocation.SP_PASSIVO_DEBITI,
-            "patrimonio_netto": BalanceLocation.SP_PASSIVO_PATRIM,
-            "conto_economico": BalanceLocation.CE
-        }
-        if d.get(input) is None:
-            raise Exception("BalanceLocation non riconosciuta")
-
-        return d.get(input)
+from dao.util import extract_complete_numbering, BalanceLocation
 
 class NodeType(IntEnum):
     VIRTUAL = 0,
