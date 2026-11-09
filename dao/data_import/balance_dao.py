@@ -5,7 +5,8 @@ from openpyxl.utils import get_column_letter
 from openpyxl.worksheet.worksheet import Worksheet
 
 from dao.util import remove_accents, has_valid_numbering, extract_numbering_token, create_o_number, extract_o_number, \
-    is_specification_field, extract_complete_numbering
+    is_specification_field, extract_complete_numbering, extract_only_name
+from model.node import BalanceLocation
 from model.raw_company_data import RawCompanyData, GlobalNumberContext
 from openpyxl import load_workbook
 from model.section import Section
@@ -18,7 +19,6 @@ class RawCompanyBalanceImporter:
         "RISULTATO OPERATIVO",
         "TOTALE ATTIVO",
         "TOTALE PASSIVO",
-
     ]
 
     """
@@ -32,6 +32,13 @@ class RawCompanyBalanceImporter:
         self.max_col = None
         self.max_row = None
         self.company: RawCompanyData | None = None
+        # campi da escludere perchè duplicati nei bilanci sorgente
+        self.__exclude_fields = {
+            "total_debiti_entro_lesercizio": BalanceLocation.SP_PASSIVO_DEBITI,
+            "total_debiti_oltre_lesercizio": BalanceLocation.SP_PASSIVO_DEBITI,
+            "debiti_a_breve": BalanceLocation.SP_PASSIVO_DEBITI,
+            "debiti_a_oltre": BalanceLocation.SP_PASSIVO_DEBITI
+        }
 
     @classmethod
     def get_translations(cls):
@@ -296,6 +303,7 @@ class RawCompanyBalanceImporter:
 
     def __load_ce_section(self) -> Section:
         s = Section("conto_economico", {})
+        location = BalanceLocation.from_str("conto_economico")
         content_rows = 0
         context = GlobalNumberContext()
 
@@ -324,8 +332,9 @@ class RawCompanyBalanceImporter:
                 if self.__get_cell().value is not None:
                     row_name = self.__get_field_name(self.__get_cell().value, s.last_added_row_name, context=context)
 
-                row_values = self.__load_all_hvalues()
-                s.append_row(row_name, row_values.copy())
+                if self.check_no_exclude(row_name, location):
+                    row_values = self.__load_all_hvalues()
+                    s.append_row(row_name, row_values.copy())
 
             self.__next_row()
 
@@ -367,8 +376,21 @@ class RawCompanyBalanceImporter:
             data=self.data.copy()
         )
 
+    def check_no_exclude(self, r_name, location):
+        """
+        Controlla che per questo campo non sia stata impostata una regola di esclusione.
+        :param r_name:
+        :param location:
+        :return:
+        """
+
+        return self.__exclude_fields.get(extract_only_name(r_name)) is None or self.__exclude_fields.get(
+            extract_only_name(r_name)) != location
+
     def __load_sp_subsection(self, name, sub: bool, context: GlobalNumberContext) -> Section:
         s = Section(name, {})
+        location = BalanceLocation.from_str(name)
+
         sub_sections = []
         while self.__has_av_rows() and not self.__is_section_start() and not self.__is_vsec_start():
             if not self.__check_empty_row():
@@ -387,9 +409,9 @@ class RawCompanyBalanceImporter:
                                                      previous=s.last_added_row_name,
                                                      context=context
                                                      )
-
-                    row_values = self.__load_all_hvalues()
-                    s.append_row(row_name, row_values.copy())
+                    if self.check_no_exclude(row_name, location):       # Alcuni campi vengono manualmente ignorati perchè risultano duplicati già nei bilanci Excel
+                        row_values = self.__load_all_hvalues()
+                        s.append_row(row_name, row_values.copy())
 
             self.__next_row()
 
