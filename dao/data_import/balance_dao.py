@@ -533,6 +533,13 @@ class RawCompanyBalanceImporter:
             # e voglio che siano numerati in modo sequenziale senza figurare come figli di qualche altro punto (ad esempio il totale attivo non è figlio della lettera precedente). Senza questo meccanismo verrebbe imputato come figlio della lettera prima
             # perchè non contiene una sua numerazione e viene prima di un campo che invece la ha.
             field_name = f"{create_o_number(1)}{field_name}"
+        elif has_valid_numbering(field_name) and previous is not None and extract_numbering_token(field_name) == extract_numbering_token(previous):
+            # Ci sono dei campi che hanno la stessa identica numerazione del precedente. Per loro genero una numerazione artificiale
+            prev_num = extract_numbering_token(previous) or ""
+            o_num_prev = extract_o_number(previous) or 0
+            o_num_prev += 1
+            name = field_name.removeprefix(prev_num).removeprefix("_")
+            field_name = f"{prev_num}{create_o_number(o_num_prev)}{name}"
         elif is_specification_field(cellContent) and previous is not None and extract_complete_numbering(previous) is not None:
             # Quando viene trovato un campo "di cui" viene ereditata la numerazione (qualunque essa sia) dal precedente, anche su più livelli
             prev_num = extract_complete_numbering(previous)
