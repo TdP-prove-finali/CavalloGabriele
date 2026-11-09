@@ -142,14 +142,13 @@ class MainController(AbstractController[MainWindow, MainModel, None]):
         i = get_value_by_partial_key(attivo, "totale_immobilizzazioni_sepind_di_quelle_conc_in_loc_finanz")[0]
         ac = get_value_by_partial_key(attivo, "attivo_circolante")[0]
         pn = get_value_by_partial_key(patrim, "totale_patrimonio_netto")[0]
-        pb = get_value_by_partial_key(debiti, "debiti_a_breve")[0]
-        pl = get_value_by_partial_key(debiti, "debiti_a_oltre")[0]
+        pb = get_value_by_partial_key(debiti, "totale_debiti")[0]
         ra = get_value_by_partial_key(attivo, "ratei_e_risconti")[0] or 0
         rp = get_value_by_partial_key(debiti, "ratei_e_risconti")[0] or 0
         tfr = get_value_by_partial_key(patrim, "trattamento_di_fine_rapporto")[0] or 0
         fndrs = get_value_by_partial_key(patrim, "b_totale_fondi_rischi")[0] or 0
 
-        if i is None or ac is None or pn is None or pb is None or pl is None:
+        if i is None or ac is None or pn is None or pb is None:
             create_chart_error(self.view.ui.struttura_sp_tab)
             return
 
@@ -157,8 +156,7 @@ class MainController(AbstractController[MainWindow, MainModel, None]):
                              immobilizzazioni=i,
                              attivo_circolante=ac,
                              patrimonio_netto=pn,
-                             passivita_breve=pb,
-                             passivita_medio_lungo=pl,
+                             debiti=pb,
                              ratei_risconti_attivi=ra,
                              ratei_risconti_passivi=rp,
                              fondo_tfr=tfr,

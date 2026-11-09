@@ -264,7 +264,7 @@ class BalanceSnaphot:
         self.available_columns += 1
 
     def first_non_null_val(self, s_index: int, field_name: str, location: BalanceLocation):
-        f_data = self.get_field_data(location, field_name)
+        f_data = self.get_field_data(field_name, location)
         for i in range(s_index, -1, -1):
             if f_data[i] is not None and f_data[i] > 0:
                 return f_data[i]

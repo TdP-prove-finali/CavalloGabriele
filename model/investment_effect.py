@@ -46,7 +46,7 @@ class InvestmentEffect:
         :param state: Stato della simulazione
         :return:
         """
-        data = state.working_snapshot.get_field_data(self.where, self.field_name)
+        data = state.working_snapshot.get_field_data(self.field_name, self.where)
         if data is None:
             raise Exception(f"Effetto {self.__str__()} non applicabile al campo perchè non esiste il campo. ")
 

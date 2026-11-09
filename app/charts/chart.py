@@ -52,8 +52,7 @@ def create_balance_chart(
     patrimonio_netto: float = 300,
     fondi_rischi: float = 80,
     fondo_tfr: float = 70,
-    passivita_medio_lungo: float = 350,
-    passivita_breve: float = 200,
+    debiti: float = 350,
     ratei_risconti_passivi: float = 50,
 ) -> QChartView:
     """
@@ -67,8 +66,7 @@ def create_balance_chart(
         patrimonio_netto,
         fondi_rischi,
         fondo_tfr,
-        passivita_medio_lungo,
-        passivita_breve,
+        debiti,
         ratei_risconti_passivi,
     ]
 
@@ -88,8 +86,7 @@ def create_balance_chart(
         patrimonio_netto
         + fondi_rischi
         + fondo_tfr
-        + passivita_medio_lungo
-        + passivita_breve
+        + debiti
         + ratei_risconti_passivi
     )
 
@@ -151,18 +148,11 @@ def create_balance_chart(
             "#F97316",
         ),
         (
-            "Passività M/L",
-            passivita_medio_lungo,
+            "Debiti",
+            debiti,
             totale_passivo,
             1,
             "#F59E0B",
-        ),
-        (
-            "Passività brevi",
-            passivita_breve,
-            totale_passivo,
-            1,
-            "#A855F7",
         ),
         (
             "Ratei e risconti passivi",
