@@ -67,6 +67,8 @@ def test_stepup():
     assert step_up_numbering("aiv_riserva_legale") == "a"
 
     assert step_up_field("d11bis_debiti_vs_imprese_sottoposte_al_controllo_delle_controllanti_entro", BalanceLocation.SP_PASSIVO_DEBITI) == "d"
+    assert step_up_field("ci5_acconti", BalanceLocation.SP_ATTIVO) == "ci"
+    assert step_up_field("ci5_o1_immobilizzazioni_materiali_destinate_alla_vendita", BalanceLocation.SP_ATTIVO) == "ci"
     assert step_up_field("_o1_totale_passivo") == ""
     assert step_up_field("d_o1_total_debiti_entro_lesercizio") == "d"
     assert step_up_field("d9_o1_imprese_controllate_oltre") == "d"
@@ -81,6 +83,7 @@ def test_stepup():
     assert step_up_field("_o1_totale_attivo") == ""
     assert step_up_field("bii_dc_di_cui_beni_materiali_concessi_in_locazione_finanziaria") == "bii"
     assert step_up_field("ax_o2_dc_di_cui_per_imposte_differite") == "ax_o2_"
+
     assert extract_complete_numbering("cii_o1_crediti_per_imposte_anticipate") == "cii_o1"
 
 
@@ -131,4 +134,127 @@ def test_patrimonio_netto():
     b = complete_company_1
     snapshot = BalanceSnaphot.from_company_data(b, 0, 1, "")
     children = snapshot.get_children("patrimonio_netto", BalanceLocation.SP_PASSIVO_PATRIM)
-    assert children == []
+
+    assert list(map(lambda it: it.field_name, children)) == [
+        "a_totale_patrimonio_netto",
+        "b_totale_fondi_rischi",
+        "c_trattamento_di_fine_rapporto"
+    ]
+
+    for child in children:
+        c2 = snapshot.get_children(child.name, BalanceLocation.SP_PASSIVO_PATRIM)
+        if len(c2) > 0:
+            s = sum(map(lambda it: it.value[0] or 0, c2))
+            assert s == child.value[0]
+
+            for c in c2:
+                if c.field_name == "ai_capitale_sociale":
+                    # questi campi di cui non sono addittivi ma rappresentano un dettaglio, quindi è corretto che la loro somma non coincida con il valore del padre.
+                    assert len(snapshot.get_children(c.name, BalanceLocation.SP_PASSIVO_PATRIM)) == 4
+                else:
+                    assert True
+        else:
+            assert True
+
+def test_stato_patrimoniale_passivo():
+    b = complete_company_1
+    snapshot = BalanceSnaphot.from_company_data(b, 0, 1, "")
+    children_dbt = snapshot.get_children("debiti", BalanceLocation.SP_PASSIVO_DEBITI)
+    children_ptrm = snapshot.get_children("patrimonio_netto", BalanceLocation.SP_PASSIVO_PATRIM)
+
+    assert list(map(lambda it: it.field_name, children_dbt)) == [
+        "_o2_totale_passivo",
+        "_o3_totale_conti_dordine",
+        "_o4_garanzie_prestate",
+        "d_totale_debiti",
+        "e_ratei_e_risconti"
+    ]
+    assert list(map(lambda it: it.field_name, children_ptrm)) == [
+        'a_totale_patrimonio_netto',
+        'b_totale_fondi_rischi',
+        'c_trattamento_di_fine_rapporto'
+    ]
+    r = 0
+    for c1 in children_dbt:
+        if c1.name not in ["totale_passivo", "totale_conti_dordine", "garanzie_prestate"]:
+            r += c1.value[0]
+
+    for c2 in children_ptrm:
+        r += c2.value[0]
+
+    assert snapshot.get_field_value("totale_passivo", BalanceLocation.SP_PASSIVO_DEBITI, 0) == r
+
+def test_attivo():
+    b = complete_company_1
+    snapshot = BalanceSnaphot.from_company_data(b, 0, 1, "")
+    children = snapshot.get_children("attivo", BalanceLocation.SP_ATTIVO)
+
+    assert list(map(lambda it: it.field_name, children)) == ['_o1_totale_attivo',
+         'a_crediti_verso_soci',
+         'b_totale_immobilizzazioni_sepind_di_quelle_conc_in_loc_finanz',
+         'c_attivo_circolante',
+         'd_ratei_e_risconti']
+    r = 0
+    for c1 in children:
+        if c1.name != "totale_attivo":
+            r += c1.value[0]
+
+    assert snapshot.get_field_value("totale_attivo", BalanceLocation.SP_ATTIVO, 0) == r
+
+    c2 = snapshot.get_children("attivo_circolante", BalanceLocation.SP_ATTIVO)
+
+    assert list(map(lambda it: it.field_name, c2)) == ['ci_totale_rimanenze',
+ 'cii_totale_crediti',
+ 'ciii_totale_attivita_finanziarie',
+ 'civ_tot_dispon_liquide']
+    r = 0
+    for c1 in c2:
+        r += c1.value[0]
+
+    assert snapshot.get_field_value("attivo_circolante", BalanceLocation.SP_ATTIVO, 0) == r
+
+    c3 = snapshot.get_children("totale_attivita_finanziarie", BalanceLocation.SP_ATTIVO)
+
+    assert list(map(lambda it: it.field_name, c3)) == ['ciii6_altri_titoli',
+ 'ciii4bis_azioni_proprie',
+ 'ciii5_strumenti_finanziari_derivati_attivi',
+ 'ciii1_partecni_in_controllate',
+ 'ciii2_partecni_in_collegate',
+ 'ciii3_partecni_in_controllanti',
+ 'ciii3bis_partecni_in_imprese_sottoposte_al_controllo_delle_controllanti',
+ 'ciii4_altre_partecni',
+ 'ciii7_attivita_finanziarie_per_la_gestione_accentrata_della_tesoreria']
+    r = 0
+    for c1 in c3:
+        r += c1.value[0]
+
+    assert snapshot.get_field_value("totale_attivita_finanziarie", BalanceLocation.SP_ATTIVO, 0) == r
+
+    c4 = snapshot.get_children("totale_rimanenze", BalanceLocation.SP_ATTIVO)
+
+    assert list(map(lambda it: it.field_name, c4)) == ['ci1_materie_prime',
+ 'ci2_prodotti_semilav_frac_in_corso',
+ 'ci3_lavori_in_corso',
+ 'ci4_prodotti_finiti',
+ 'ci5_acconti',
+ 'ci5_o1_immobilizzazioni_materiali_destinate_alla_vendita']
+    r = 0
+    for c1 in c4:
+        r += c1.value[0]
+
+    assert snapshot.get_field_value("totale_rimanenze", BalanceLocation.SP_ATTIVO, 0) == r
+
+    c5 = snapshot.get_children("totale_immobilizzazioni_sepind_di_quelle_conc_in_loc_finanz", BalanceLocation.SP_ATTIVO)
+    assert list(map(lambda it: it.field_name, c5)) == ['bi_totale_immob_immateriali',
+ 'bii_totale_immob_materiali',
+ 'biii_totale_immob_finanziarie']
+    r = 0
+    for c1 in c5:
+        r += c1.value[0]
+
+    assert snapshot.get_field_value("totale_immobilizzazioni_sepind_di_quelle_conc_in_loc_finanz", BalanceLocation.SP_ATTIVO, 0) == r
+
+
+
+
+

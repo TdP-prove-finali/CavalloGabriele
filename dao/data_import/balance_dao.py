@@ -36,7 +36,12 @@ class RawCompanyBalanceImporter:
             "total_debiti_entro_lesercizio": BalanceLocation.SP_PASSIVO_DEBITI,
             "total_debiti_oltre_lesercizio": BalanceLocation.SP_PASSIVO_DEBITI,
             "debiti_a_breve": BalanceLocation.SP_PASSIVO_DEBITI,
-            "debiti_a_oltre": BalanceLocation.SP_PASSIVO_DEBITI
+            "debiti_a_oltre": BalanceLocation.SP_PASSIVO_DEBITI,
+            "crediti_a_breve": BalanceLocation.SP_ATTIVO,
+            "crediti_a_oltre": BalanceLocation.SP_ATTIVO,
+            "crediti_per_imposte_anticipate": BalanceLocation.SP_ATTIVO,
+            "crediti_fin_a_breve": BalanceLocation.SP_ATTIVO,
+            "crediti_fin_a_oltre": BalanceLocation.SP_ATTIVO
         }
 
     @classmethod

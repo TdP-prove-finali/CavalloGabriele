@@ -114,6 +114,13 @@ def step_up_field(field_name: str, where: BalanceLocation | None = None)-> str:
     if dc:
         return f"{ntk or ""}{create_o_number(ha) if ha is not None else ""}"
     elif ha is not None:    # I campi con numerazione artificiale possono essere campi top-level oppure collegati ad un campo con numerazione
+        if where == BalanceLocation.SP_ATTIVO:
+            if ntk is not None and len(ntk) == 1:   # Ho solo la lettera nella numerazione
+                return ntk
+            elif ntk is not None and len(ntk) > 1:
+                r = step_up_numbering(ntk)
+                return f"{r}"
+
         return f"{ntk[0] if ntk is not None and len(ntk) > 0 else ""}"
     elif ntk is not None:
         return step_up_numbering(ntk, where)
