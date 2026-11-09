@@ -34,3 +34,13 @@ class CompanyData:
     @property
     def available_years(self) -> int:
         return self.informazioni_commerciali_e_legali["numero_di_anni_disponibili"]
+
+class GlobalNumberContext:
+    def __init__(self, value=0):
+        self.value = value
+
+    def next_number(self):
+        self.value += 1
+
+    def set_number(self, value):
+        self.value = value

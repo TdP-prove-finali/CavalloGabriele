@@ -6,7 +6,7 @@ from openpyxl.worksheet.worksheet import Worksheet
 
 from dao.util import remove_accents, has_valid_numbering, extract_numbering_token, create_o_number, extract_o_number, \
     is_specification_field, extract_complete_numbering
-from model.raw_company_data import RawCompanyData
+from model.raw_company_data import RawCompanyData, GlobalNumberContext
 from openpyxl import load_workbook
 from model.section import Section
 
@@ -297,6 +297,7 @@ class RawCompanyBalanceImporter:
     def __load_ce_section(self) -> Section:
         s = Section("conto_economico", {})
         content_rows = 0
+        context = GlobalNumberContext()
 
         while self.__has_av_rows() and content_rows < 5:
             if not self.__check_empty_row():
@@ -321,7 +322,7 @@ class RawCompanyBalanceImporter:
             if not self.__check_empty_row():
                 content_rows += 1
                 if self.__get_cell().value is not None:
-                    row_name = self.__get_field_name(self.__get_cell().value, s.last_added_row_name)
+                    row_name = self.__get_field_name(self.__get_cell().value, s.last_added_row_name, context=context)
 
                 row_values = self.__load_all_hvalues()
                 s.append_row(row_name, row_values.copy())
@@ -333,6 +334,7 @@ class RawCompanyBalanceImporter:
     def __load_sp_section(self) -> Section:
         content_rows = 0
         sub_sections = []
+        sec_global_counter = GlobalNumberContext()
 
         while self.__has_av_rows() and not self.__is_vsec_start():
             if not self.__check_empty_row():
@@ -357,7 +359,7 @@ class RawCompanyBalanceImporter:
             secName = self.__get_cell().value
             self.__next_row()
             sub_sections.append(self.__load_sp_subsection(
-                self.__get_field_name(secName), False))
+                self.__get_field_name(secName, context=sec_global_counter), False, sec_global_counter))
 
         self.data["subsections"] = sub_sections.copy()
         return Section(
@@ -365,15 +367,15 @@ class RawCompanyBalanceImporter:
             data=self.data.copy()
         )
 
-    def __load_sp_subsection(self, name, sub: bool) -> Section:
+    def __load_sp_subsection(self, name, sub: bool, context: GlobalNumberContext) -> Section:
         s = Section(name, {})
         sub_sections = []
         while self.__has_av_rows() and not self.__is_section_start() and not self.__is_vsec_start():
             if not self.__check_empty_row():
                 if self.__is_vsubsec2_start() and sub == False:
-                    sub_sec_name = self.__get_field_name(self.__get_cell().value)
+                    sub_sec_name = self.__get_field_name(self.__get_cell().value, context=context)
                     self.__next_row()
-                    sub_sec = self.__load_sp_subsection(sub_sec_name, True)
+                    sub_sec = self.__load_sp_subsection(sub_sec_name, True, context)
                     sub_sections.append(sub_sec)
                     if self.__is_section_start():   # Lo spostamento manuale del cursore potrebbe aver portato sopra ad una cella di fine sezione
                         break
@@ -381,7 +383,10 @@ class RawCompanyBalanceImporter:
                     self.__prev_row()                           # Torna indietro di una riga, ferma la subsection e ri-esegui il ciclo che creerà una nuova subsection ma a livello superiore e non un nuovo figlio
                     break
                 elif self.__get_cell().value is not None:
-                    row_name = self.__get_field_name(self.__get_cell().value, previous=s.last_added_row_name)
+                    row_name = self.__get_field_name(self.__get_cell().value,
+                                                     previous=s.last_added_row_name,
+                                                     context=context
+                                                     )
 
                     row_values = self.__load_all_hvalues()
                     s.append_row(row_name, row_values.copy())
@@ -490,7 +495,7 @@ class RawCompanyBalanceImporter:
         )
 
     def __get_field_name(self, cellContent: str, previous: str | None = None,
-                         no_numeration_block: bool = False) -> str:
+                         no_numeration_block: bool = False, context: GlobalNumberContext | None = None) -> str:
         """
         Restituisce un nome di campo valido per una voce dell'excel, verificando che possa essere utilizzato come identificatore
         python in un dizionario.
@@ -532,7 +537,12 @@ class RawCompanyBalanceImporter:
             # Alcuni campi, sempre presenti, nonostante si trovino dopo una lettera non appartengono a nessun punto
             # e voglio che siano numerati in modo sequenziale senza figurare come figli di qualche altro punto (ad esempio il totale attivo non è figlio della lettera precedente). Senza questo meccanismo verrebbe imputato come figlio della lettera prima
             # perchè non contiene una sua numerazione e viene prima di un campo che invece la ha.
-            field_name = f"{create_o_number(1)}{field_name}"
+            o_num_prev = context.value if context is not None else 0
+            o_num_prev += 1
+            if context is not None:
+                context.set_number(o_num_prev)
+
+            field_name = f"{create_o_number(o_num_prev)}{field_name}"
         elif has_valid_numbering(field_name) and previous is not None and extract_numbering_token(field_name) == extract_numbering_token(previous):
             # Ci sono dei campi che hanno la stessa identica numerazione del precedente. Per loro genero una numerazione artificiale
             prev_num = extract_numbering_token(previous) or ""
@@ -554,8 +564,11 @@ class RawCompanyBalanceImporter:
             field_name = f"{num_tk}{create_o_number(o_num_prev)}{field_name}"
         elif not has_valid_numbering(field_name) and previous is not None and not has_valid_numbering(previous) and extract_o_number(previous) is not None:
             # di default viene incrementato il numero artificiale del precedente
-            o_num_prev = extract_o_number(previous)
+            o_num_prev = extract_o_number(previous) or (context.value if context is not None else 0)
             o_num_prev += 1
+            if context is not None:
+                context.set_number(o_num_prev)
+
             field_name = f"{create_o_number(o_num_prev)}{field_name}"
 
         self.__translations__[field_name] = cellContent
