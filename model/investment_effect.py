@@ -126,6 +126,41 @@ class InvestmentEffect:
     def __eq__(self, other):
         return self.title == other.title
 
+class TimeToProductivityEffect(InvestmentEffect):
+    def __init__(self, average: float, variance: float):
+        super().__init__(
+            title="ttp-effect",
+            inv_type=EffectType.CONST,
+            field_name="ricavi_vendite_e_prestazioni",
+            frequency=EffectFrequency.MONTHLY,
+            where=BalanceLocation.CE,
+        )
+        self.average = average
+        self.variance = variance
+
+    def apply(self, state: SimulationState) -> BalanceSnaphot:
+        # TODO: Implement
+        pass
+
+class HyperPerformerEffect(InvestmentEffect):
+    def __init__(self, scale: float, shape: float):
+        super().__init__(
+            title="hp-effect",
+            inv_type=EffectType.CONST,
+            field_name="ricavi_vendite_e_prestazioni",
+            frequency=EffectFrequency.MONTHLY,
+            where=BalanceLocation.CE,
+        )
+        self.scale = scale
+        self.shape = shape
+
+    def apply(self, state: SimulationState) -> BalanceSnaphot:
+        # TODO: Implement
+        pass
+
+# TODO: Gestione delle immobilizzazioni in corso "B.I.6 Immobilizzazioni in corso e acconti
+# Valutare se copiarle semplicemente o se trasferirle come immobilizzazioni completate in SP Attivo
+
 class OrganicGrowthEffect(InvestmentEffect):
     def __init__(self, avg, var, title):
         self.average = avg

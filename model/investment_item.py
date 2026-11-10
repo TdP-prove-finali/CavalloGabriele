@@ -2,7 +2,7 @@ from enum import IntEnum
 
 from model.investment_effect import (InvestmentEffect,
                                      EffectFrequency,
-                                    EffectType)
+                                     EffectType, TimeToProductivityEffect, HyperPerformerEffect)
 from model.node import BalanceLocation
 
 
@@ -88,6 +88,14 @@ class EmployeeHireInvestment(AbstractInvestmentItem):
             value_constant=1,
             where=BalanceLocation.CE
         ))
+        effects.append(TimeToProductivityEffect(
+            average=ttp_normal_average,
+            variance=ttp_normal_variance
+        ))
+        effects.append(HyperPerformerEffect(
+            scale=hp_lomax_scale,
+            shape=hp_lomax_shape
+        ))
 
         super().__init__(title, id, self.type, effects)
 
@@ -121,7 +129,21 @@ class AssetInvestment(AbstractInvestmentItem):
         self.duration_years = duration_years
         self.maintenance_cost = maintenance_cost
         self.amortization_quote = self.total_cost / self.duration_years
-        effects = []            # TODO: Impostare effetti
+        effects = [
+        ]
+        if self.type == AssetType.MATERIAL:
+            field = "amm_immob_mat"
+        else:
+            field = "amm_immob_immat"
+
+        effects.append(InvestmentEffect(
+                title="ammortamento-cespite",
+                inv_type=EffectType.CONST,
+                field_name=field,
+                frequency=EffectFrequency.ANNUAL,
+                where=BalanceLocation.CE,
+                value_constant=self.amortization_quote))
+
         super().__init__(title, id, self.type, effects)
 
     def total_expenditure_first_month(self) -> float:

@@ -1,7 +1,8 @@
 from dataclasses import dataclass
 from enum import IntEnum
 from typing import Any
-from dao.util import extract_complete_numbering, BalanceLocation
+from dao.util import extract_complete_numbering, BalanceLocation, is_specification_field
+
 
 class NodeType(IntEnum):
     VIRTUAL = 0,
@@ -10,7 +11,8 @@ class NodeType(IntEnum):
 class Flag(IntEnum):
     NO_COPY = 0,
     NEED_RECALC = 1,
-    UPDATED = 2
+    UPDATED = 2,
+    NO_SUM_CHILDREN_NO_DC = 3          # Indica che questo campo NON è dato dalla somma dei figli, escludendo i figli che sono dei "di cui". Normalmente è la regola di default per i campi che hanno figli.
 
 @dataclass
 class Node:
@@ -53,6 +55,13 @@ class Node:
         if value not in self.flags:
             self.flags.append(value)
 
+    def remove_flag(self, value: Flag):
+        if value in self.flags:
+            self.flags.remove(value)
+
+    def is_dc_specification(self):
+        return is_specification_field(self.field_name)
+
     @staticmethod
     def virtual(field_name, where):
         return Node(
@@ -62,3 +71,10 @@ class Node:
             [],
             where
         )
+
+    @staticmethod
+    def all_dc_dicui(nodes: list):
+        for n in nodes:
+            if not n.is_dc_specification():
+                return False
+        return True

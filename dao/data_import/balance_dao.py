@@ -43,7 +43,15 @@ class RawCompanyBalanceImporter:
             "crediti_fin_a_breve": BalanceLocation.SP_ATTIVO,
             "crediti_fin_a_oltre": BalanceLocation.SP_ATTIVO,
             "utile_frac_perdita_di_esercizio_di_pert_di_terzi": BalanceLocation.CE,
-            "utile_frac_perdita_di_esercizio_di_pert_del_gruppo": BalanceLocation.CE
+            "utile_frac_perdita_di_esercizio_di_pert_del_gruppo": BalanceLocation.CE,
+            "tfr_plus_quiescenza_plus_altri_costi": BalanceLocation.CE,
+            "b10aplusbplusc_amm_e_svalut_delle_immob": BalanceLocation.CE,
+            "plus_a3_totale_variazioni": BalanceLocation.CE,
+            "c16bplusc_proventi_da_titoli": BalanceLocation.CE,
+            'imposte_differite_e_anticipate': BalanceLocation.CE,
+            'imposte_differite__plus_frac___': BalanceLocation.CE,
+            'imposte_anticipate__plus_frac___': BalanceLocation.CE,
+            'prov__oneri__da_adesione_al_regime_di_trasparenza_fiscale': BalanceLocation.CE
         }
 
     @classmethod

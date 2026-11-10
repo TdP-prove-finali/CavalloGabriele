@@ -25,6 +25,9 @@ class BalanceLocation(IntEnum):
 
         return d.get(input)
 
+    def is_sp(self):
+        return self in [BalanceLocation.SP_ATTIVO, BalanceLocation.SP_PASSIVO, BalanceLocation.SP_PASSIVO_PATRIM, BalanceLocation.SP_PASSIVO_DEBITI]
+
 SECTION_HEAD = ["attivo", "passivo", "patrimonio_netto", "debiti", "conto_economico"]
 
 def remove_accents(text: str) -> str:   # Toglie tutti gli accenti da una stringa
@@ -297,3 +300,17 @@ def format_number( value: int | float | str) -> str:
 
     except (ValueError, TypeError, OverflowError):
         return str(value)
+
+def sum_vectors(a, b)->list:
+    """
+    Somma i vettori componente per componente
+    :param a:
+    :param b:
+    :return:
+    """
+    assert len(a) == len(b)
+    r = [0] * len(a)
+    for i in range(0, len(a)):
+        r[i] = a[i] + b[i]
+
+    return r

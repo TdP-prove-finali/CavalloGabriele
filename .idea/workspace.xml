@@ -4,12 +4,18 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d1f57556-a68b-4407-9511-95d58864d413" name="Changes" comment="Fix serializzazione output simulazioni">
+    <list default="true" id="d1f57556-a68b-4407-9511-95d58864d413" name="Changes" comment="Fix generali">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/charts/chart.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/charts/chart.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/controller/main_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/controller/main_controller.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controller/simulation_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/controller/simulation_controller.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dao/data_import/balance_dao.py" beforeDir="false" afterPath="$PROJECT_DIR$/dao/data_import/balance_dao.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dao/util.py" beforeDir="false" afterPath="$PROJECT_DIR$/dao/util.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/model/balance_snap.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/balance_snap.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/model/investment_effect.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/investment_effect.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/investment_item.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/investment_item.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/node.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/node.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_balance.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_balance.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_data.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -17,7 +23,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="204" />
+    <option name="cachedIndexableFilesCount" value="205" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -58,9 +64,9 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "Python tests.Python tests for test_balance.test_attivo.executor": "Run",
-    "Python tests.Python tests for test_balance.test_balance.executor": "Run",
+    "Python tests.Python tests for test_balance.test_balance.executor": "Debug",
     "Python tests.Python tests for test_balance.test_calc.executor": "Debug",
-    "Python tests.Python tests for test_balance.test_conto_economico.executor": "Run",
+    "Python tests.Python tests for test_balance.test_conto_economico.executor": "Debug",
     "Python tests.Python tests for test_balance.test_debiti.executor": "Run",
     "Python tests.Python tests for test_balance.test_parent.executor": "Run",
     "Python tests.Python tests for test_balance.test_patrimonio_netto.executor": "Run",
@@ -84,8 +90,8 @@
     "Python tests.Python tests for test_main.test_connection.executor": "Run",
     "Python tests.Python tests for tests.test_main.test_calcolo_esempio.executor": "Run",
     "Python tests.Python tests in test_balance.py.executor": "Run",
-    "Python tests.Python tests in test_loader.py.executor": "Debug",
-    "Python.main.executor": "Run",
+    "Python tests.Python tests in test_loader.py.executor": "Run",
+    "Python.main.executor": "Debug",
     "RunOnceActivity.MCP Project settings loaded": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
@@ -123,7 +129,7 @@
       <recent name="$PROJECT_DIR$/dataset/test" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.main">
+  <component name="RunManager" selected="Python tests.Python tests for test_loader.test_loader_chunk_50">
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="CavalloGabriele" />
       <option name="ENV_FILES" value="" />
@@ -148,7 +154,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="Python tests for test_balance.test_attivo" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+    <configuration name="Python tests for test_loader.test_loader2" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
       <module name="CavalloGabriele" />
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -161,11 +167,11 @@
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="RUN_TOOL" value="" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;test_balance.test_attivo&quot;" />
+      <option name="_new_target" value="&quot;test_loader.test_loader2&quot;" />
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
-    <configuration name="Python tests for test_balance.test_conto_economico" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+    <configuration name="Python tests for test_loader.test_loader_chunk_50" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
       <module name="CavalloGabriele" />
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -178,11 +184,11 @@
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="RUN_TOOL" value="" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;test_balance.test_conto_economico&quot;" />
+      <option name="_new_target" value="&quot;test_loader.test_loader_chunk_50&quot;" />
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
-    <configuration name="Python tests for test_balance.test_serialize" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+    <configuration name="Python tests for test_loader.test_preproc_company" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
       <module name="CavalloGabriele" />
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -195,24 +201,7 @@
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="RUN_TOOL" value="" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;test_balance.test_serialize&quot;" />
-      <option name="_new_targetType" value="&quot;PYTHON&quot;" />
-      <method v="2" />
-    </configuration>
-    <configuration name="Python tests for test_balance.test_stato_patrimoniale_passivo" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
-      <module name="CavalloGabriele" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="RUN_TOOL" value="" />
-      <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;test_balance.test_stato_patrimoniale_passivo&quot;" />
+      <option name="_new_target" value="&quot;test_loader.test_preproc_company&quot;" />
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
@@ -233,13 +222,30 @@
       <option name="_new_targetType" value="&quot;PATH&quot;" />
       <method v="2" />
     </configuration>
+    <configuration name="Python tests in test_loader.py" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+      <module name="CavalloGabriele" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="RUN_TOOL" value="" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;$PROJECT_DIR$/tests/test_loader.py&quot;" />
+      <option name="_new_targetType" value="&quot;PATH&quot;" />
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python tests.Python tests for test_loader.test_loader_chunk_50" />
+        <item itemvalue="Python tests.Python tests in test_loader.py" />
         <item itemvalue="Python tests.Python tests in test_balance.py" />
-        <item itemvalue="Python tests.Python tests for test_balance.test_serialize" />
-        <item itemvalue="Python tests.Python tests for test_balance.test_conto_economico" />
-        <item itemvalue="Python tests.Python tests for test_balance.test_attivo" />
-        <item itemvalue="Python tests.Python tests for test_balance.test_stato_patrimoniale_passivo" />
+        <item itemvalue="Python tests.Python tests for test_loader.test_preproc_company" />
+        <item itemvalue="Python tests.Python tests for test_loader.test_loader2" />
       </list>
     </recent_temporary>
   </component>
@@ -285,15 +291,9 @@
       <workItem from="1793714377992" duration="7292000" />
       <workItem from="1793783046137" duration="40737000" />
       <workItem from="1794161849653" duration="4108000" />
-      <workItem from="1794225935459" duration="25594000" />
-    </task>
-    <task id="LOCAL-00039" summary="Solidifica algoritmo importazione per supportare strutture diverse">
-      <option name="closed" value="true" />
-      <created>1791649120515</created>
-      <option name="number" value="00039" />
-      <option name="presentableId" value="LOCAL-00039" />
-      <option name="project" value="LOCAL" />
-      <updated>1791649120515</updated>
+      <workItem from="1794225935459" duration="28258000" />
+      <workItem from="1794299280261" duration="12834000" />
+      <workItem from="1794312794364" duration="3123000" />
     </task>
     <task id="LOCAL-00040" summary="Avvia implementazione traduzione campi">
       <option name="closed" value="true" />
@@ -679,14 +679,21 @@
       <option name="project" value="LOCAL" />
       <updated>1794258951910</updated>
     </task>
-    <option name="localTasksCounter" value="88" />
+    <task id="LOCAL-00088" summary="Fix generali">
+      <option name="closed" value="true" />
+      <created>1794259887250</created>
+      <option name="number" value="00088" />
+      <option name="presentableId" value="LOCAL-00088" />
+      <option name="project" value="LOCAL" />
+      <updated>1794259887250</updated>
+    </task>
+    <option name="localTasksCounter" value="89" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Dialogo assunzione dipendenti" />
     <MESSAGE value="Dialogo assunzione dipendenti funzionante con validazione" />
     <MESSAGE value="Struttura classi simulazione" />
     <MESSAGE value="Scheletro esecuzione simulazione su thread a parte" />
@@ -711,40 +718,26 @@
     <MESSAGE value="Fix e test su campi aggregati del bilancio" />
     <MESSAGE value="Fix e test su conto economico" />
     <MESSAGE value="Fix serializzazione output simulazioni" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix serializzazione output simulazioni" />
+    <MESSAGE value="Fix generali" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix generali" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/dao/data_import/balance_dao.py</url>
-          <line>594</line>
-          <option name="timeStamp" value="55" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/dao/data_import/balance_dao.py</url>
-          <line>349</line>
-          <option name="timeStamp" value="56" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/dao/data_import/balance_dao.py</url>
-          <line>567</line>
-          <option name="timeStamp" value="57" />
+          <url>file://$PROJECT_DIR$/model/balance_snap.py</url>
+          <line>302</line>
+          <option name="timeStamp" value="89" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/tests/test_balance.py</url>
-          <line>177</line>
-          <option name="timeStamp" value="58" />
+          <line>399</line>
+          <option name="timeStamp" value="90" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/tests/test_balance.py</url>
-          <line>11</line>
-          <option name="timeStamp" value="61" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/tests/test_balance.py</url>
-          <line>386</line>
-          <option name="timeStamp" value="62" />
+          <url>file://$PROJECT_DIR$/model/balance_snap.py</url>
+          <line>299</line>
+          <option name="timeStamp" value="91" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
@@ -757,7 +750,7 @@
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/CavalloGabriele$.coverage" NAME=" Coverage Results" MODIFIED="1794258910426" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
-    <SUITE FILE_PATH="coverage/CavalloGabriele$main.coverage" NAME="main Coverage Results" MODIFIED="1794259592868" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/CavalloGabriele$.coverage" NAME=" Coverage Results" MODIFIED="1794315562597" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
+    <SUITE FILE_PATH="coverage/CavalloGabriele$main.coverage" NAME="main Coverage Results" MODIFIED="1794315081685" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

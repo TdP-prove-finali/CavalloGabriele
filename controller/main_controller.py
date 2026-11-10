@@ -134,7 +134,6 @@ class MainController(AbstractController[MainWindow, MainModel, None]):
         data.itersections(create_sec_tab)
 
     def loadPieChart(self):
-        # TODO: Refactor data access
         c = self.model.company_data
         attivo = c.stato_patrimoniale["subsections"]["attivo"]
         patrim = c.stato_patrimoniale["subsections"]["passivo"]["subsections"]["patrimonio_netto"]

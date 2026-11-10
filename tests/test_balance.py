@@ -3,7 +3,7 @@ from dao.simulation.simulation_dao import SimulationDAO
 from dao.util import step_up_numbering, step_up_field, extract_complete_numbering, BalanceLocation
 from model.balance_snap import BalanceSnaphot
 from model.investment_item import InvestmentProject
-from model.node import Node, NodeType
+from model.node import Node, NodeType, Flag
 from model.sim_output import SimulationOutput
 from model.sim_state import GlobalParameters
 from test_data import complete_company_1
@@ -18,10 +18,13 @@ def test_balance():
     snapshot.set_field_value("crediti_verso_soci", BalanceLocation.SP_ATTIVO, 200, 0)
     snapshot.set_field_value("totale_patrimonio_netto", BalanceLocation.SP_PASSIVO_PATRIM, 300, 0)
     snapshot.set_field_value("soci_per_finanziamenti_entro", BalanceLocation.SP_PASSIVO_DEBITI, 30000000, 0)
+    snapshot.set_field_value("diritti_brevetto_ind", BalanceLocation.SP_ATTIVO, 500, 0)
+    assert Flag.NEED_RECALC in snapshot.get_node_by_name("totale_immob_immateriali", BalanceLocation.SP_ATTIVO).flags
+    assert Flag.NEED_RECALC in snapshot.get_node_by_name("totale_immobilizzazioni_sepind_di_quelle_conc_in_loc_finanz", BalanceLocation.SP_ATTIVO).flags
     assert snapshot.get_field_value("crediti_verso_soci", BalanceLocation.SP_ATTIVO, month=0) == 200
     assert snapshot.get_field_value("totale_patrimonio_netto", BalanceLocation.SP_PASSIVO_PATRIM, month=0) == 300
     assert snapshot.get_field_value("soci_per_finanziamenti_entro", BalanceLocation.SP_PASSIVO_DEBITI, month=0) == 30000000
-
+    assert snapshot.get_node_by_name("totale_attivo", BalanceLocation.SP) is not None
     # verifico manualmente che il nodo corrispondente nel grafo sia stato aggiornato
     for node in list(snapshot.stato_patrimoniale.nodes):
         if node.name == "soci_per_finanziamenti_entro":
@@ -51,11 +54,16 @@ def test_balance():
     snapshot.set_field_data("soci_per_finanziamenti_entro", BalanceLocation.SP_PASSIVO_DEBITI, [42, 42])
     assert node2.value == [42, 42]
 
-    try:
-        snapshot.set_field_value("ciao", BalanceLocation.CE, 300, 4, 0)
-        assert False
-    except:
-        assert True
+    # verifico che i flag vengano correttamente impostati
+    def search_node_flag(name, flag):
+        for node in list(snapshot.conto_economico.nodes()):
+            if node.name == name or node.field_name == name:
+                assert flag in node.flags
+                return True
+        return False
+
+    for name, flag in BalanceSnaphot.CE_FIELD_FLAGS.items():
+        assert search_node_flag(name, flag)
 
 def test_sim():
     b = complete_company_1
@@ -292,12 +300,8 @@ def test_conto_economico():
     snapshot = BalanceSnaphot.from_company_data(b, 0, 1, "")
     children = snapshot.get_children("conto_economico", BalanceLocation.CE)
 
-    assert list(map(lambda it: it.field_name, children)) == ['_o10_imposte_differite_e_anticipate',
- '_o11_imposte_differite__plus_frac___',
- '_o12_imposte_anticipate__plus_frac___',
- '_o13_prov__oneri__da_adesione_al_regime_di_trasparenza_fiscale',
- '_o14__21_utile_frac_perdita_di_esercizio',
- '_o15_dipendenti',
+    assert list(map(lambda it: it.field_name, children)) == ['_o10__21_utile_frac_perdita_di_esercizio',
+ '_o11_dipendenti',
  '_o1_risultato_operativo',
  '_o2_valore_aggiunto',
  '_o3_totale_proventi_frac_oneri_straordinari',
@@ -339,7 +343,6 @@ def test_conto_economico():
     c3 = snapshot.get_children("tot_val_della_produzione", BalanceLocation.CE)
 
     assert list(map(lambda it: it.field_name, c3)) == ['a1_ricavi_vendite_e_prestazioni',
- 'a2_plus_a3_totale_variazioni',
  'a2_var_rimanenze_prodotti',
  'a3_variazione_lavori',
  'a4_incrementi_di_immob',
@@ -382,6 +385,24 @@ def test_conto_economico():
 
     assert snapshot.get_field_value("totale_rettifiche_att_finanz",
                                     BalanceLocation.CE, 0) == r
+
+    c6 = snapshot.get_children("totale_costi_del_personale", BalanceLocation.CE)
+    assert list(map(lambda it: it.field_name, c6)) == ['b9a_salari_e_stipendi',
+ 'b9b_oneri_sociali',
+ 'b9c_tratt_fine_rapporto',
+ 'b9d_tratt_di_quiescenza',
+ 'b9e_altri_costi']
+
+    r = 0
+    for c1 in c6:
+        r += c1.value[0]
+
+    assert snapshot.get_field_value("totale_costi_del_personale",
+                                    BalanceLocation.CE, 0) == r
+
+
+
+
 
 def test_serialize():
     b = complete_company_1

@@ -22,6 +22,7 @@ class SimulationWorker(QObject):
         """
         g = OrganicGrowthEffect(self.model.simulation_state.global_parameters.organic_growth_avg, self.model.simulation_state.global_parameters.organic_growth_var, "organic-growth")
         self.model.project.global_effects.append(g)
+        self.model.simulation_state.working_snapshot.create_year_start()
 
     @Slot()
     def start(self):
