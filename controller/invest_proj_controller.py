@@ -15,7 +15,9 @@ from model.investment_item import InvestmentProject
 from model.item_list_model import ItemListModel
 from model.main_model import MainModel
 from model.sim_output import SimulationOutput
-from model.sim_state import GlobalParameters, SimulationState, SimulationCompleteModel
+from model.sim_state import SimulationState, SimulationCompleteModel
+from model.sim_params import GlobalParameters
+
 
 class InvestProjectController(AbstractController[InvestSimWindow, InvestmentProjModel, MainModel]):
     def handleClose(self, event):
@@ -134,11 +136,11 @@ class InvestProjectController(AbstractController[InvestSimWindow, InvestmentProj
         params = GlobalParameters(
             selected_company=self.parent_model.company_data.fiscal_code,
             number_of_years=parse(self.view.ui.numberOfYears.text()),
-            initial_year=parse(self.view.ui.startingYearEdit.text()),
             organic_growth_avg=parse(self.view.ui.organicGRAvgEdit.text()) / 100,
             organic_growth_var=parse(self.view.ui.organigGRVarEdit.text()) / 100,
             last_available_years=self.parent_model.company_data.available_years,
-            sim_id=SimulationDAO.create_sim_id()
+            sim_id=SimulationDAO.create_sim_id(),
+            tax_perc=parse(self.view.ui.aliquotaImpostaEdit.text())/100
         )
 
         self.view.ui.simStatusBar.setValue(0)

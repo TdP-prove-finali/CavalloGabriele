@@ -288,25 +288,6 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_8 = QHBoxLayout()
         self.horizontalLayout_8.setObjectName(u"horizontalLayout_8")
-        self.horizontalSpacer_6 = QSpacerItem(40, 20, QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Minimum)
-
-        self.horizontalLayout_8.addItem(self.horizontalSpacer_6)
-
-        self.label_6 = QLabel(self.groupBox_2)
-        self.label_6.setObjectName(u"label_6")
-        self.label_6.setFont(font2)
-
-        self.horizontalLayout_8.addWidget(self.label_6)
-
-        self.startingYearEdit = QSpinBox(self.groupBox_2)
-        self.startingYearEdit.setObjectName(u"startingYearEdit")
-        self.startingYearEdit.setFont(font2)
-        self.startingYearEdit.setMinimum(2000)
-        self.startingYearEdit.setMaximum(3000)
-        self.startingYearEdit.setValue(2026)
-
-        self.horizontalLayout_8.addWidget(self.startingYearEdit)
-
         self.horizontalSpacer_10 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.horizontalLayout_8.addItem(self.horizontalSpacer_10)
@@ -388,6 +369,35 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_5.addLayout(self.horizontalLayout_10)
 
+        self.horizontalLayout_13 = QHBoxLayout()
+        self.horizontalLayout_13.setObjectName(u"horizontalLayout_13")
+        self.label_6 = QLabel(self.groupBox_2)
+        self.label_6.setObjectName(u"label_6")
+        sizePolicy1.setHeightForWidth(self.label_6.sizePolicy().hasHeightForWidth())
+        self.label_6.setSizePolicy(sizePolicy1)
+
+        self.horizontalLayout_13.addWidget(self.label_6)
+
+        self.aliquotaImpostaEdit = QDoubleSpinBox(self.groupBox_2)
+        self.aliquotaImpostaEdit.setObjectName(u"aliquotaImpostaEdit")
+        sizePolicy2.setHeightForWidth(self.aliquotaImpostaEdit.sizePolicy().hasHeightForWidth())
+        self.aliquotaImpostaEdit.setSizePolicy(sizePolicy2)
+        self.aliquotaImpostaEdit.setValue(26.000000000000000)
+
+        self.horizontalLayout_13.addWidget(self.aliquotaImpostaEdit)
+
+        self.label_14 = QLabel(self.groupBox_2)
+        self.label_14.setObjectName(u"label_14")
+
+        self.horizontalLayout_13.addWidget(self.label_14)
+
+        self.horizontalSpacer_6 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.horizontalLayout_13.addItem(self.horizontalSpacer_6)
+
+
+        self.verticalLayout_5.addLayout(self.horizontalLayout_13)
+
         self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.verticalLayout_5.addItem(self.verticalSpacer)
@@ -437,7 +447,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 1436, 33))
+        self.menubar.setGeometry(QRect(0, 0, 1436, 30))
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QStatusBar(MainWindow)
         self.statusbar.setObjectName(u"statusbar")
@@ -481,7 +491,6 @@ class Ui_MainWindow(object):
         self.label_5.setToolTip(QCoreApplication.translate("MainWindow", u"Numero di anni su cui strutturare la simulazione", None))
 #endif // QT_CONFIG(tooltip)
         self.label_5.setText(QCoreApplication.translate("MainWindow", u"Numero di anni", None))
-        self.label_6.setText(QCoreApplication.translate("MainWindow", u"Anno iniziale", None))
 #if QT_CONFIG(tooltip)
         self.label_7.setToolTip(QCoreApplication.translate("MainWindow", u"Crescita spontanea del fatturato senza operazioni", None))
 #endif // QT_CONFIG(tooltip)
@@ -492,6 +501,11 @@ class Ui_MainWindow(object):
         self.label_9.setText(QCoreApplication.translate("MainWindow", u"Anni passati disponibili", None))
         self.lastAvYearsLabel.setText(QCoreApplication.translate("MainWindow", u"5", None))
         self.lastAvYearsLabel.setProperty(u"cssClass", QCoreApplication.translate("MainWindow", u"number-label", None))
+#if QT_CONFIG(tooltip)
+        self.label_6.setToolTip(QCoreApplication.translate("MainWindow", u"Aliquota di imposta applicata sull'utile (quando presente)", None))
+#endif // QT_CONFIG(tooltip)
+        self.label_6.setText(QCoreApplication.translate("MainWindow", u"Aliquota di imposta sul reddito", None))
+        self.label_14.setText(QCoreApplication.translate("MainWindow", u"%", None))
         self.stopSimBtn.setText(QCoreApplication.translate("MainWindow", u"Ferma simulazione", None))
         self.startSimBtn.setText(QCoreApplication.translate("MainWindow", u"Avvia simulazione", None))
     # retranslateUi

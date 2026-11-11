@@ -13,7 +13,7 @@ Rappresenta il tipo di effetto che l'investimento avrà su un determinato campo 
 class EffectType(Enum):
     INCREASE = 0,
     DECREASE = 1,
-    VAL_FUNCT = 2,# Indica di ricalcolare il valore applicando la funzione di calcolo
+    VAL_FUNCT = 2, # Indica di ricalcolare il valore applicando la funzione di calcolo
     CONST = 3
 
 class EffectFrequency(Enum):
@@ -61,8 +61,8 @@ class InvestmentEffect:
                 value=state.working_snapshot.get_field_value(
                     field_name=self.field_name,
                     where=self.where,
-                    month=state.current_month) + val,
-                month=state.current_month + 1
+                    month=state.current_month + 1) + val,
+                month=state.current_month + 2
             )
         elif self.type == EffectType.DECREASE:
             val = self.value_constant
@@ -76,8 +76,8 @@ class InvestmentEffect:
                 value=state.working_snapshot.get_field_value(
                     field_name=self.field_name,
                     where=self.where,
-                    month=state.current_month) - val,
-                month=state.current_month + 1
+                    month=state.current_month + 1) - val,
+                month=state.current_month + 2
             )
         elif self.type == EffectType.CONST:
             val = self.value_constant
@@ -88,21 +88,21 @@ class InvestmentEffect:
             prev_value = state.working_snapshot.get_field_value(
                 field_name=self.field_name,
                 where=self.where,
-                month=state.current_month + 1
+                month=state.current_month + 2
             )
             if prev_value is None or prev_value == '' or prev_value == 0:
                 state.working_snapshot.set_field_value(
                     field_name=self.field_name,
                     location=self.where,
                     value=val,
-                    month=state.current_month + 1
+                    month=state.current_month + 2
                 )
             elif type(prev_value) is int or type(prev_value) is float:      # Se il campo contiene già un valore, significa che un altro effetto ci ha già lavorato. Sovrascrivendolo perderei quell'effetto, quindi viene sommato
                 state.working_snapshot.set_field_value(
                     field_name=self.field_name,
                     location=self.where,
                     value=val + prev_value,
-                    month=state.current_month + 1
+                    month=state.current_month + 2
                 )
         elif self.type == EffectType.VAL_FUNCT:
             func: Callable = self.value_func
@@ -112,12 +112,12 @@ class InvestmentEffect:
             newVal = func(state.working_snapshot.get_field_value(
                     field_name=self.field_name,
                     where=self.where,
-                    month=state.current_month))
+                    month=state.current_month + 1))
             state.working_snapshot.set_field_value(
                 field_name=self.field_name,
                 location=self.where,
                 value=newVal,
-                month=state.current_month + 1
+                month=state.current_month + 2
             )
 
     def __str__(self):

@@ -5,12 +5,12 @@ from model.balance_snap import BalanceSnaphot
 from model.investment_item import InvestmentProject
 from model.node import Node, NodeType, Flag
 from model.sim_output import SimulationOutput
-from model.sim_state import GlobalParameters
-from test_data import complete_company_1
+from test_data import complete_company_1, GLOBAL_CONFIG
+
 
 def test_balance():
     b = complete_company_1
-    snapshot = BalanceSnaphot.from_company_data(b, 0, 1, "")
+    snapshot = BalanceSnaphot.from_company_data(b, 0, 1, effect_pointer="", global_config=GLOBAL_CONFIG)
     assert snapshot.verify_integrity() == True
     snapshot.create_column("test")
 
@@ -68,16 +68,8 @@ def test_balance():
 def test_sim():
     b = complete_company_1
     ctrl = SimulationOutput(
-            global_parameters=GlobalParameters(
-                    b.fiscal_code,
-                    2,
-                    2026,
-                    organic_growth_avg=0.5,
-                    last_available_years=b.available_years,
-                    sim_id=5,
-                organic_growth_var=0.3,
-                ),
-            balance=BalanceSnaphot.from_company_data(complete_company_1, 0, 5, ""),
+            global_parameters=GLOBAL_CONFIG,
+            balance=BalanceSnaphot.from_company_data(b, 0, 1, effect_pointer="", global_config=GLOBAL_CONFIG),
             project=InvestmentProject(
                 "test",
                 "test",
@@ -130,7 +122,7 @@ def test_stepup():
 
 def test_debiti():
     b = complete_company_1
-    snapshot = BalanceSnaphot.from_company_data(b, 0, 1, "")
+    snapshot = BalanceSnaphot.from_company_data(b, 0, 1, effect_pointer="", global_config=GLOBAL_CONFIG)
     children = snapshot.get_children("totale_debiti", BalanceLocation.SP_PASSIVO_DEBITI)
     assert list(map(lambda it: it.field_name, children)) == ['d10_imprese_collegate_entro',
  'd10_o1_imprese_collegate_oltre',
@@ -173,7 +165,7 @@ def test_debiti():
 
 def test_patrimonio_netto():
     b = complete_company_1
-    snapshot = BalanceSnaphot.from_company_data(b, 0, 1, "")
+    snapshot = BalanceSnaphot.from_company_data(b, 0, 1, effect_pointer="", global_config=GLOBAL_CONFIG)
     children = snapshot.get_children("patrimonio_netto", BalanceLocation.SP_PASSIVO_PATRIM)
 
     assert list(map(lambda it: it.field_name, children)) == [
@@ -199,7 +191,7 @@ def test_patrimonio_netto():
 
 def test_stato_patrimoniale_passivo():
     b = complete_company_1
-    snapshot = BalanceSnaphot.from_company_data(b, 0, 1, "")
+    snapshot = BalanceSnaphot.from_company_data(b, 0, 1, effect_pointer="", global_config=GLOBAL_CONFIG)
     children_dbt = snapshot.get_children("debiti", BalanceLocation.SP_PASSIVO_DEBITI)
     children_ptrm = snapshot.get_children("patrimonio_netto", BalanceLocation.SP_PASSIVO_PATRIM)
 
@@ -227,7 +219,7 @@ def test_stato_patrimoniale_passivo():
 
 def test_attivo():
     b = complete_company_1
-    snapshot = BalanceSnaphot.from_company_data(b, 0, 1, "")
+    snapshot = BalanceSnaphot.from_company_data(b, 0, 1, effect_pointer="", global_config=GLOBAL_CONFIG)
     children = snapshot.get_children("attivo", BalanceLocation.SP_ATTIVO)
 
     assert list(map(lambda it: it.field_name, children)) == ['_o1_totale_attivo',
@@ -295,9 +287,21 @@ def test_attivo():
 
     assert snapshot.get_field_value("totale_immobilizzazioni_sepind_di_quelle_conc_in_loc_finanz", BalanceLocation.SP_ATTIVO, 0) == r
 
+    c6 = snapshot.get_children("totale_immob_immateriali", BalanceLocation.SP_ATTIVO)
+    assert list(map(lambda it: it.field_name, c6)) == ['bi_totale_immob_immateriali',
+                                                       'bii_totale_immob_materiali',
+                                                       'biii_totale_immob_finanziarie']
+    r = 0
+    for c1 in c5:
+        r += c1.value[0]
+
+    assert snapshot.get_field_value("totale_immobilizzazioni_sepind_di_quelle_conc_in_loc_finanz",
+                                    BalanceLocation.SP_ATTIVO, 0) == r
+
+
 def test_conto_economico():
     b = complete_company_1
-    snapshot = BalanceSnaphot.from_company_data(b, 0, 1, "")
+    snapshot = BalanceSnaphot.from_company_data(b, 0, 1, effect_pointer="", global_config=GLOBAL_CONFIG)
     children = snapshot.get_children("conto_economico", BalanceLocation.CE)
 
     assert list(map(lambda it: it.field_name, children)) == ['_o10__21_utile_frac_perdita_di_esercizio',
@@ -406,7 +410,7 @@ def test_conto_economico():
 
 def test_serialize():
     b = complete_company_1
-    snapshot = BalanceSnaphot.from_company_data(b, 0, 1, "", single_year=False)
+    snapshot = BalanceSnaphot.from_company_data(b, 0, 1, effect_pointer="", global_config=GLOBAL_CONFIG, single_year=False)
     assert snapshot.get_field_value("cred_vs_controllate_entro", BalanceLocation.SP_ATTIVO, 0) is not None
     sp, ce = snapshot.serialize()
 
@@ -424,6 +428,14 @@ def test_serialize():
     # verifico la compatibilità con la raw company iniziale (voglio che abbiano la stessa struttura in memoria)
     assert complete_company_1.stato_patrimoniale == sp
     assert complete_company_1.conto_economico == ce
+
+def test_init():
+    b = complete_company_1
+    snapshot = BalanceSnaphot.from_company_data(b, 0, 1, effect_pointer="", global_config=GLOBAL_CONFIG)
+    snapshot.create_year_start()
+
+    assert snapshot.available_columns == 2
+    assert snapshot.serialize() == []
 
 
 

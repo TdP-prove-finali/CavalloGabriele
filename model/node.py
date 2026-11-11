@@ -12,7 +12,9 @@ class Flag(IntEnum):
     NO_COPY = 0,
     NEED_RECALC = 1,
     UPDATED = 2,
-    NO_SUM_CHILDREN_NO_DC = 3          # Indica che questo campo NON è dato dalla somma dei figli, escludendo i figli che sono dei "di cui". Normalmente è la regola di default per i campi che hanno figli.
+    NO_SUM_CHILDREN_NO_DC = 3,          # Indica che questo campo NON è dato dalla somma dei figli, escludendo i figli che sono dei "di cui". Normalmente è la regola di default per i campi che hanno figli.
+    IGNORE_CHILDREN = 4,                 # Indica che per questo campo è necessario ignorare i figli che sono presenti e utilizzare il suo valore per il calcolo
+    RECALCULATED = 5
 
 @dataclass
 class Node:

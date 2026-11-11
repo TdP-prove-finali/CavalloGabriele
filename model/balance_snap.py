@@ -1,12 +1,12 @@
+from calendar import month
 from copy import deepcopy
-from enum import IntEnum
 from typing import Callable, Any
 import networkx as nx
-import re
-from networkx.classes import Graph, DiGraph
+from networkx.classes import DiGraph
 from dao.util import step_up_field, extract_field_identif, SECTION_HEAD, BalanceLocation, sum_vectors
 from model.node import Node, NodeType, Flag
 from model.raw_company_data import CompanyData
+from model.sim_params import GlobalParameters
 
 PRIVATE_FIELDS = ["data", "moneta", "periodo", "subsections"]
 
@@ -67,8 +67,11 @@ class BalanceSnaphot:
     }
 
     SP_FIELD_FLAGS: dict[str, Flag] = {
-        "totale_attivo": Flag.NEED_RECALC,
-        "totale_passivo": Flag.NEED_RECALC
+        "totale_attivo": Flag.NO_COPY,
+        "totale_passivo": Flag.NO_COPY,
+        "depositi_bancari": Flag.NO_COPY,
+        "ratei_e_risconti": Flag.NO_SUM_CHILDREN_NO_DC,
+        "utile_frac_perdita_di_esercizio": Flag.NO_COPY
     }
 
     def __init__(self,
@@ -82,7 +85,8 @@ class BalanceSnaphot:
                  timestamp: int,
                  sim_id: int,
                  available_years: int,
-                 effect_pointer: str | None
+                 effect_pointer: str | None,
+                 global_config: GlobalParameters
                  ):
         self.sp_attivo_id_map: dict[str, Node] = sp_attivo_id_map
         self.sp_debiti_id_map: dict[str, Node] = sp_debiti_id_map
@@ -96,9 +100,14 @@ class BalanceSnaphot:
         self.effect_pointer = effect_pointer
         self.available_columns = available_years
         self.__integrity__: bool | None = None
+        self.global_config = global_config
 
         self.CE_SPEC_CALC_RULES = {
             'totale_proventi_e_oneri_finanziari': self.init_prov_fin
+        }
+        self.SP_SPEC_CALC_RULES = {
+            "totale_immob_immateriali": self.tot_immob,
+            "totale_immob_materiali": self.tot_immob
         }
         # In automatico, i campi da ricalcolare vengono ricavati a partire dai campi che sono stati modificati, secondo la seguente logica:
         # modificato un campo che appartiene alla lettera A (ad esempio A.1) viene ricalcolato il totale alla lettera A
@@ -106,14 +115,32 @@ class BalanceSnaphot:
         # inoltre alcuni campi per coerenza sono impostati come "no-copy", ossia nonostante nel bilancio storico sia presente un valore iniziale verrà sempre utilizzato 0. Questo è utile per campi
         # che specificano operazioni straordinarie che la simulazione non ripete
 
+    def tot_immob(self, node: Node, graph: DiGraph, column: int):
+        """
+        Regola speciale di calcolo per il totale immobilizzazioni:
+        veiene utilizzato l'ammortamento indiretto quindi i fondi devono essere sottratti
+        :param node:
+        :param graph:
+        :param column:
+        :return:
+        """
+        children = graph.successors(node)
+        r = 0
+        for c in children:
+            if "fondo" in c.name:
+                r -= self.__process_from_node__(c, graph)
+            else:
+                r += self.__process_from_node__(c, graph)
+        return r
+
     def init_prov_fin(self, node: Node, graph: DiGraph, column: int):
         children = graph.successors(node)
         r = 0
         for c in children:
             if "oneri" in c.name:
-                r -= self.__init_from_node__(c, graph)
+                r -= self.__process_from_node__(c, graph)
             else:
-                r += self.__init_from_node__(c, graph)
+                r += self.__process_from_node__(c, graph)
         return r
 
     @staticmethod
@@ -130,6 +157,7 @@ class BalanceSnaphot:
         pss = Node.virtual("passivo", BalanceLocation.SP_PASSIVO)
         dbt = Node.virtual("debiti", BalanceLocation.SP_PASSIVO_DEBITI)
         ptrm = Node.virtual("patrimonio_netto", BalanceLocation.SP_PASSIVO_PATRIM)
+        id_map["stato_patrimoniale"] = sp
         id_map["attivo"] = att
         id_map["passivo"] = pss
 
@@ -245,10 +273,10 @@ class BalanceSnaphot:
             elif len(value) > 0 and type(value[0]) is str:
                 value.append("")
             elif len(value) > 0 and value[0] is None:
-                value.append(None)
+                value.append(0)
             else:
                 print("WARNING: Impossibile capire il tipo da aggiungere per il campo " + key)
-                value.append(None)
+                value.append(0)
         """Crea una nuova colonna nei dati (tipicamente per un nuovo mese della simulazione) e inizializza tutti i campi a 0, assicurando
         che tutti i vettori dei valori dei campi di tutti i documenti contengano lo stesso numero di elementi orizzontali"""
 
@@ -256,19 +284,30 @@ class BalanceSnaphot:
         self.for_each_sp_field(value_factory)
         self.available_columns += 1
 
-    def __leaf_value_factory(self, node: Node):
-        if Flag.NO_COPY in node.flags and isinstance(node.value[0], (int, float)):
-            node.value[1] = 0.0
-            return 0.0
-        elif isinstance(node.value[0], (int, float)):
-            # Di default tutti i None vengono trasformati in 0 per la simulazione
-            node.value[1] = node.value[0] or 0
-            return node.value[0] or 0
-        else:
-            print(node)
-            return 0
+    def __leaf_value_factory(self, node: Node, init: bool = True):
+        """
+        Restituisce il valore della foglia (impostandolo a nuovo se necessario, ossia durante un'inizializzazione)
+        :param node:
+        :param init:
+        :return:
+        """
+        if Flag.UPDATED in node.flags:      # Alcuni nodi potrebbero essere stati inizializzati a mano tramite dei calcoli (in questo caso restituisco il valore già presente)
+            return node.value[1] or 0
 
-    def __init_from_node__(self, node: Node, graph: DiGraph):
+        if init:
+            if Flag.NO_COPY in node.flags and isinstance(node.value[0], (int, float)):
+                node.value[1] = 0.0
+                return 0.0
+            elif isinstance(node.value[0], (int, float)):
+                # Di default tutti i None vengono trasformati in 0 per la simulazione
+                node.value[1] = node.value[0] or 0
+                return node.value[0] or 0
+            else:
+                return 0
+        else:
+            return node.value[1] or 0
+
+    def __process_from_node__(self, node: Node, graph: DiGraph, init: bool = True):
         if node.name in PRIVATE_FIELDS:
             return 0
 
@@ -276,21 +315,40 @@ class BalanceSnaphot:
 
         if len(successors) == 0 or Node.all_dc_dicui(successors):
             # il nodo non ha figli oppure i figli sono tutti campi di_cui
-            return self.__leaf_value_factory(node)
+            if Node.all_dc_dicui(successors):
+                node.set_flag(Flag.IGNORE_CHILDREN)     # Così la prossima volta non devo controllarlo
+            return self.__leaf_value_factory(node, init)
         else:
             s = 0
             if self.CE_SPEC_CALC_RULES.get(node.name) is not None:
                 # Applico la regola speciale
                 s = self.CE_SPEC_CALC_RULES.get(node.name)(node, graph, 0)
-            else:
+            elif self.SP_SPEC_CALC_RULES.get(node.name) is not None:
+                # Applico la regola speciale
+                s = self.SP_SPEC_CALC_RULES.get(node.name)(node, graph, 0)
+            elif Flag.NO_SUM_CHILDREN_NO_DC not in node.flags:
                 # Regola di default che somma tutti i figli
                 for child in graph.successors(node):
                     if not child.is_dc_specification():     # I campi di cui non li sommo mai
-                        s += self.__init_from_node__(child, graph)
+                        s += self.__process_from_node__(child, graph)
+            elif Flag.NO_SUM_CHILDREN_NO_DC in node.flags:
+                s = self.__leaf_value_factory(node, init)
 
             if node.type != NodeType.VIRTUAL:
                 node.value[1] = s
             return s
+
+    def sum_field_value(self, field_name: str, where: BalanceLocation, tot: float, column: int):
+        """
+        Imposta il valore del campo sommando un importo
+        :param field_name:
+        :param where:
+        :param tot:
+        :param column:
+        :return:
+        """
+        self.set_field_value(field_name, where, value=self.get_field_value(field_name, where, column) + tot,
+                             month=column)
 
 
     def create_year_start(self):
@@ -298,9 +356,35 @@ class BalanceSnaphot:
             print("WARNING: La colonna 1 con i valori di avvio anno è già stata generata e verrà sovrascritta. ")
 
         self.create_column("Init")
-        self.__init_from_node__(self.ce_id_map["conto_economico"], self.conto_economico)
-        self.calc_terminal_fields(1)
-        print("inizializzato ce")
+        self.__process_from_node__(self.ce_id_map["conto_economico"], self.conto_economico)
+        self.calc_ce_terminal_fields(column=1)
+        # gestione ammortamenti da CE a SP (vengono sommati ai rispettivi fondi)
+        amm_immat = self.get_field_value("amm_immob_immat", BalanceLocation.CE, 1)
+        amm_mat = self.get_field_value("amm_immob_mat", BalanceLocation.CE, 1)
+        self.sum_field_value('fondo_ammto_immob_immateriali', BalanceLocation.SP_ATTIVO, amm_immat, 1)
+        self.sum_field_value('fondo_ammto_immob_materiali', BalanceLocation.SP_ATTIVO, amm_mat, 1)
+
+        # utile e perdita di esercizio (si suppone che sia riportato tutto a nuovo)
+        # di default viene sommato (con segno) e portato a nuovo subito, all'inizio dell'anno (ipotesi semplificativa)
+        ut = self.get_field_value('_21_utile_frac_perdita_di_esercizio', BalanceLocation.CE, 1)
+        self.set_field_value('utile_frac_perdita_a_nuovo', BalanceLocation.SP_PASSIVO_PATRIM, (self.get_field_value('utile_frac_perdita_a_nuovo', BalanceLocation.SP_PASSIVO_PATRIM, month=0))+ut, month=1)
+
+        # debiti
+        # l'anno si inizia con gli stessi debiti della chiusura dell'anno precedente
+        # ogni hanno viene eseguito l'effetto di pagamento dei debiti che può essere configurato tramite i parametri globali della simulazione
+
+        # destinazione tfr a fondo
+        tfr = self.get_field_value("tratt_fine_rapporto", BalanceLocation.CE, 1)
+        self.set_field_value("trattamento_di_fine_rapporto", BalanceLocation.SP_PASSIVO_PATRIM, value=tfr+self.get_field_value("trattamento_di_fine_rapporto", BalanceLocation.SP_PASSIVO_PATRIM, 0), month=1)
+
+        # TODO: Gestire svalutazione immobilizzazioni
+        # TODO: Destinazione accantonamenti vari a fondi
+        self.__process_from_node__(self.sp_patrim_id_map["stato_patrimoniale"], self.stato_patrimoniale)
+        self.calc_sp_terminal_fields(column=1)
+        if self.verify_integrity():
+            print("Bilancio simulazione inizializzato correttamente. ")
+        else:
+            raise Exception("ERRORE: Bilancio simulazione non è stato inizializzato correttamente")
 
     def first_non_null_val(self, s_index: int, field_name: str, location: BalanceLocation):
         f_data = self.get_field_data(field_name, location)
@@ -339,13 +423,18 @@ class BalanceSnaphot:
             parent.set_flag(Flag.NEED_RECALC)
             self.__mark_up_predecessors__(parent, graph)
 
-    def set_field_value(self, field_name: str, location: BalanceLocation, value: Any, month: int):
+    def set_field_value(self, field_name: str, location: BalanceLocation, value: Any, month: int, set_flags: list[Flag] = []):
         """Imposta il valore del campo identificato da
         :param field_name alla colonna month nella sezione giusta del bilancio"""
         id_map = self.__get_id_map(location)
         node = id_map[field_name]
         id_map[field_name].value[month] = value
-        id_map[field_name].set_flag(Flag.UPDATED)
+        if set_flags == []:
+            id_map[field_name].set_flag(Flag.UPDATED)
+        else:
+            for f in set_flags:
+                id_map[field_name].set_flag(f)
+
         # Imposto il need recalc a tutti i parenti fino al nodo di inizio
         if location.is_sp():
             self.__mark_up_predecessors__(node, self.stato_patrimoniale)
@@ -367,13 +456,9 @@ class BalanceSnaphot:
         # TODO: Implement
         pass
 
-    def calc_terminal_fields(self, column: int):
+    def calc_ce_terminal_fields(self, column: int):
         """
-        Calcola le voci finali del documento come la cassa e i totali.
-        Partendo dai field_name dei campi che sono stati modificati, risale al parent di ognuno di loro e lo ricalcola.
-        Metodo 1:
-        * Prendere tutti i campi figli del punto, sommarli, impostarli al primo parent, prendere tutti i parent dello stesso livello e risommarli.
-
+        Calcola le voci finali del conto economico, come il valore aggiunto, risultato operativo, utile e imposte.
         :return:
         """
         self.set_field_value("risultato_operativo", BalanceLocation.CE,
@@ -396,7 +481,7 @@ class BalanceSnaphot:
 
         tss = 0
         if ebt > 0:
-            tss = ebt * 0.26
+            tss = ebt * self.global_config.tax_perc
         self.set_field_value('_20_totale_imposte_sul_reddito_correnti_differite_e_anticipate', BalanceLocation.CE, tss, column)
 
         utl = ebt - tss
@@ -550,7 +635,8 @@ class BalanceSnaphot:
             timestamp=self.timestamp,
             sim_id=self.sim_id,
             available_years=self.available_columns,
-            effect_pointer=self.effect_pointer
+            effect_pointer=self.effect_pointer,
+            global_config=self.global_config
         )
 
     def get_children(self, field_name: str, where: BalanceLocation) -> list[Node]:
@@ -589,7 +675,7 @@ class BalanceSnaphot:
                     field_name, where, res
                 )
 
-    def sum_children_values(self, field_name: str, where: BalanceLocation, column: int, exclude_fields: list[str] = []) -> list[float]:
+    def sum_children_values(self, field_name: str, where: BalanceLocation, column: int, exclude_fields: list[str] = []) -> float:
         """
         Calcola la somma di tutti i campi figli di field_name
         Restituisce il vettore con la somma di tutti i campi, con tanti elementi quante sono le colonne presenti
@@ -650,7 +736,7 @@ class BalanceSnaphot:
         tot_cp.for_each_sp_field(stato_patrimon_transformer, substitute=True)
         tot_cp.calc_indicies()
         tot_cp.available_columns = new_column_count
-        tot_cp.calc_terminal_fields()
+        tot_cp.calc_ce_terminal_fields()
         if not tot_cp.verify_integrity():
             raise Exception("Trasformazione non consistente sullo snapshot di bilancio. La trasformazione che hai specificato non porta ad avere un bilancio valido. ")
 
@@ -682,7 +768,8 @@ class BalanceSnaphot:
     def from_company_data(data: CompanyData,
                           timestamp: int,
                           sim_id: int,
-                          effect_pointer: str | None,
+                          global_config: GlobalParameters,
+                        effect_pointer: str | None,
                           single_year: bool = True
                           ):
         """
@@ -716,5 +803,25 @@ class BalanceSnaphot:
             sim_id=sim_id,
             effect_pointer=effect_pointer,
             available_years=l,
-            indici=data.indici.copy()
+            indici=data.indici.copy(),
+            global_config=global_config
         )
+
+    def calc_sp_terminal_fields(self, column):
+        # destinare utile anno terminato
+        # poi calcolare patrimonio netto e totale passivo
+        # dal totale passivo calcolare la cassa per differenza
+        # verificare che il totale attivo venga esatto impostando la cassa
+        # no accantonamenti automatici in riserve
+        # no distribuzione dividendi
+        tot_patrim_netto = self.sum_children_values("patrimonio_netto", BalanceLocation.SP_PASSIVO_PATRIM, column)
+        tot_debiti = self.sum_children_values("debiti", BalanceLocation.SP_PASSIVO_DEBITI, column=column, exclude_fields=["totale_passivo", "totale_conti_dordine", "garanzie_prestate"])
+
+        tot_passivo = tot_patrim_netto + tot_debiti
+        self.set_field_value("totale_passivo", BalanceLocation.SP_PASSIVO_DEBITI, tot_passivo, column)
+        self.set_field_value("totale_attivo", BalanceLocation.SP_ATTIVO, tot_passivo, column)
+
+        actual_sum = self.sum_children_values("attivo", BalanceLocation.SP_ATTIVO, column) - self.get_field_value("tot_dispon_liquide", BalanceLocation.SP_ATTIVO, column)
+        l = tot_passivo - actual_sum
+        self.set_field_value("depositi_bancari", BalanceLocation.SP_ATTIVO, l, column)
+        self.__process_from_node__(self.sp_attivo_id_map["attivo"], self.stato_patrimoniale, init=False)

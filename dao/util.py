@@ -28,7 +28,7 @@ class BalanceLocation(IntEnum):
     def is_sp(self):
         return self in [BalanceLocation.SP_ATTIVO, BalanceLocation.SP_PASSIVO, BalanceLocation.SP_PASSIVO_PATRIM, BalanceLocation.SP_PASSIVO_DEBITI]
 
-SECTION_HEAD = ["attivo", "passivo", "patrimonio_netto", "debiti", "conto_economico"]
+SECTION_HEAD = ["attivo", "passivo", "patrimonio_netto", "debiti", "conto_economico", "stato_patrimoniale"]
 
 def remove_accents(text: str) -> str:   # Toglie tutti gli accenti da una stringa
     text = text.lower()

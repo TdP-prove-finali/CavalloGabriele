@@ -2,6 +2,7 @@ import datetime
 
 from model.raw_company_data import RawCompanyData, CompanyData
 from model.section import Section
+from model.sim_params import GlobalParameters
 
 raw_company_paramount = RawCompanyData(sections=[Section(name='general_info',
                                  data={'codice_fiscale': '07237600965',
@@ -9122,3 +9123,13 @@ complete_company_1 = CompanyData(company_name='PARAMOUNT GLOBAL ITALIA S.R.L.',
                                                                                         52703433,
                                                                                         30163358],
                                                               'subsections': {}}}})
+
+GLOBAL_CONFIG = GlobalParameters(
+                    complete_company_1.fiscal_code,
+                    2,
+                    organic_growth_avg=0.5,
+                    last_available_years=complete_company_1.available_years,
+                    sim_id=5,
+                organic_growth_var=0.3,
+                tax_perc=0.26
+                )
