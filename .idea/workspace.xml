@@ -4,20 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d1f57556-a68b-4407-9511-95d58864d413" name="Changes" comment="Inizializzazione CE simulaizone con calcolo valori derivati e formule corrette">
-      <change afterPath="$PROJECT_DIR$/model/sim_params.py" afterDir="false" />
+    <list default="true" id="d1f57556-a68b-4407-9511-95d58864d413" name="Changes" comment="Implementa inizializzazione SP con valori corretti">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/ui_generated/ui_invest_sim_window.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/ui_generated/ui_invest_sim_window.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controller/invest_proj_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/controller/invest_proj_controller.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dao/util.py" beforeDir="false" afterPath="$PROJECT_DIR$/dao/util.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/model/balance_snap.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/balance_snap.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/investment_effect.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/investment_effect.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/node.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/node.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/sim_output.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/sim_output.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/sim_state.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/sim_state.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tests/test_balance.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_balance.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_data.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/invest_sim_window.ui" beforeDir="false" afterPath="$PROJECT_DIR$/ui/invest_sim_window.ui" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -25,7 +15,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="206" />
+    <option name="cachedIndexableFilesCount" value="207" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -47,7 +37,7 @@
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/TdP-prove-finali/CavalloGabriele.git&quot;,
-    &quot;accountId&quot;: &quot;7fc15e42-0a7c-4df4-8b5a-a835c9bf1b3f&quot;
+    &quot;accountId&quot;: &quot;e59f5668-943a-44d7-a800-f16fe82b3462&quot;
   }
 }</component>
   <component name="McpProjectServerCommands">
@@ -112,7 +102,7 @@
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "debugger.dataViews.python.type.renderers",
+    "settings.editor.selected.configurable": "org.jetbrains.plugins.github.ui.GithubSettingsConfigurable",
     "to.speed.mode.migration.done": "true",
     "vue.rearranger.settings.migration": "true"
   }
@@ -298,15 +288,8 @@
       <workItem from="1794299280261" duration="12834000" />
       <workItem from="1794312794364" duration="3321000" />
       <workItem from="1794318843898" duration="4194000" />
-      <workItem from="1794411231667" duration="8129000" />
-    </task>
-    <task id="LOCAL-00041" summary="Migliora la struttura dati della company rendendola più maneggiabile">
-      <option name="closed" value="true" />
-      <created>1791730853511</created>
-      <option name="number" value="00041" />
-      <option name="presentableId" value="LOCAL-00041" />
-      <option name="project" value="LOCAL" />
-      <updated>1791730853511</updated>
+      <workItem from="1794411231667" duration="8327000" />
+      <workItem from="1794487202323" duration="2214000" />
     </task>
     <task id="LOCAL-00042" summary="Implementa traduzioni campo-descrizione automatiche">
       <option name="closed" value="true" />
@@ -692,14 +675,32 @@
       <option name="project" value="LOCAL" />
       <updated>1794316116851</updated>
     </task>
-    <option name="localTasksCounter" value="90" />
+    <task id="LOCAL-00090" summary="Implementa inizializzazione SP con valori corretti">
+      <option name="closed" value="true" />
+      <created>1794420040183</created>
+      <option name="number" value="00090" />
+      <option name="presentableId" value="LOCAL-00090" />
+      <option name="project" value="LOCAL" />
+      <updated>1794420040183</updated>
+    </task>
+    <option name="localTasksCounter" value="91" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Struttura classi simulazione" />
     <MESSAGE value="Scheletro esecuzione simulazione su thread a parte" />
     <MESSAGE value="Progress bar esecuzione simulazione" />
     <MESSAGE value="UI ultime finestre" />
@@ -724,14 +725,15 @@
     <MESSAGE value="Fix serializzazione output simulazioni" />
     <MESSAGE value="Fix generali" />
     <MESSAGE value="Inizializzazione CE simulaizone con calcolo valori derivati e formule corrette" />
-    <option name="LAST_COMMIT_MESSAGE" value="Inizializzazione CE simulaizone con calcolo valori derivati e formule corrette" />
+    <MESSAGE value="Implementa inizializzazione SP con valori corretti" />
+    <option name="LAST_COMMIT_MESSAGE" value="Implementa inizializzazione SP con valori corretti" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/tests/test_balance.py</url>
-          <line>403</line>
+          <line>404</line>
           <option name="timeStamp" value="90" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -741,8 +743,13 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/model/balance_snap.py</url>
-          <line>357</line>
-          <option name="timeStamp" value="94" />
+          <line>816</line>
+          <option name="timeStamp" value="95" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/model/balance_snap.py</url>
+          <line>310</line>
+          <option name="timeStamp" value="96" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
@@ -755,7 +762,7 @@
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/CavalloGabriele$.coverage" NAME=" Coverage Results" MODIFIED="1794419275886" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
+    <SUITE FILE_PATH="coverage/CavalloGabriele$.coverage" NAME=" Coverage Results" MODIFIED="1794494665804" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/CavalloGabriele$main.coverage" NAME="main Coverage Results" MODIFIED="1794320316555" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

@@ -1,3 +1,4 @@
+import pytest
 
 from dao.simulation.simulation_dao import SimulationDAO
 from dao.util import step_up_numbering, step_up_field, extract_complete_numbering, BalanceLocation
@@ -435,7 +436,195 @@ def test_init():
     snapshot.create_year_start()
 
     assert snapshot.available_columns == 2
-    assert snapshot.serialize() == []
+    sp, ce = snapshot.serialize()
+
+    STORICO = 0
+    INIT = 1
+
+    a = sp["subsections"]["attivo"]
+    p = sp["subsections"]["passivo"]["subsections"]["patrimonio_netto"]
+    d = sp["subsections"]["passivo"]["subsections"]["debiti"]
+
+    def check(nome, actual, expected):
+        assert actual == pytest.approx(expected, abs=0.01), (
+            f"{nome}: ottenuto {actual}, atteso {expected}, "
+            f"differenza {actual - expected}"
+        )
+    immateriali = (
+            a["bi4_concessioni_licenze"][INIT]
+            + a["bi5_avviamento_frac_differenza_di_consolidamento"][INIT]
+            + a["bi6_imm_in_corso"][INIT]
+            + a["bi7_altre_immobiliz_immateriali"][INIT]
+            - a["bi7_o1_fondo_ammto_immob_immateriali"][INIT]
+    )
+    materiali = (
+            a["bii2_impianti"][INIT]
+            + a["bii4_altri_beni"][INIT]
+            - a["bii5_o1_fondo_ammto_immob_materiali"][INIT]
+    )
+    finanziarie = (
+            a["biii1dbis_altre_imprese"][INIT]
+            + a["biii2_tot_crediti_imm_fin"][INIT]
+    )
+    check(
+        "Immobilizzazioni immateriali",
+        a["bi_totale_immob_immateriali"][INIT],
+        immateriali,
+    )
+    check(
+        "Immobilizzazioni materiali",
+        a["bii_totale_immob_materiali"][INIT],
+        materiali,
+    )
+    check(
+        "Immobilizzazioni finanziarie",
+        a["biii_totale_immob_finanziarie"][INIT],
+        finanziarie,
+    )
+    check(
+        "Totale immobilizzazioni",
+        a["b_totale_immobilizzazioni_sepind_di_quelle_conc_in_loc_finanz"][INIT],
+        immateriali + materiali + finanziarie,
+    )
+    check(
+        "Disponibilità liquide",
+        a["civ_tot_dispon_liquide"][INIT],
+        sum(
+            a[k][INIT]
+            for k in (
+                "civ1_depositi_bancari",
+                "civ2_assegni",
+                "civ3_denaro_in_cassa",
+            )
+        ),
+    )
+    circolante = (
+            a["ci_totale_rimanenze"][INIT]
+            + a["cii_totale_crediti"][INIT]
+            + a["ciii_totale_attivita_finanziarie"][INIT]
+            + a["civ_tot_dispon_liquide"][INIT]
+    )
+    check(
+        "Attivo circolante",
+        a["c_attivo_circolante"][INIT],
+        circolante,
+    )
+    totale_attivo = (
+            a["a_crediti_verso_soci"][INIT]
+            + a["b_totale_immobilizzazioni_sepind_di_quelle_conc_in_loc_finanz"][INIT]
+            + a["c_attivo_circolante"][INIT]
+            + a["d_ratei_e_risconti"][INIT]
+    )
+
+    check(
+        "Totale attivo",
+        a["_o1_totale_attivo"][INIT],
+        totale_attivo,
+    )
+    patrimonio_netto = sum(
+        p[k][INIT]
+        for k in (
+            "ai_capitale_sociale",
+            "aii_riserva_da_sovrapprezzo",
+            "aiii_riserva_di_rivalutazione",
+            "aiv_riserva_legale",
+            "av_riserva_statutaria",
+            "avi_altre_riserve",
+            "avii_riserva_per_operazioni_di_copertura_dei_flussi_finanziari_attesi",
+            "aviii_utile_frac_perdita_a_nuovo",
+            "aix_utile_frac_perdita_di_esercizio",
+            "ax_riserva_negativa_per_azioni_proprie_in_portafoglio__plus_frac___",
+        )
+    )
+    check(
+        "Patrimonio netto",
+        p["a_totale_patrimonio_netto"][INIT],
+        patrimonio_netto,
+    )
+    totale_passivo = (
+            p["a_totale_patrimonio_netto"][INIT]
+            + p["b_totale_fondi_rischi"][INIT]
+            + p["c_trattamento_di_fine_rapporto"][INIT]
+            + d["d_totale_debiti"][INIT]
+            + d["e_ratei_e_risconti"][INIT]
+    )
+    check(
+        "Totale passivo",
+        d["_o2_totale_passivo"][INIT],
+        totale_passivo,
+    )
+    check(
+        "Attivo = Passivo",
+        totale_attivo,
+        totale_passivo,
+    )
+    check(
+        "Fatturato iniziale",
+        ce["a1_ricavi_vendite_e_prestazioni"][INIT],
+        0,
+    )
+    check(
+        "Crediti commerciali e altri crediti",
+        a["cii_totale_crediti"][INIT],
+        a["cii_totale_crediti"][STORICO],
+    )
+    check(
+        "Crediti immobilizzati",
+        a["biii2_tot_crediti_imm_fin"][INIT],
+        a["biii2_tot_crediti_imm_fin"][STORICO],
+    )
+    check(
+        "Debiti",
+        d["d_totale_debiti"][INIT],
+        d["d_totale_debiti"][STORICO],
+    )
+    check(
+        "Accantonamento TFR",
+        p["c_trattamento_di_fine_rapporto"][INIT],
+        (
+                p["c_trattamento_di_fine_rapporto"][STORICO]
+                + ce["b9c_tratt_fine_rapporto"][INIT]
+        ),
+    )
+    check(
+        "Fondo ammortamento immateriali",
+        a["bi7_o1_fondo_ammto_immob_immateriali"][INIT],
+        ce["b10a_amm_immob_immat"][INIT],
+    )
+    check(
+        "Fondo ammortamento materiali",
+        a["bii5_o1_fondo_ammto_immob_materiali"][INIT],
+        ce["b10b_amm_immob_mat"][INIT],
+    )
+    check(
+        "Riduzione immobilizzazioni immateriali",
+        a["bi_totale_immob_immateriali"][INIT],
+        (
+                a["bi_totale_immob_immateriali"][STORICO]
+                - ce["b10a_amm_immob_immat"][INIT]
+        ),
+    )
+    check(
+        "Riduzione immobilizzazioni materiali",
+        a["bii_totale_immob_materiali"][INIT],
+        (
+                a["bii_totale_immob_materiali"][STORICO]
+                - ce["b10b_amm_immob_mat"][INIT]
+        ),
+    )
+    check(
+        "Utile di esercizio SP azzerato",
+        p["aix_utile_frac_perdita_di_esercizio"][INIT],
+        0,
+    )
+    check(
+        "Risultato CE trasferito a nuovo",
+        p["aviii_utile_frac_perdita_a_nuovo"][INIT],
+        (
+                p["aviii_utile_frac_perdita_a_nuovo"][STORICO]
+                + ce["_o10__21_utile_frac_perdita_di_esercizio"][INIT]
+        ),
+    )
 
 
 

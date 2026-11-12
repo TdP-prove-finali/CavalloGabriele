@@ -821,7 +821,7 @@ class BalanceSnaphot:
         self.set_field_value("totale_passivo", BalanceLocation.SP_PASSIVO_DEBITI, tot_passivo, column)
         self.set_field_value("totale_attivo", BalanceLocation.SP_ATTIVO, tot_passivo, column)
 
-        actual_sum = self.sum_children_values("attivo", BalanceLocation.SP_ATTIVO, column) - self.get_field_value("tot_dispon_liquide", BalanceLocation.SP_ATTIVO, column)
-        l = tot_passivo - actual_sum
-        self.set_field_value("depositi_bancari", BalanceLocation.SP_ATTIVO, l, column)
+        tot_att_parz = self.sum_children_values("attivo", BalanceLocation.SP_ATTIVO, column, exclude_fields=["totale_attivo"])
+        liq = tot_passivo - tot_att_parz
+        self.set_field_value("depositi_bancari", BalanceLocation.SP_ATTIVO, liq, column)
         self.__process_from_node__(self.sp_attivo_id_map["attivo"], self.stato_patrimoniale, init=False)
