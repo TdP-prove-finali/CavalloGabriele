@@ -17,9 +17,9 @@ from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
     QPainter, QPalette, QPixmap, QRadialGradient,
     QTransform)
 from PySide6.QtWidgets import (QApplication, QComboBox, QHBoxLayout, QLabel,
-    QMainWindow, QMenu, QMenuBar, QPushButton,
-    QSizePolicy, QSpacerItem, QStatusBar, QVBoxLayout,
-    QWidget)
+    QMainWindow, QMenu, QMenuBar, QProgressBar,
+    QPushButton, QSizePolicy, QSpacerItem, QStatusBar,
+    QVBoxLayout, QWidget)
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -90,6 +90,17 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_3.addItem(self.horizontalSpacer)
 
+        self.importProgressLabel = QLabel(self.centralwidget)
+        self.importProgressLabel.setObjectName(u"importProgressLabel")
+
+        self.horizontalLayout_3.addWidget(self.importProgressLabel)
+
+        self.importStatusBar = QProgressBar(self.centralwidget)
+        self.importStatusBar.setObjectName(u"importStatusBar")
+        self.importStatusBar.setValue(24)
+
+        self.horizontalLayout_3.addWidget(self.importStatusBar)
+
         self.pushButton = QPushButton(self.centralwidget)
         self.pushButton.setObjectName(u"pushButton")
         sizePolicy3 = QSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
@@ -132,6 +143,7 @@ class Ui_MainWindow(object):
         self.label.setText(QCoreApplication.translate("MainWindow", u"Business Scenario Lab", None))
         self.label_2.setText(QCoreApplication.translate("MainWindow", u"Societ\u00e0 da analizzare", None))
         self.companyComboBox.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Seleziona un'azienda", None))
+        self.importProgressLabel.setText(QCoreApplication.translate("MainWindow", u"Importazione in corso", None))
         self.pushButton.setText(QCoreApplication.translate("MainWindow", u"Carica", None))
         self.menuFile.setTitle(QCoreApplication.translate("MainWindow", u"File", None))
     # retranslateUi

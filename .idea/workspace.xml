@@ -4,11 +4,18 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d1f57556-a68b-4407-9511-95d58864d413" name="Changes" comment="Fix calcolo voci finali stato patrimoniale">
-      <change beforePath="$PROJECT_DIR$/controller/simulation_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/controller/simulation_controller.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/balance_snap.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/balance_snap.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/investment_effect.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/investment_effect.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/sim_state.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/sim_state.py" afterDir="false" />
+    <list default="true" id="d1f57556-a68b-4407-9511-95d58864d413" name="Changes" comment="Refactoring e progettazione nuova struttura simulazione">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/ui_generated/ui_startupwindow.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/ui_generated/ui_startupwindow.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controller/invest_proj_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/controller/invest_proj_controller.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controller/startup_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/controller/startup_controller.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dao/company_dao.py" beforeDir="false" afterPath="$PROJECT_DIR$/dao/company_dao.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dao/data_import/company_import_dao.py" beforeDir="false" afterPath="$PROJECT_DIR$/dao/data_import/company_import_dao.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/prod/dataset-prod-chunk1.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/dataset/prod/dataset-prod-chunk1.xlsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/prod/dataset-prod-chunk2.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/dataset/prod/dataset-prod-chunk2.xlsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dataset/prod/dataset-prod-chunk3.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/dataset/prod/dataset-prod-chunk3.xlsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_loader.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_loader.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/startupwindow.ui" beforeDir="false" afterPath="$PROJECT_DIR$/ui/startupwindow.ui" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -16,7 +23,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="207" />
+    <option name="cachedIndexableFilesCount" value="208" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -54,60 +61,60 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Python tests.Python tests for test_balance.test_attivo.executor": "Run",
-    "Python tests.Python tests for test_balance.test_balance.executor": "Run",
-    "Python tests.Python tests for test_balance.test_calc.executor": "Debug",
-    "Python tests.Python tests for test_balance.test_conto_economico.executor": "Debug",
-    "Python tests.Python tests for test_balance.test_debiti.executor": "Run",
-    "Python tests.Python tests for test_balance.test_init.executor": "Run",
-    "Python tests.Python tests for test_balance.test_parent.executor": "Run",
-    "Python tests.Python tests for test_balance.test_patrimonio_netto.executor": "Run",
-    "Python tests.Python tests for test_balance.test_serialize.executor": "Run",
-    "Python tests.Python tests for test_balance.test_sim.executor": "Run",
-    "Python tests.Python tests for test_balance.test_stato_patrimoniale.executor": "Run",
-    "Python tests.Python tests for test_balance.test_stato_patrimoniale_passivo.executor": "Run",
-    "Python tests.Python tests for test_balance.test_stepup.executor": "Run",
-    "Python tests.Python tests for test_loader.test_company_brief.executor": "Run",
-    "Python tests.Python tests for test_loader.test_company_mongodb_roundtrip.executor": "Run",
-    "Python tests.Python tests for test_loader.test_compatibility.executor": "Run",
-    "Python tests.Python tests for test_loader.test_complete.executor": "Run",
-    "Python tests.Python tests for test_loader.test_loader.executor": "Run",
-    "Python tests.Python tests for test_loader.test_loader2.executor": "Run",
-    "Python tests.Python tests for test_loader.test_loader_chunk.executor": "Run",
-    "Python tests.Python tests for test_loader.test_loader_chunk_10.executor": "Run",
-    "Python tests.Python tests for test_loader.test_loader_chunk_50.executor": "Run",
-    "Python tests.Python tests for test_loader.test_loader_cross.executor": "Run",
-    "Python tests.Python tests for test_loader.test_preproc_company.executor": "Run",
-    "Python tests.Python tests for test_loader.test_serialization.executor": "Run",
-    "Python tests.Python tests for test_main.test_connection.executor": "Run",
-    "Python tests.Python tests for tests.test_main.test_calcolo_esempio.executor": "Run",
-    "Python tests.Python tests in test_balance.py.executor": "Run",
-    "Python tests.Python tests in test_loader.py.executor": "Run",
-    "Python.main.executor": "Debug",
-    "RunOnceActivity.MCP Project settings loaded": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "SHELLCHECK.PATH": "/Users/gabrielecavallo/Library/Application Support/JetBrains/PyCharm2025.3/plugins/Shell Script/shellcheck",
-    "ai.playground.ignore.import.keys.banner.in.settings": "true",
-    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
-    "git-widget-placeholder": "main",
-    "junie.onboarding.icon.badge.shown": "true",
-    "last_opened_file_path": "/Users/gabrielecavallo/PycharmProjects/CavalloGabriele/docs",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "org.jetbrains.plugins.github.ui.GithubSettingsConfigurable",
-    "to.speed.mode.migration.done": "true",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python tests.Python tests for test_balance.test_attivo.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.Python tests for test_balance.test_balance.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.Python tests for test_balance.test_calc.executor&quot;: &quot;Debug&quot;,
+    &quot;Python tests.Python tests for test_balance.test_conto_economico.executor&quot;: &quot;Debug&quot;,
+    &quot;Python tests.Python tests for test_balance.test_debiti.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.Python tests for test_balance.test_init.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.Python tests for test_balance.test_parent.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.Python tests for test_balance.test_patrimonio_netto.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.Python tests for test_balance.test_serialize.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.Python tests for test_balance.test_sim.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.Python tests for test_balance.test_stato_patrimoniale.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.Python tests for test_balance.test_stato_patrimoniale_passivo.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.Python tests for test_balance.test_stepup.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.Python tests for test_loader.test_company_brief.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.Python tests for test_loader.test_company_mongodb_roundtrip.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.Python tests for test_loader.test_compatibility.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.Python tests for test_loader.test_complete.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.Python tests for test_loader.test_loader.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.Python tests for test_loader.test_loader2.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.Python tests for test_loader.test_loader_chunk.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.Python tests for test_loader.test_loader_chunk_10.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.Python tests for test_loader.test_loader_chunk_50.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.Python tests for test_loader.test_loader_cross.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.Python tests for test_loader.test_preproc_company.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.Python tests for test_loader.test_serialization.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.Python tests for test_main.test_connection.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.Python tests for tests.test_main.test_calcolo_esempio.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.Python tests in test_balance.py.executor&quot;: &quot;Run&quot;,
+    &quot;Python tests.Python tests in test_loader.py.executor&quot;: &quot;Run&quot;,
+    &quot;Python.main.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;SHELLCHECK.PATH&quot;: &quot;/Users/gabrielecavallo/Library/Application Support/JetBrains/PyCharm2025.3/plugins/Shell Script/shellcheck&quot;,
+    &quot;ai.playground.ignore.import.keys.banner.in.settings&quot;: &quot;true&quot;,
+    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/gabrielecavallo/PycharmProjects/CavalloGabriele/docs&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;org.jetbrains.plugins.github.ui.GithubSettingsConfigurable&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/docs" />
@@ -123,7 +130,7 @@
       <recent name="$PROJECT_DIR$/dataset/test" />
     </key>
   </component>
-  <component name="RunManager" selected="Python tests.Python tests for test_balance.test_init">
+  <component name="RunManager" selected="Python.main">
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="CavalloGabriele" />
       <option name="ENV_FILES" value="" />
@@ -290,15 +297,9 @@
       <workItem from="1794312794364" duration="3321000" />
       <workItem from="1794318843898" duration="4194000" />
       <workItem from="1794411231667" duration="8327000" />
-      <workItem from="1794487202323" duration="5416000" />
-    </task>
-    <task id="LOCAL-00043" summary="Implementa startup screen">
-      <option name="closed" value="true" />
-      <created>1791737087787</created>
-      <option name="number" value="00043" />
-      <option name="presentableId" value="LOCAL-00043" />
-      <option name="project" value="LOCAL" />
-      <updated>1791737087787</updated>
+      <workItem from="1794487202323" duration="5552000" />
+      <workItem from="1794516999044" duration="2156000" />
+      <workItem from="1794519188195" duration="3606000" />
     </task>
     <task id="LOCAL-00044" summary="Implementa startup screen">
       <option name="closed" value="true" />
@@ -684,7 +685,15 @@
       <option name="project" value="LOCAL" />
       <updated>1794494688494</updated>
     </task>
-    <option name="localTasksCounter" value="92" />
+    <task id="LOCAL-00092" summary="Refactoring e progettazione nuova struttura simulazione">
+      <option name="closed" value="true" />
+      <created>1794497912210</created>
+      <option name="number" value="00092" />
+      <option name="presentableId" value="LOCAL-00092" />
+      <option name="project" value="LOCAL" />
+      <updated>1794497912210</updated>
+    </task>
+    <option name="localTasksCounter" value="93" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -702,7 +711,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Progress bar esecuzione simulazione" />
     <MESSAGE value="UI ultime finestre" />
     <MESSAGE value="Termina implementazione dialoghi creazione componenti progetto" />
     <MESSAGE value="Implementa salvataggio output simulazione su DB" />
@@ -727,7 +735,8 @@
     <MESSAGE value="Inizializzazione CE simulaizone con calcolo valori derivati e formule corrette" />
     <MESSAGE value="Implementa inizializzazione SP con valori corretti" />
     <MESSAGE value="Fix calcolo voci finali stato patrimoniale" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix calcolo voci finali stato patrimoniale" />
+    <MESSAGE value="Refactoring e progettazione nuova struttura simulazione" />
+    <option name="LAST_COMMIT_MESSAGE" value="Refactoring e progettazione nuova struttura simulazione" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -752,6 +761,11 @@
           <line>310</line>
           <option name="timeStamp" value="96" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/controller/startup_controller.py</url>
+          <line>65</line>
+          <option name="timeStamp" value="99" />
+        </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
         <breakpoint type="python-exception">
@@ -764,6 +778,6 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/CavalloGabriele$.coverage" NAME=" Coverage Results" MODIFIED="1794496206368" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
-    <SUITE FILE_PATH="coverage/CavalloGabriele$main.coverage" NAME="main Coverage Results" MODIFIED="1794320316555" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/CavalloGabriele$main.coverage" NAME="main Coverage Results" MODIFIED="1794522842218" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

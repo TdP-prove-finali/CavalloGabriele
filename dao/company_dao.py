@@ -110,6 +110,11 @@ class CompanyDAO:
         return result.deleted_count > 0
 
     @staticmethod
+    def save_companies(data: list[CompanyData]):
+        for c in data:
+            CompanyDAO.save_company(c)
+
+    @staticmethod
     def find_all_companies(sorted=None) -> list[CompanyBrief]:
         """
         Carica le informazioni riassuntive "CompanyBrief" di tutte le company presenti,

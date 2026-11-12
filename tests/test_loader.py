@@ -98,15 +98,15 @@ def test_complete():
     MongoDBConnector.get_database()["translations"].drop()
 
     imp = CompanyImportDAO("../dataset/sample-aida-single.xlsx")
-    imp.import_single_company()
+    comp = imp.import_single_company()
 
-    assert imp.company == complete_company_1
+    assert comp == complete_company_1
     assert imp.translations is not None
 
     TranslationDAO.save_translations(imp.translations)
     assert TranslationDAO.count_translations() > 0
 
-    translated = TranslationDAO.get_translations_for_company(imp.company)
+    translated = TranslationDAO.get_translations_for_company(comp)
     assert len(translated.keys()) > 0
     RawCompanyBalanceImporter.clear_translations()
 
@@ -115,7 +115,7 @@ def test_loader_chunk():
     MongoDBConnector.get_database()["translations"].drop()
 
     imp = CompanyImportDAO("../dataset/test/dataset-3.xlsx")
-    imported = imp.import_company_chunk()
+    imported = imp.start()
     assert len(imported) == 3
 
 def test_loader_chunk_10():
@@ -123,7 +123,7 @@ def test_loader_chunk_10():
     MongoDBConnector.get_database()["translations"].drop()
 
     imp = CompanyImportDAO("../dataset/test/dataset-10.xlsx")
-    imported = imp.import_company_chunk()
+    imported = imp.start()
     assert len(imported) == 10
 
 def test_loader_chunk_50():
@@ -131,7 +131,7 @@ def test_loader_chunk_50():
     MongoDBConnector.get_database()["translations"].drop()
 
     imp = CompanyImportDAO("../dataset/test/dataset-test-50-v2.xlsx")
-    imported = imp.import_company_chunk()
+    imported = imp.start()
     assert len(imported) == 50
     for com in imported:
         assert com.company_name is not None
@@ -147,5 +147,5 @@ def test_compatibility():
     MongoDBConnector.get_database()["translations"].drop()
 
     imp = CompanyImportDAO("../dataset/sample-aida-single.xlsx")
-    imported = imp.import_company_chunk()
+    imported = imp.start()
     assert len(imported) == 1

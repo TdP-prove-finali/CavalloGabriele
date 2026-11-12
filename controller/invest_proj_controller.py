@@ -208,6 +208,7 @@ class InvestProjectController(AbstractController[InvestSimWindow, InvestmentProj
         msgBox.setInformativeText(error)
         msgBox.setIcon(QMessageBox.Icon.Critical)
         msgBox.show()
+        self.set_internal_pointer("msg-box", msgBox)
         print("Errore durante la simulazione " + error)
 
     @Slot()
