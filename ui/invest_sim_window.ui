@@ -545,7 +545,7 @@
             </font>
            </property>
            <property name="toolTip">
-            <string>Crescita spontanea del fatturato senza operazioni</string>
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Crescita spontanea del fatturato senza operazioni legate al progetto di investimento. Rappresentata tramite un modello Browniano di cui è possibile specificare valore medio e varianza. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
            </property>
            <property name="text">
             <string>Crescita organica media</string>
@@ -553,7 +553,11 @@
           </widget>
          </item>
          <item>
-          <widget class="QDoubleSpinBox" name="organicGRAvgEdit"/>
+          <widget class="QDoubleSpinBox" name="organicGRAvgEdit">
+           <property name="value">
+            <double>12.000000000000000</double>
+           </property>
+          </widget>
          </item>
          <item>
           <widget class="QLabel" name="label_8">
@@ -714,6 +718,85 @@
             </size>
            </property>
           </spacer>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_14">
+         <item>
+          <widget class="QLabel" name="label_16">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="toolTip">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Quantità massima di € che la banca è disposta a fornire come fido in conto corrente. Impatta il fallimento dell'impresa e viene utilizzato quando la cassa diventa negativa. Qualora durante la simulazione la cassa dovesse diventare negativa e superare la quantità di fido disponibile l'azienda verrà dichiarata come fallita prima del termine della simulazione. &lt;/p&gt;&lt;p&gt;Nota: se impostato a 0 la simulazione non accetterà valori di cassa (liquidità) negativi&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
+           <property name="text">
+            <string>Soglia massima fido in c.c</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="maxFidoCCEdit">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>40000</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_17">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>€</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_13">
+           <property name="orientation">
+            <enum>Qt::Orientation::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_18">
+           <property name="toolTip">
+            <string>Tasso di interesse del fido in conto corrente (sconfinamento negativo)</string>
+           </property>
+           <property name="text">
+            <string>Tasso di interesse</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QDoubleSpinBox" name="fidoInterestSpinBox"/>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_19">
+           <property name="text">
+            <string>%</string>
+           </property>
+          </widget>
          </item>
         </layout>
        </item>

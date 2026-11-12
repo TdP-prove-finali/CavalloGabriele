@@ -308,6 +308,7 @@ class Ui_MainWindow(object):
 
         self.organicGRAvgEdit = QDoubleSpinBox(self.groupBox_2)
         self.organicGRAvgEdit.setObjectName(u"organicGRAvgEdit")
+        self.organicGRAvgEdit.setValue(12.000000000000000)
 
         self.horizontalLayout_9.addWidget(self.organicGRAvgEdit)
 
@@ -397,6 +398,51 @@ class Ui_MainWindow(object):
 
 
         self.verticalLayout_5.addLayout(self.horizontalLayout_13)
+
+        self.horizontalLayout_14 = QHBoxLayout()
+        self.horizontalLayout_14.setObjectName(u"horizontalLayout_14")
+        self.label_16 = QLabel(self.groupBox_2)
+        self.label_16.setObjectName(u"label_16")
+        sizePolicy1.setHeightForWidth(self.label_16.sizePolicy().hasHeightForWidth())
+        self.label_16.setSizePolicy(sizePolicy1)
+
+        self.horizontalLayout_14.addWidget(self.label_16)
+
+        self.maxFidoCCEdit = QLineEdit(self.groupBox_2)
+        self.maxFidoCCEdit.setObjectName(u"maxFidoCCEdit")
+        sizePolicy2.setHeightForWidth(self.maxFidoCCEdit.sizePolicy().hasHeightForWidth())
+        self.maxFidoCCEdit.setSizePolicy(sizePolicy2)
+
+        self.horizontalLayout_14.addWidget(self.maxFidoCCEdit)
+
+        self.label_17 = QLabel(self.groupBox_2)
+        self.label_17.setObjectName(u"label_17")
+        sizePolicy1.setHeightForWidth(self.label_17.sizePolicy().hasHeightForWidth())
+        self.label_17.setSizePolicy(sizePolicy1)
+
+        self.horizontalLayout_14.addWidget(self.label_17)
+
+        self.horizontalSpacer_13 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.horizontalLayout_14.addItem(self.horizontalSpacer_13)
+
+        self.label_18 = QLabel(self.groupBox_2)
+        self.label_18.setObjectName(u"label_18")
+
+        self.horizontalLayout_14.addWidget(self.label_18)
+
+        self.fidoInterestSpinBox = QDoubleSpinBox(self.groupBox_2)
+        self.fidoInterestSpinBox.setObjectName(u"fidoInterestSpinBox")
+
+        self.horizontalLayout_14.addWidget(self.fidoInterestSpinBox)
+
+        self.label_19 = QLabel(self.groupBox_2)
+        self.label_19.setObjectName(u"label_19")
+
+        self.horizontalLayout_14.addWidget(self.label_19)
+
+
+        self.verticalLayout_5.addLayout(self.horizontalLayout_14)
 
         self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
@@ -506,6 +552,17 @@ class Ui_MainWindow(object):
 #endif // QT_CONFIG(tooltip)
         self.label_6.setText(QCoreApplication.translate("MainWindow", u"Aliquota di imposta sul reddito", None))
         self.label_14.setText(QCoreApplication.translate("MainWindow", u"%", None))
+#if QT_CONFIG(tooltip)
+        self.label_16.setToolTip(QCoreApplication.translate("MainWindow", u"<html><head/><body><p>Quantit\u00e0 massima di \u20ac che la banca \u00e8 disposta a fornire come fido in conto corrente. Impatta il fallimento dell'impresa e viene utilizzato quando la cassa diventa negativa. Qualora durante la simulazione la cassa dovesse diventare negativa e superare la quantit\u00e0 di fido disponibile l'azienda verr\u00e0 dichiarata come fallita prima del termine della simulazione. </p><p>Nota: se impostato a 0 la simulazione non accetter\u00e0 valori di cassa (liquidit\u00e0) negativi</p></body></html>", None))
+#endif // QT_CONFIG(tooltip)
+        self.label_16.setText(QCoreApplication.translate("MainWindow", u"Soglia massima fido in c.c", None))
+        self.maxFidoCCEdit.setText(QCoreApplication.translate("MainWindow", u"40000", None))
+        self.label_17.setText(QCoreApplication.translate("MainWindow", u"\u20ac", None))
+#if QT_CONFIG(tooltip)
+        self.label_18.setToolTip(QCoreApplication.translate("MainWindow", u"Tasso di interesse del fido in conto corrente (sconfinamento negativo)", None))
+#endif // QT_CONFIG(tooltip)
+        self.label_18.setText(QCoreApplication.translate("MainWindow", u"Tasso di interesse", None))
+        self.label_19.setText(QCoreApplication.translate("MainWindow", u"%", None))
         self.stopSimBtn.setText(QCoreApplication.translate("MainWindow", u"Ferma simulazione", None))
         self.startSimBtn.setText(QCoreApplication.translate("MainWindow", u"Avvia simulazione", None))
     # retranslateUi
