@@ -30,6 +30,21 @@ class SimulationWorker(QObject):
         self.simulation_init()
 
         def effect_spawner(env):
+            # TODO: Cambiare struttura
+            # la struttura è annuale. Ogni anno, per prima cosa si inizializza year start nel working snapshot a partire dalla colonna 0 che contiene l'ultimo bilancio completo
+            # generato dalla simulazione. La simulazione si svolge su 12 mesi eseguendo gli effetti che scrivono i marginali sulle rispettive colonne.
+            # al termine di ogni anno, eseguire:
+            # 1. Aggregazione dei valori orizzontali
+            # 2. Calcolo voci terminali tramite algoritmo ricorsivo
+            # 3. Calcolo indici
+            # tutto sulla colonna 14 che contiene lo year end
+            # copiare la colonna 14 nello snapshot dei final results
+            # rimuovere tutte le colonne tranne la 0
+            # copiare lo year end nella colonna 0 del working snapshot
+            # al termine dell'anno, verificare se la cassa è negativa:
+            # se supera la soglia del fido (impostata da parametri simulazione) bloccare la simulazione e indicare che l'azienda è fallita
+            # se non supera la soglia di fido, far nascere un debito e vedere come va successivamente
+
             id = m.simulation_state.global_parameters.sim_id
             print("Simulation id " + str(id))
             m.simulation_state.current_month = 0

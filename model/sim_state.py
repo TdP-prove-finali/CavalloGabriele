@@ -18,6 +18,14 @@ class SimulationState:
                                                             global_config=self.global_parameters)
         self.working_snapshot: BalanceSnaphot = initial_snapshot
 
+        # Lo snapshot finale contiene una sola colonna con l'ultimo bilancio disponibile e viene modificata aggiungendo i bilanci degli anni di simulazione terminati
+        self.final_result_snapshot: BalanceSnaphot = BalanceSnaphot.from_company_data(h_comp_data,
+                                                            sim_id=global_parameters.sim_id,
+                                                            timestamp=self.current_month,
+                                                            effect_pointer="",
+                                                            single_year=True,
+                                                            global_config=self.global_parameters)
+
 class SimulationCompleteModel:
     def __init__(self, simulation_state: SimulationState, project):
         self.sim_env = simpy.Environment()      # Il model contiene l'ambiente della simulazione e altre variabili

@@ -115,7 +115,7 @@ class BalanceSnaphot:
         # inoltre alcuni campi per coerenza sono impostati come "no-copy", ossia nonostante nel bilancio storico sia presente un valore iniziale verrà sempre utilizzato 0. Questo è utile per campi
         # che specificano operazioni straordinarie che la simulazione non ripete
 
-    def tot_immob(self, node: Node, graph: DiGraph, column: int):
+    def tot_immob(self, node: Node, graph: DiGraph, read_col: int, write_col: int):
         """
         Regola speciale di calcolo per il totale immobilizzazioni:
         veiene utilizzato l'ammortamento indiretto quindi i fondi devono essere sottratti
@@ -128,19 +128,19 @@ class BalanceSnaphot:
         r = 0
         for c in children:
             if "fondo" in c.name:
-                r -= self.__process_from_node__(c, graph)
+                r -= self.__process_from_node__(c, graph, read_column=read_col, write_column=write_col)
             else:
-                r += self.__process_from_node__(c, graph)
+                r += self.__process_from_node__(c, graph, read_column=read_col, write_column=write_col)
         return r
 
-    def init_prov_fin(self, node: Node, graph: DiGraph, column: int):
+    def init_prov_fin(self, node: Node, graph: DiGraph, read_col: int, write_col: int):
         children = graph.successors(node)
         r = 0
         for c in children:
             if "oneri" in c.name:
-                r -= self.__process_from_node__(c, graph)
+                r -= self.__process_from_node__(c, graph, read_column=read_col, write_column=write_col)
             else:
-                r += self.__process_from_node__(c, graph)
+                r += self.__process_from_node__(c, graph, read_column=read_col, write_column=write_col)
         return r
 
     @staticmethod
@@ -284,7 +284,7 @@ class BalanceSnaphot:
         self.for_each_sp_field(value_factory)
         self.available_columns += 1
 
-    def __leaf_value_factory(self, node: Node, init: bool = True):
+    def __leaf_value_factory(self, node: Node, init: bool = True, read_column: int = 0, write_column: int = 1):
         """
         Restituisce il valore della foglia (impostandolo a nuovo se necessario, ossia durante un'inizializzazione)
         :param node:
@@ -292,22 +292,22 @@ class BalanceSnaphot:
         :return:
         """
         if Flag.UPDATED in node.flags:      # Alcuni nodi potrebbero essere stati inizializzati a mano tramite dei calcoli (in questo caso restituisco il valore già presente)
-            return node.value[1] or 0
+            return node.value[write_column] or 0
 
         if init:
-            if Flag.NO_COPY in node.flags and isinstance(node.value[0], (int, float)):
-                node.value[1] = 0.0
+            if Flag.NO_COPY in node.flags and isinstance(node.value[read_column], (int, float)):
+                node.value[write_column] = 0.0
                 return 0.0
-            elif isinstance(node.value[0], (int, float)):
+            elif isinstance(node.value[read_column], (int, float)):
                 # Di default tutti i None vengono trasformati in 0 per la simulazione
-                node.value[1] = node.value[0] or 0
-                return node.value[0] or 0
+                node.value[write_column] = node.value[read_column] or 0
+                return node.value[read_column] or 0
             else:
                 return 0
         else:
-            return node.value[1] or 0
+            return node.value[write_column] or 0
 
-    def __process_from_node__(self, node: Node, graph: DiGraph, init: bool = True):
+    def __process_from_node__(self, node: Node, graph: DiGraph, init: bool = True, read_column: int = 0, write_column: int = 1):
         if node.name in PRIVATE_FIELDS:
             return 0
 
@@ -317,25 +317,25 @@ class BalanceSnaphot:
             # il nodo non ha figli oppure i figli sono tutti campi di_cui
             if Node.all_dc_dicui(successors):
                 node.set_flag(Flag.IGNORE_CHILDREN)     # Così la prossima volta non devo controllarlo
-            return self.__leaf_value_factory(node, init)
+            return self.__leaf_value_factory(node, init, read_column, write_column)
         else:
             s = 0
             if self.CE_SPEC_CALC_RULES.get(node.name) is not None:
                 # Applico la regola speciale
-                s = self.CE_SPEC_CALC_RULES.get(node.name)(node, graph, 0)
+                s = self.CE_SPEC_CALC_RULES.get(node.name)(node, graph, read_column, write_column)
             elif self.SP_SPEC_CALC_RULES.get(node.name) is not None:
                 # Applico la regola speciale
-                s = self.SP_SPEC_CALC_RULES.get(node.name)(node, graph, 0)
+                s = self.SP_SPEC_CALC_RULES.get(node.name)(node, graph, read_column, write_column)
             elif Flag.NO_SUM_CHILDREN_NO_DC not in node.flags:
                 # Regola di default che somma tutti i figli
                 for child in graph.successors(node):
                     if not child.is_dc_specification():     # I campi di cui non li sommo mai
-                        s += self.__process_from_node__(child, graph)
+                        s += self.__process_from_node__(child, graph, read_column=read_column, write_column=write_column)
             elif Flag.NO_SUM_CHILDREN_NO_DC in node.flags:
-                s = self.__leaf_value_factory(node, init)
+                s = self.__leaf_value_factory(node, init, read_column, write_column)
 
             if node.type != NodeType.VIRTUAL:
-                node.value[1] = s
+                node.value[write_column] = s
             return s
 
     def sum_field_value(self, field_name: str, where: BalanceLocation, tot: float, column: int):
@@ -350,37 +350,50 @@ class BalanceSnaphot:
         self.set_field_value(field_name, where, value=self.get_field_value(field_name, where, column) + tot,
                              month=column)
 
+    def __destinazione_utili__(self, read_col: int = 0, write_col = 1):
+        # utile e perdita di esercizio (si suppone che sia riportato tutto a nuovo)
+        # di default viene sommato (con segno) e portato a nuovo subito, all'inizio dell'anno (ipotesi semplificativa)
+        ut = self.get_field_value('_21_utile_frac_perdita_di_esercizio', BalanceLocation.CE, write_col)
+        self.set_field_value('utile_frac_perdita_a_nuovo', BalanceLocation.SP_PASSIVO_PATRIM, (self.get_field_value('utile_frac_perdita_a_nuovo', BalanceLocation.SP_PASSIVO_PATRIM, month=read_col))+ut, month=write_col)
+
+    def __ammortamenti_sp__(self, read_col: int = 0, write_col: int = 1):
+        # gestione ammortamenti da CE a SP (vengono sommati ai rispettivi fondi)
+        amm_immat = self.get_field_value("amm_immob_immat", BalanceLocation.CE, write_col)
+        amm_mat = self.get_field_value("amm_immob_mat", BalanceLocation.CE, write_col)
+        self.sum_field_value('fondo_ammto_immob_immateriali', BalanceLocation.SP_ATTIVO, amm_immat, write_col)
+        self.sum_field_value('fondo_ammto_immob_materiali', BalanceLocation.SP_ATTIVO, amm_mat, write_col)
+
+    def __tfr_fondo_sp__(self, read_col: int = 0, write_col: int = 1):
+        # destinazione tfr a fondo
+        tfr = self.get_field_value("tratt_fine_rapporto", BalanceLocation.CE, 1)
+        self.set_field_value("trattamento_di_fine_rapporto", BalanceLocation.SP_PASSIVO_PATRIM, value=tfr+self.get_field_value("trattamento_di_fine_rapporto", BalanceLocation.SP_PASSIVO_PATRIM, 0), month=1)
+
+    def calc_terminal_fields(self, read_col: int = 0, write_col: int = 1):
+        self.calc_ce_terminal_fields(column=write_col)
+        self.__ammortamenti_sp__(read_col, write_col)
+        self.__destinazione_utili__(read_col, write_col)
+
+        # debiti
+        # l'anno si inizia con gli stessi debiti della chiusura dell'anno precedente
+        # ogni hanno viene eseguito l'effetto di pagamento dei debiti che può essere configurato tramite i parametri globali della simulazione
+        self.__tfr_fondo_sp__(read_col, write_col)
+
+        # TODO: Gestire svalutazione immobilizzazioni
+        # TODO: Destinazione accantonamenti vari a fondi
+        self.__process_from_node__(self.sp_patrim_id_map["stato_patrimoniale"], self.stato_patrimoniale)
+        self.calc_sp_terminal_fields(column=write_col)
 
     def create_year_start(self):
+        """
+        Inizializza la colonna di avvio dell'anno con un bilancio valido che segua i flag e le regole
+        :return:
+        """
         if self.available_columns > 1:
             print("WARNING: La colonna 1 con i valori di avvio anno è già stata generata e verrà sovrascritta. ")
 
         self.create_column("Init")
         self.__process_from_node__(self.ce_id_map["conto_economico"], self.conto_economico)
-        self.calc_ce_terminal_fields(column=1)
-        # gestione ammortamenti da CE a SP (vengono sommati ai rispettivi fondi)
-        amm_immat = self.get_field_value("amm_immob_immat", BalanceLocation.CE, 1)
-        amm_mat = self.get_field_value("amm_immob_mat", BalanceLocation.CE, 1)
-        self.sum_field_value('fondo_ammto_immob_immateriali', BalanceLocation.SP_ATTIVO, amm_immat, 1)
-        self.sum_field_value('fondo_ammto_immob_materiali', BalanceLocation.SP_ATTIVO, amm_mat, 1)
-
-        # utile e perdita di esercizio (si suppone che sia riportato tutto a nuovo)
-        # di default viene sommato (con segno) e portato a nuovo subito, all'inizio dell'anno (ipotesi semplificativa)
-        ut = self.get_field_value('_21_utile_frac_perdita_di_esercizio', BalanceLocation.CE, 1)
-        self.set_field_value('utile_frac_perdita_a_nuovo', BalanceLocation.SP_PASSIVO_PATRIM, (self.get_field_value('utile_frac_perdita_a_nuovo', BalanceLocation.SP_PASSIVO_PATRIM, month=0))+ut, month=1)
-
-        # debiti
-        # l'anno si inizia con gli stessi debiti della chiusura dell'anno precedente
-        # ogni hanno viene eseguito l'effetto di pagamento dei debiti che può essere configurato tramite i parametri globali della simulazione
-
-        # destinazione tfr a fondo
-        tfr = self.get_field_value("tratt_fine_rapporto", BalanceLocation.CE, 1)
-        self.set_field_value("trattamento_di_fine_rapporto", BalanceLocation.SP_PASSIVO_PATRIM, value=tfr+self.get_field_value("trattamento_di_fine_rapporto", BalanceLocation.SP_PASSIVO_PATRIM, 0), month=1)
-
-        # TODO: Gestire svalutazione immobilizzazioni
-        # TODO: Destinazione accantonamenti vari a fondi
-        self.__process_from_node__(self.sp_patrim_id_map["stato_patrimoniale"], self.stato_patrimoniale)
-        self.calc_sp_terminal_fields(column=1)
+        self.calc_terminal_fields(0, 1)
         if self.verify_integrity():
             print("Bilancio simulazione inizializzato correttamente. ")
         else:
@@ -763,6 +776,25 @@ class BalanceSnaphot:
                   }}, {"data": self.get_field_data("data", BalanceLocation.CE),
             "moneta": self.get_field_data("moneta", BalanceLocation.CE),
             "periodo": self.get_field_data("periodo", BalanceLocation.CE),} | serialize_id_map(self.ce_id_map, BalanceLocation.CE))
+
+    def copy_column_from_snapshot(self, snapshot, source_column: int, dest_column: int):
+        """
+        Copia il contenuto di una colonna da un altro snapshot
+        :param snapshot: Snap da cui prendere i dati
+        :param source_column: Colonna da cui leggere i dati
+        :param dest_column: Colonna dello snapshot corrente su cui scrivere i dati
+        (non vengono effettuati calcoli)
+        :return:
+        """
+        assert dest_column < self.available_columns
+        assert snapshot.available_columns > source_column
+
+        def cp(key, values, node: Node, where: BalanceLocation):
+            v = snapshot.get_field_value(key, where, month=source_column)
+            self.set_field_value(key, where, v, month=dest_column)
+
+        self.for_each_ce_field(cp)
+        self.for_each_sp_field(cp)
 
     @staticmethod
     def from_company_data(data: CompanyData,

@@ -4,10 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d1f57556-a68b-4407-9511-95d58864d413" name="Changes" comment="Implementa inizializzazione SP con valori corretti">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="d1f57556-a68b-4407-9511-95d58864d413" name="Changes" comment="Fix calcolo voci finali stato patrimoniale">
+      <change beforePath="$PROJECT_DIR$/controller/simulation_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/controller/simulation_controller.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/model/balance_snap.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/balance_snap.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_balance.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_balance.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/investment_effect.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/investment_effect.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/sim_state.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/sim_state.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -289,15 +290,7 @@
       <workItem from="1794312794364" duration="3321000" />
       <workItem from="1794318843898" duration="4194000" />
       <workItem from="1794411231667" duration="8327000" />
-      <workItem from="1794487202323" duration="2214000" />
-    </task>
-    <task id="LOCAL-00042" summary="Implementa traduzioni campo-descrizione automatiche">
-      <option name="closed" value="true" />
-      <created>1791732543935</created>
-      <option name="number" value="00042" />
-      <option name="presentableId" value="LOCAL-00042" />
-      <option name="project" value="LOCAL" />
-      <updated>1791732543935</updated>
+      <workItem from="1794487202323" duration="5416000" />
     </task>
     <task id="LOCAL-00043" summary="Implementa startup screen">
       <option name="closed" value="true" />
@@ -683,7 +676,15 @@
       <option name="project" value="LOCAL" />
       <updated>1794420040183</updated>
     </task>
-    <option name="localTasksCounter" value="91" />
+    <task id="LOCAL-00091" summary="Fix calcolo voci finali stato patrimoniale">
+      <option name="closed" value="true" />
+      <created>1794494688493</created>
+      <option name="number" value="00091" />
+      <option name="presentableId" value="LOCAL-00091" />
+      <option name="project" value="LOCAL" />
+      <updated>1794494688494</updated>
+    </task>
+    <option name="localTasksCounter" value="92" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -701,7 +702,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Scheletro esecuzione simulazione su thread a parte" />
     <MESSAGE value="Progress bar esecuzione simulazione" />
     <MESSAGE value="UI ultime finestre" />
     <MESSAGE value="Termina implementazione dialoghi creazione componenti progetto" />
@@ -726,7 +726,8 @@
     <MESSAGE value="Fix generali" />
     <MESSAGE value="Inizializzazione CE simulaizone con calcolo valori derivati e formule corrette" />
     <MESSAGE value="Implementa inizializzazione SP con valori corretti" />
-    <option name="LAST_COMMIT_MESSAGE" value="Implementa inizializzazione SP con valori corretti" />
+    <MESSAGE value="Fix calcolo voci finali stato patrimoniale" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix calcolo voci finali stato patrimoniale" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -738,12 +739,12 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/controller/simulation_controller.py</url>
-          <line>77</line>
+          <line>92</line>
           <option name="timeStamp" value="93" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/model/balance_snap.py</url>
-          <line>816</line>
+          <line>848</line>
           <option name="timeStamp" value="95" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -762,7 +763,7 @@
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/CavalloGabriele$.coverage" NAME=" Coverage Results" MODIFIED="1794494665804" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
+    <SUITE FILE_PATH="coverage/CavalloGabriele$.coverage" NAME=" Coverage Results" MODIFIED="1794496206368" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/CavalloGabriele$main.coverage" NAME="main Coverage Results" MODIFIED="1794320316555" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

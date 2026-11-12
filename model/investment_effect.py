@@ -162,6 +162,7 @@ class HyperPerformerEffect(InvestmentEffect):
 # Valutare se copiarle semplicemente o se trasferirle come immobilizzazioni completate in SP Attivo
 
 class OrganicGrowthEffect(InvestmentEffect):
+    # TODO: Aspetti patrimoniali e gestione dei crediti
     def __init__(self, avg, var, title):
         self.average = avg
         self.variance = var
