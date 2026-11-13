@@ -84,7 +84,7 @@ class EmployeeHireInvestment(AbstractInvestmentItem):
             title="employee-number",
             inv_type=EffectType.CONST,
             field_name="dipendenti",
-            frequency=EffectFrequency.ANNUAL,
+            frequency=EffectFrequency.ONCE,
             value_constant=1,
             where=BalanceLocation.CE
         ))

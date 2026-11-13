@@ -61,7 +61,7 @@ class InvestmentEffect:
                 value=state.working_snapshot.get_field_value(
                     field_name=self.field_name,
                     where=self.where,
-                    month=state.current_month + 1) + val,
+                    month=1) + val,
                 month=state.current_month + 2
             )
         elif self.type == EffectType.DECREASE:
@@ -76,7 +76,7 @@ class InvestmentEffect:
                 value=state.working_snapshot.get_field_value(
                     field_name=self.field_name,
                     where=self.where,
-                    month=state.current_month + 1) - val,
+                    month=1) - val,
                 month=state.current_month + 2
             )
         elif self.type == EffectType.CONST:
@@ -112,7 +112,7 @@ class InvestmentEffect:
             newVal = func(state.working_snapshot.get_field_value(
                     field_name=self.field_name,
                     where=self.where,
-                    month=state.current_month + 1))
+                    month=1))
             state.working_snapshot.set_field_value(
                 field_name=self.field_name,
                 location=self.where,
@@ -167,21 +167,22 @@ class OrganicGrowthEffect(InvestmentEffect):
         self.average = avg
         self.variance = var
         super().__init__(title, EffectType.INCREASE,"ricavi_vendite_e_prestazioni",
-                         EffectFrequency.ANNUAL,
+                         EffectFrequency.MONTHLY,
                          BalanceLocation.CE)
 
     def apply(self, state) -> BalanceSnaphot:
         current_month = state.current_month
-        prev_value = state.working_snapshot.first_non_null_val(current_month, self.field_name, BalanceLocation.CE)
+        # Il valore della colonna year start è annuale, quindi viene diviso per 12 per renderlo mensile
+        prev_value = state.working_snapshot.get_field_value(self.field_name,BalanceLocation.CE, 0) / 12
         if prev_value is None:
             raise Exception("Attenzione: non è disponibile un'informazione di fatturato storico")
 
         rng = np.random.default_rng(seed=42)
         Z_n = rng.normal(loc=0, scale=1)
-        dt = current_month / 12
+        dt = (current_month / 12) + 1
         X_tn1 = prev_value * exp(
             (self.average - self.variance / 2) * dt
             + sqrt(self.variance * dt) * Z_n
         )
-        state.working_snapshot.set_field_value(self.field_name, BalanceLocation.CE, X_tn1 - prev_value, month=current_month + 1)
+        state.working_snapshot.set_field_value(self.field_name, BalanceLocation.CE, X_tn1 - prev_value, month=current_month + 2)
         return state.working_snapshot

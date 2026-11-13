@@ -9126,8 +9126,8 @@ complete_company_1 = CompanyData(company_name='PARAMOUNT GLOBAL ITALIA S.R.L.',
 
 GLOBAL_CONFIG = GlobalParameters(
                     complete_company_1.fiscal_code,
-                    2,
-                    organic_growth_avg=0.5,
+                    1,
+                    organic_growth_avg=0.9,
                     last_available_years=complete_company_1.available_years,
                     sim_id=5,
                 organic_growth_var=0.3,

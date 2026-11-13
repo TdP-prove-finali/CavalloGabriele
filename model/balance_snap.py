@@ -1,9 +1,9 @@
-from calendar import month
 from copy import deepcopy
 from typing import Callable, Any
 import networkx as nx
 from networkx.classes import DiGraph
 from dao.util import step_up_field, extract_field_identif, SECTION_HEAD, BalanceLocation, sum_vectors
+from model.FieldNotFoundException import FieldNotFoundException
 from model.node import Node, NodeType, Flag
 from model.raw_company_data import CompanyData
 from model.sim_params import GlobalParameters
@@ -102,10 +102,10 @@ class BalanceSnaphot:
         self.__integrity__: bool | None = None
         self.global_config = global_config
 
-        self.CE_SPEC_CALC_RULES = {
+        self.CE_SPEC_CALC_RULES: dict[str, Callable[[Node, DiGraph, int, int, bool], float]] = {
             'totale_proventi_e_oneri_finanziari': self.init_prov_fin
         }
-        self.SP_SPEC_CALC_RULES = {
+        self.SP_SPEC_CALC_RULES: dict[str, Callable[[Node, DiGraph, int, int, bool], float]] = {
             "totale_immob_immateriali": self.tot_immob,
             "totale_immob_materiali": self.tot_immob
         }
@@ -115,7 +115,14 @@ class BalanceSnaphot:
         # inoltre alcuni campi per coerenza sono impostati come "no-copy", ossia nonostante nel bilancio storico sia presente un valore iniziale verrà sempre utilizzato 0. Questo è utile per campi
         # che specificano operazioni straordinarie che la simulazione non ripete
 
-    def tot_immob(self, node: Node, graph: DiGraph, read_col: int, write_col: int):
+    def __call_rec_calc_func(self, node: Node, graph: DiGraph, read_col: int, write_col: int, init: bool):
+        if init:
+            return self.__process_from_node__(node, graph, init, read_column=read_col, write_column=write_col)
+        else:
+            assert read_col == write_col
+            return self.__calc_from_node(node, graph, working_column=read_col)
+
+    def tot_immob(self, node: Node, graph: DiGraph, read_col: int, write_col: int, init: bool):
         """
         Regola speciale di calcolo per il totale immobilizzazioni:
         veiene utilizzato l'ammortamento indiretto quindi i fondi devono essere sottratti
@@ -128,19 +135,19 @@ class BalanceSnaphot:
         r = 0
         for c in children:
             if "fondo" in c.name:
-                r -= self.__process_from_node__(c, graph, read_column=read_col, write_column=write_col)
+                r -= self.__call_rec_calc_func(c, graph, read_col, write_col, init)
             else:
-                r += self.__process_from_node__(c, graph, read_column=read_col, write_column=write_col)
+                r += self.__call_rec_calc_func(c, graph, read_col, write_col, init)
         return r
 
-    def init_prov_fin(self, node: Node, graph: DiGraph, read_col: int, write_col: int):
+    def init_prov_fin(self, node: Node, graph: DiGraph, read_col: int, write_col: int, init: bool):
         children = graph.successors(node)
         r = 0
         for c in children:
             if "oneri" in c.name:
-                r -= self.__process_from_node__(c, graph, read_column=read_col, write_column=write_col)
+                r -= self.__call_rec_calc_func(c, graph, read_col, write_col, init)
             else:
-                r += self.__process_from_node__(c, graph, read_column=read_col, write_column=write_col)
+                r += self.__call_rec_calc_func(c, graph, read_col, write_col, init)
         return r
 
     @staticmethod
@@ -322,10 +329,10 @@ class BalanceSnaphot:
             s = 0
             if self.CE_SPEC_CALC_RULES.get(node.name) is not None:
                 # Applico la regola speciale
-                s = self.CE_SPEC_CALC_RULES.get(node.name)(node, graph, read_column, write_column)
+                s = self.CE_SPEC_CALC_RULES.get(node.name)(node, graph, read_column, write_column, init)
             elif self.SP_SPEC_CALC_RULES.get(node.name) is not None:
                 # Applico la regola speciale
-                s = self.SP_SPEC_CALC_RULES.get(node.name)(node, graph, read_column, write_column)
+                s = self.SP_SPEC_CALC_RULES.get(node.name)(node, graph, read_column, write_column, init)
             elif Flag.NO_SUM_CHILDREN_NO_DC not in node.flags:
                 # Regola di default che somma tutti i figli
                 for child in graph.successors(node):
@@ -368,7 +375,7 @@ class BalanceSnaphot:
         tfr = self.get_field_value("tratt_fine_rapporto", BalanceLocation.CE, 1)
         self.set_field_value("trattamento_di_fine_rapporto", BalanceLocation.SP_PASSIVO_PATRIM, value=tfr+self.get_field_value("trattamento_di_fine_rapporto", BalanceLocation.SP_PASSIVO_PATRIM, 0), month=1)
 
-    def calc_terminal_fields(self, read_col: int = 0, write_col: int = 1):
+    def calc_terminal_fields(self, read_col: int = 0, write_col: int = 1, recoursive_calc: Callable = None):
         self.calc_ce_terminal_fields(column=write_col)
         self.__ammortamenti_sp__(read_col, write_col)
         self.__destinazione_utili__(read_col, write_col)
@@ -380,7 +387,11 @@ class BalanceSnaphot:
 
         # TODO: Gestire svalutazione immobilizzazioni
         # TODO: Destinazione accantonamenti vari a fondi
-        self.__process_from_node__(self.sp_patrim_id_map["stato_patrimoniale"], self.stato_patrimoniale)
+        if recoursive_calc is not None:
+            recoursive_calc(self.sp_patrim_id_map["stato_patrimoniale"], self.stato_patrimoniale)
+        else:
+            self.__process_from_node__(self.sp_patrim_id_map["stato_patrimoniale"], self.stato_patrimoniale)
+
         self.calc_sp_terminal_fields(column=write_col)
 
     def create_year_start(self):
@@ -388,10 +399,9 @@ class BalanceSnaphot:
         Inizializza la colonna di avvio dell'anno con un bilancio valido che segua i flag e le regole
         :return:
         """
-        if self.available_columns > 1:
-            print("WARNING: La colonna 1 con i valori di avvio anno è già stata generata e verrà sovrascritta. ")
+        if self.available_columns < 2:
+            self.create_column("Init")
 
-        self.create_column("Init")
         self.__process_from_node__(self.ce_id_map["conto_economico"], self.conto_economico)
         self.calc_terminal_fields(0, 1)
         if self.verify_integrity():
@@ -455,9 +465,12 @@ class BalanceSnaphot:
             self.__mark_up_predecessors__(node, self.conto_economico)
 
     def get_field_value(self, field_name, where: BalanceLocation, month):
-        """Restituisce il valore del campo alla colonna giusta. Il field_name deve essere passato senza la numerazione. """
-        id_map = self.__get_id_map(where)
-        return id_map[field_name].value[month]
+        try:
+            """Restituisce il valore del campo alla colonna giusta. Il field_name deve essere passato senza la numerazione. """
+            id_map = self.__get_id_map(where)
+            return id_map[field_name].value[month]
+        except Exception:
+            raise FieldNotFoundException(field_name, where)
 
     def get_field_data(self, field_name, where: BalanceLocation):
         """Restituisce il valore del campo oppure None se non esiste"""
@@ -500,78 +513,35 @@ class BalanceSnaphot:
         utl = ebt - tss
         self.set_field_value('_21_utile_frac_perdita_di_esercizio', BalanceLocation.CE, utl, column)
 
-    def __calculate_field__(self, node: Node, graph: DiGraph, width: int) -> list[float]:
-        if Flag.NO_SUM_CHILDREN_NO_DC not in node.flags:    # Applico la regola di default
-            r = [0] * width
-            for child in graph.successors(node):
-                if len(list(graph.successors(child))) == 0 and not child.is_dc_specification():
-                    sum_vectors(r, child.value)
-                elif len(list(graph.successors(child))) == 0 and not child.is_dc_specification():
-                    # Di default i campi di cui vengono ignorati dal calcolo
-                    return [0] * width
-                else:
-                    # Se il nodo ha dei figli, calcolo la somma dei figli e poi la sommo
-                    sum_vectors(r, self.__calculate_field__(child, graph, width))
-        else:
-            raise Exception("Non ancora implementato")
-
-    def aggregate_by_year(self, number_of_years: int):
+    def aggregate_by_year(self):
         """
-        Restituisce un nuovo snapshot di bilancio in cui i dati non sono aggregati per mesi ma per anni
-        Orizzontalmente, le colonne sono aggregate in ogni anno. Tutti i valori non modificati in un certo mese
-        vengono lasciati a 0 per far sì che ricompaia il valore storico nella voce, senza perdita di dati o duplicazione.
-        Tutti gli effetti indicano nella colonna corrispondente solo il nuovo valore, se presente.
+        Aggrega tutti i marginali delle variazioni (colonne da 2 a 13 incluse) in un unico valore per riga
+        e lo scrive sulla colonna 14 (year end)
+        I valori marginali non vengono cancellati (se ne occupa il motore di simulazione)
         :return:
         """
-        # Qui l'ordine di percorrenza è importante
         def aggr(key, values: list[Any], node: Node, where: BalanceLocation):
             histor_value = values[0]
-            groups = [values[i:i + 12] for i in range(1, len(values), 12)]
+            year_start_value = values[1]
+            vals_to_agg = values[2:14]
+            s = sum(vals_to_agg)
+            node.value[14] = s + year_start_value
+            node.set_flag(Flag.UPDATED)
+            node.remove_flag(Flag.NEED_RECALC)
+            node.remove_flag(Flag.RECALCULATED)
 
-            s = None
-            new_cols = []
-
-            # Le operazioni di somma devono essere svolte solo sui campi che sono stati flaggati come Updated o che non hanno flag. Per gli altri bisogna applicare un meccanismo diverso di calcolo (aggregando i figli)
-            if Flag.UPDATED in node.flags or node.flags == []:
-                for g in groups:
-                    if Flag.NO_COPY in node.flags:
-                        s = 0       # Tutti i campi che non possono essere copiati o che necessitano esplicitamente di essere ricalcolati vengono inizializzati a 0 e poi gestiti successivamente
-
-                    for item in g:
-                        if type(item) is int or type(item) is float:
-                            if s is None:
-                                s = item + histor_value
-                            elif type(s) is int or type(s) is float:
-                                s += item
-                        elif item is None and s is None:
-                            break       # Al primo elemento None viene aggiunta la colonna dell'anno come None e si passa al prossimo gruppo
-                        elif type(item) is not int and type(item) is not float:
-                            if item == "" or item is None:
-                                s = histor_value
-                            else:
-                                s = item
-                            break
-                    new_cols.append(s)
-                    s = None
-
-                return [values[0]] + new_cols
-            elif Flag.NEED_RECALC in node.flags:
-                print(f"Ricalcolo il campo {node}")
-                # la regola di default è quella di sommare tutti i figli escludendo i di-cui
-                vs = self.__calculate_field__(node, self.stato_patrimoniale if where.is_sp() else self.conto_economico, self.available_columns)
-                node.remove_flag(Flag.UPDATED)
-                return aggr(key, vs, node, where)
-
-            return [0] * len(groups)
-
-        return self.advanced_copy(
-            aggr, aggr, number_of_years + 1
-        )
+        self.for_each_ce_field(aggr, exclude_context_fields=True)
+        self.for_each_sp_field(aggr, exclude_context_fields=True)
 
     def for_each_ce_field(self, function: Callable[[str, list[Any], Node, BalanceLocation], None | list[Any]],
-                          substitute: bool = False):
+                          substitute: bool = False,
+                          exclude_context_fields: bool = False
+                          ):
         for node in self.conto_economico.nodes:
             if node.type == NodeType.VIRTUAL:
+                continue
+
+            if exclude_context_fields and node.name in PRIVATE_FIELDS:
                 continue
 
             if not substitute:
@@ -581,7 +551,8 @@ class BalanceSnaphot:
 
     def for_each_sp_field(self,
                           function: Callable[[str, list[Any], Node, BalanceLocation], None | list[Any]],
-                          substitute: bool = False
+                          substitute: bool = False,
+                          exclude_context_fields: bool = False
                           ):
         """
         Applica una trasformazione a tutti i campi dello stato patrimoniale, opzionalmente sostituendo i valori di tale campo
@@ -591,6 +562,9 @@ class BalanceSnaphot:
         """
         for node in self.stato_patrimoniale.nodes:
             if node.type == NodeType.VIRTUAL:
+                continue
+
+            if exclude_context_fields and node.name in PRIVATE_FIELDS:
                 continue
 
             if not substitute:
@@ -756,6 +730,47 @@ class BalanceSnaphot:
         tot_cp.timestamp = self.timestamp
         return tot_cp
 
+    def __calc_from_node(self, node: Node, graph: DiGraph, working_column: int = 14, _: int = 0):
+        if node.name in PRIVATE_FIELDS:
+            return 0
+
+        successors = list(graph.successors(node))
+
+        if len(successors) == 0 or Flag.IGNORE_CHILDREN in node.flags or Node.all_dc_dicui(successors):
+            # Il nodo è una foglia oppure è stato marcato per essere trattato come una foglia
+            # restituisco il suo valore alla colonna year end
+            node.remove_flag(Flag.UPDATED)
+            return node.value[working_column]
+        else:
+            s = 0
+            if self.CE_SPEC_CALC_RULES.get(node.name) is not None:
+                # Applico la regola speciale, passando un puntatore alla funzione ricorsiva per calcolare eventuali figli
+                s = self.CE_SPEC_CALC_RULES.get(node.name)(node, graph, working_column, working_column, False)
+            elif self.SP_SPEC_CALC_RULES.get(node.name) is not None:
+                # Applico la regola speciale
+                s = self.SP_SPEC_CALC_RULES.get(node.name)(node, graph, working_column, working_column, False)
+            elif Flag.NO_SUM_CHILDREN_NO_DC not in node.flags:
+                # Regola di default che somma tutti i figli
+                for child in successors:
+                    if not child.is_dc_specification():     # I campi di cui non li sommo mai
+                        s += self.__calc_from_node(child, graph, working_column, _)
+            elif Flag.NO_SUM_CHILDREN_NO_DC in node.flags:  # Ignorare i figli e non sommarli
+                s = node.value[working_column]
+
+            if node.type != NodeType.VIRTUAL:
+                # Applico il risultato solo se il campo non è virtuale
+                node.value[working_column] = s
+
+            return s
+
+    def recalculate_balance(self):
+        """
+        Ricalcola tutti gli aggregati del bilancio (prima il CE, poi trasporta i valori patrimoniali e poi SP)
+        :return:
+        """
+        self.__calc_from_node(self.ce_id_map["conto_economico"], self.conto_economico)
+        self.calc_terminal_fields(1, 14, recoursive_calc=self.__calc_from_node)
+
     def serialize(self) -> tuple[dict, dict]:
         """
         Serializza lo snapshot di bilancio (che è un grafo) in una tupla contenente due dizionari che possono essere salvati su MongoDB.
@@ -777,6 +792,23 @@ class BalanceSnaphot:
             "moneta": self.get_field_data("moneta", BalanceLocation.CE),
             "periodo": self.get_field_data("periodo", BalanceLocation.CE),} | serialize_id_map(self.ce_id_map, BalanceLocation.CE))
 
+    def copy_column(self, source_column: int, dest_column: int):
+        """
+        Copia il contenuto di una colonna dentro un'altra, sovrascrivendola
+        :param source_column:
+        :param dest_column:
+        :return:
+        """
+        assert dest_column < self.available_columns
+        assert source_column < self.available_columns
+
+        def cp(key, values, node: Node, where: BalanceLocation):
+            v = values[source_column]
+            node.value[dest_column] = v
+
+        self.for_each_ce_field(cp, exclude_context_fields=True)
+        self.for_each_sp_field(cp, exclude_context_fields=True)
+
     def copy_column_from_snapshot(self, snapshot, source_column: int, dest_column: int):
         """
         Copia il contenuto di una colonna da un altro snapshot
@@ -790,8 +822,12 @@ class BalanceSnaphot:
         assert snapshot.available_columns > source_column
 
         def cp(key, values, node: Node, where: BalanceLocation):
-            v = snapshot.get_field_value(key, where, month=source_column)
-            self.set_field_value(key, where, v, month=dest_column)
+            try:
+                v = snapshot.get_field_value(key, where, month=source_column)
+                node.value[dest_column] = v
+            except FieldNotFoundException:
+                print(f"WARNING: Il campo {key} non è stato trovato nello snapshot da cui copiare. Verrà utilizzato il valore di default 0")
+                node.value[dest_column] = 0
 
         self.for_each_ce_field(cp)
         self.for_each_sp_field(cp)
@@ -857,3 +893,27 @@ class BalanceSnaphot:
         liq = tot_passivo - tot_att_parz
         self.set_field_value("depositi_bancari", BalanceLocation.SP_ATTIVO, liq, column)
         self.__process_from_node__(self.sp_attivo_id_map["attivo"], self.stato_patrimoniale, init=False)
+
+
+    def get_total_liquidity(self, column: int):
+        return self.get_field_value("tot_dispon_liquide", BalanceLocation.SP_ATTIVO, column)
+
+
+    def reset_columns(self, col_start: int, col_end: int, default_value = 0):
+        """
+        Resetta un blocco di colonne
+        :param col_start:
+        :param col_end:
+        :param default_value:
+        :return:
+        """
+        def rst(key, values, node, where):
+            if col_start == col_end:
+                node.value[col_start] = default_value
+
+            else:
+                for i in range(col_start, col_end):
+                    node.value[i] = default_value
+
+        self.for_each_ce_field(rst, exclude_context_fields=True)
+        self.for_each_sp_field(rst, exclude_context_fields=True)

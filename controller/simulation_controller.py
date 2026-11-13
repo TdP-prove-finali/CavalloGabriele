@@ -22,7 +22,24 @@ class SimulationWorker(QObject):
         """
         g = OrganicGrowthEffect(self.model.simulation_state.global_parameters.organic_growth_avg, self.model.simulation_state.global_parameters.organic_growth_var, "organic-growth")
         self.model.project.global_effects.append(g)
-        self.model.simulation_state.working_snapshot.create_year_start()
+        self.__year_init__()
+
+    def __year_init__(self):
+        snap = self.model.simulation_state.working_snapshot
+        snap.create_year_start()
+
+        if snap.available_columns != 15:
+            for m in range(1, 13):  # Creo i primi 12 mesi
+                self.model.simulation_state.working_snapshot.create_column(f"Mese {m}")
+
+            self.model.simulation_state.working_snapshot.create_column(
+                f"Year end")  # Colonna in cui calcolare i risultati di fine anno
+
+    def __is_year_end(self):
+        return self.model.simulation_state.current_month != 0 and (self.model.simulation_state.current_month + 1) % 12 == 0
+
+    def __current_year__(self):
+        return self.model.simulation_state.current_month % 12
 
     @Slot()
     def start(self):
@@ -31,8 +48,6 @@ class SimulationWorker(QObject):
 
         def effect_spawner(env):
             # TODO: Cambiare struttura
-            # la struttura è annuale. Ogni anno, per prima cosa si inizializza year start nel working snapshot a partire dalla colonna 0 che contiene l'ultimo bilancio completo
-            # generato dalla simulazione. La simulazione si svolge su 12 mesi eseguendo gli effetti che scrivono i marginali sulle rispettive colonne.
             # al termine di ogni anno, eseguire:
             # 1. Aggregazione dei valori orizzontali
             # 2. Calcolo voci terminali tramite algoritmo ricorsivo
@@ -52,13 +67,12 @@ class SimulationWorker(QObject):
             while True:
                 print("===================")
                 print("Mese " + str(m.simulation_state.current_month))
-                self.model.simulation_state.working_snapshot.create_column("Mese "+ str(m.simulation_state.current_month))
                 # Esecuzione effetti globali
                 for effect in self.model.project.global_effects:
                     if effect.frequency == EffectFrequency.MONTHLY:
                         print("Eseguo l'effetto mensile " + effect.title)
                         effect.apply(self.model.simulation_state)
-                    elif effect.frequency == EffectFrequency.ANNUAL and m.simulation_state.current_month % 12 == 0:
+                    elif effect.frequency == EffectFrequency.ANNUAL and self.__is_year_end():
                         print("Eseguo l'effetto annuale " + effect.title)
                         effect.apply(self.model.simulation_state)
                     elif effect.frequency == EffectFrequency.ONCE and m.simulation_state.current_month == 0:
@@ -71,7 +85,7 @@ class SimulationWorker(QObject):
                         if effect.frequency == EffectFrequency.MONTHLY:
                             print("Eseguo l'effetto mensile " + effect.title)
                             effect.apply(self.model.simulation_state)
-                        elif effect.frequency == EffectFrequency.ANNUAL and m.simulation_state.current_month % 12 == 0:
+                        elif effect.frequency == EffectFrequency.ANNUAL and self.__is_year_end():
                             print("Eseguo l'effetto annuale " + effect.title)
                             effect.apply(self.model.simulation_state)
                         elif effect.frequency == EffectFrequency.BI_MONTHLY and m.simulation_state.current_month % 2 == 0:
@@ -84,6 +98,26 @@ class SimulationWorker(QObject):
                             print("Eseguo effetto once " + effect.title)
                             effect.apply(self.model.simulation_state)
 
+                if self.__is_year_end():
+                    print(f"Raggiunto termine anno {self.__current_year__()}")
+                    # azioni da svolgere a fine anno sullo snapshot
+                    self.model.simulation_state.working_snapshot.aggregate_by_year()
+                    self.model.simulation_state.working_snapshot.recalculate_balance()
+                    self.model.simulation_state.working_snapshot.calc_indicies()
+                    f_s = m.simulation_state.final_result_snapshot
+                    f_s.create_column(f"Anno {self.__current_year__()}")
+                    f_s.copy_column_from_snapshot(
+                        snapshot=self.model.simulation_state.working_snapshot,
+                        source_column=14,
+                        dest_column=f_s.available_columns - 1
+                    )
+                    self.model.simulation_state.working_snapshot.copy_column(14, 0)     # Il nuovo anno utilizzerà come bilancio storico quello generato dalla simulazione
+                    if self.model.simulation_state.working_snapshot.get_total_liquidity(14) < 0:
+                        print(f"WARNING: Al termine dell'anno {self.__current_year__()} la liquidità è diventata negativa. ")
+
+                    # pulizia e re-inizializzazione
+                    self.model.simulation_state.working_snapshot.reset_columns(2, 14)
+
                 yield env.timeout(1)
                 m.simulation_state.current_month += 1
                 print("===================")
@@ -91,10 +125,8 @@ class SimulationWorker(QObject):
         self.model.env = simpy.Environment()
         self.model.env.process(effect_spawner(self.model.env))
         self.model.env.run(until=m.simulation_state.global_parameters.number_of_years * 12)
-        # Aggregare i risultati per anno e non per mese
-        final_snap = self.model.simulation_state.working_snapshot.aggregate_by_year(m.simulation_state.global_parameters.number_of_years)
         output = SimulationOutput(
-            balance=final_snap,
+            balance=self.model.simulation_state.final_result_snapshot,
             project=self.model.project,
             global_parameters=self.model.simulation_state.global_parameters
         )

@@ -1,11 +1,13 @@
 import pytest
 
+from controller.simulation_controller import SimulationWorker
 from dao.simulation.simulation_dao import SimulationDAO
 from dao.util import step_up_numbering, step_up_field, extract_complete_numbering, BalanceLocation
 from model.balance_snap import BalanceSnaphot
-from model.investment_item import InvestmentProject
+from model.investment_item import InvestmentProject, EmployeeHireInvestment
 from model.node import Node, NodeType, Flag
 from model.sim_output import SimulationOutput
+from model.sim_state import SimulationCompleteModel, SimulationState
 from test_data import complete_company_1, GLOBAL_CONFIG
 
 
@@ -626,7 +628,54 @@ def test_init():
         ),
     )
 
+def test_simulation():
+    worker = SimulationWorker(SimulationCompleteModel(
+        SimulationState(
+            complete_company_1,
+            GLOBAL_CONFIG
+        ),
+        InvestmentProject(
+            "Progetto test",
+            "Progetto simulazione di test",
+            [],
+            items=[
+                EmployeeHireInvestment(
+                    "Assunzione dipendente",
+                    1,
+                    4000,
+                    100,
+                    0,
+                    0.1,
+                    0.1,
+                    6,
+                    0.24,
+                    0.5,
+                    "Ruolo"
+                )
+            ]
+        )
+    ), )
+
+    worker.start()
 
 
+def test_copy_snap():
+    s1 = BalanceSnaphot.from_company_data(complete_company_1, 0, 0, GLOBAL_CONFIG, single_year=True, effect_pointer="")
+    s2 = BalanceSnaphot.from_company_data(complete_company_1, 1, 1, GLOBAL_CONFIG, single_year=False, effect_pointer="")
 
+    s1.reset_columns(0, 0)
+
+    def check0(key, values, node, __):
+        assert node.value[0] == 0
+
+    s1.for_each_sp_field(check0, exclude_context_fields=True)
+    s1.for_each_ce_field(check0, exclude_context_fields=True)
+
+    s2.copy_column_from_snapshot(s1, source_column=0, dest_column=2)
+
+    def check(key, value, node, __):
+        assert node.value[2] == 0
+
+    s2.for_each_sp_field(check, exclude_context_fields=True)
+    s2.for_each_ce_field(check, exclude_context_fields=True)
 
