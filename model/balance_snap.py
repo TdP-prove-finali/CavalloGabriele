@@ -64,7 +64,9 @@ class BalanceSnaphot:
         "imposte_correnti": Flag.NO_COPY,
         "imposte_relative_a_esercizi_precedenti": Flag.NO_COPY,
         '_21_utile_frac_perdita_di_esercizio': Flag.NO_COPY,
-        "altri_ricavi": Flag.NO_COPY
+        "altri_ricavi": Flag.NO_COPY,
+        "altre_svalut_immob": Flag.NO_COPY,
+        "svalut_crediti": Flag.NO_COPY
     }
 
     SP_FIELD_FLAGS: dict[str, Flag] = {
@@ -398,6 +400,18 @@ class BalanceSnaphot:
                              BalanceLocation.SP_PASSIVO_PATRIM,
                              value=tfr+self.get_field_value("trattamento_di_fine_rapporto", BalanceLocation.SP_PASSIVO_PATRIM, self.YEAR_START_COL),
                                 month=self.YEAR_END_COL)
+        quiesc = self.get_field_value("tratt_di_quiescenza", BalanceLocation.CE, self.YEAR_END_COL)
+        self.set_field_value("fondo_di_quiescenza",
+                             BalanceLocation.SP_PASSIVO_PATRIM,
+                             value=quiesc + self.get_field_value("fondo_di_quiescenza",
+                                                              BalanceLocation.SP_PASSIVO_PATRIM, self.YEAR_START_COL),
+                             month=self.YEAR_END_COL)
+
+    def __accantonamenti_sp__(self):
+        rischi = self.get_field_value("accantonamenti_per_rischi", BalanceLocation.CE, self.YEAR_END_COL)
+        self.sum_field_value("altri_fondi", BalanceLocation.SP_PASSIVO_PATRIM, rischi, self.YEAR_END_COL)
+        altri = self.get_field_value("altri_accantonamenti", BalanceLocation.CE, self.YEAR_END_COL)
+        self.sum_field_value("altri_fondi", BalanceLocation.SP_PASSIVO_PATRIM, altri, self.YEAR_END_COL)
 
     def calc_terminal_fields(self):
         self.calc_ce_terminal_fields(column=self.YEAR_END_COL)
@@ -408,9 +422,7 @@ class BalanceSnaphot:
         # l'anno si inizia con gli stessi debiti della chiusura dell'anno precedente
         # ogni hanno viene eseguito l'effetto di pagamento dei debiti che può essere configurato tramite i parametri globali della simulazione
         self.__tfr_fondo_sp__()
-
-        # TODO: Gestire svalutazione immobilizzazioni
-        # TODO: Destinazione accantonamenti vari a fondi
+        self.__accantonamenti_sp__()
         # ricalcolo gli aggregati dello stato patrimoniale perchè alcuni li ho modificati a mano per trasportare i risultati dal CE
         self.__calc_from_node(self.sp_patrim_id_map["stato_patrimoniale"], self.stato_patrimoniale)
         self.calc_sp_terminal_fields(column=self.YEAR_END_COL)
