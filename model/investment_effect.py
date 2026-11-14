@@ -169,6 +169,8 @@ class HyperPerformerEffect(InvestmentEffect):
 # Valutare se copiarle semplicemente o se trasferirle come immobilizzazioni completate in SP Attivo
 
 class OrganicGrowthEffect(InvestmentEffect):
+    seed = None
+
     # TODO: Aspetti patrimoniali e gestione dei crediti
     def __init__(self, avg, var, title):
         self.average = avg
@@ -176,6 +178,7 @@ class OrganicGrowthEffect(InvestmentEffect):
         super().__init__(title, EffectType.INCREASE,"ricavi_vendite_e_prestazioni",
                          EffectFrequency.MONTHLY,
                          BalanceLocation.CE)
+        OrganicGrowthEffect.seed = np.random.default_rng(seed=42)
 
     def apply(self, state) -> BalanceSnaphot:
         current_month = state.current_month
@@ -184,7 +187,7 @@ class OrganicGrowthEffect(InvestmentEffect):
         if prev_value is None:
             raise Exception("Attenzione: non è disponibile un'informazione di fatturato storico")
 
-        rng = np.random.default_rng(seed=42)
+        rng = OrganicGrowthEffect.seed
         Z_n = rng.normal(loc=0, scale=1)
         dt = (current_month / 12) + 1
         X_tn1 = prev_value * exp(
@@ -195,6 +198,8 @@ class OrganicGrowthEffect(InvestmentEffect):
         return state.working_snapshot
 
 class CostGrowthEffect(InvestmentEffect):
+    seed = None     # Il seed è condiviso così non si resetta ad ogni applicazione
+
     """
     Effetto automatico di aumento dei costi per materie prime e consumo.
     """
@@ -204,12 +209,31 @@ class CostGrowthEffect(InvestmentEffect):
                          BalanceLocation.CE)
         self.var = var
         self.avg = avg
+        CostGrowthEffect.seed = np.random.default_rng(seed=42)
 
     def apply(self, state: SimulationState) -> BalanceSnaphot:
-        prev_value = state.working_snapshot.get_field_value(self.field_name,BalanceLocation.CE, 0) / 12
-        rng = np.random.default_rng(seed=42)
-        aum_perc = rng.lognormal(mean=self.avg, sigma=math.sqrt(self.var))
-        state.working_snapshot.set_field_value(self.field_name, BalanceLocation.CE, prev_value * aum_perc, month=self.current_write_index(state))
+        annual_base = state.working_snapshot.get_field_value(
+            self.field_name,
+            BalanceLocation.CE,
+            0
+        )
+        monthly_base = annual_base / 12.0
+        growth_mean = self.avg
+        growth_var = self.var
+        factor_mean = 1.0 + growth_mean
+        sigma2 = math.log1p(growth_var / (factor_mean ** 2))
+        sigma = math.sqrt(sigma2)
+        mu = math.log(factor_mean) - sigma2 / 2.0
+        rng = CostGrowthEffect.seed
+        growth_factor = rng.lognormal(mean=mu,sigma=sigma)
+        growth_rate = growth_factor - 1
+        marginal = monthly_base * growth_rate
+        state.working_snapshot.set_field_value(
+            self.field_name,
+            BalanceLocation.CE,
+            marginal,
+            month=self.current_write_index(state)
+        )
 
         return state.working_snapshot
 

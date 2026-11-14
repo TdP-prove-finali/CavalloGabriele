@@ -105,12 +105,25 @@ class BalanceSnaphot:
         self.global_config = global_config
 
         self.CE_SPEC_CALC_RULES: dict[str, Callable[[Node, DiGraph], float]] = {
-            'totale_proventi_e_oneri_finanziari': self.__calc_prov_fin
+            'totale_proventi_e_oneri_finanziari': self.__calc_prov_fin,
+            "totale_rettifiche_att_finanz": self.tot_rettif
         }
+        # TODO: Formula di calcolo per le svalutazioni/rivalutazioni D totale rettifiche att finanz
         self.SP_SPEC_CALC_RULES: dict[str, Callable[[Node, DiGraph], float]] = {
             "totale_immob_immateriali": self.tot_immob,
             "totale_immob_materiali": self.tot_immob
         }
+
+    def tot_rettif(self, node: Node, graph: DiGraph):
+        s = 0
+        children: list[Node] = list(graph.successors(node))
+        for c in children:
+            if "rivalutazioni" in c.name:
+                s += self.__calc_from_node(c, graph)
+            elif "svalutazioni" in c.name:
+                s -= self.__calc_from_node(c, graph)
+
+        return s
 
     def tot_immob(self, node: Node, graph: DiGraph):
         """

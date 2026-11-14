@@ -816,7 +816,6 @@ def read_value(
         pytest.fail(f"Valore non finito in {section_name}.{term.key}[{COLUMN}]")
     return result
 
-
 @pytest.mark.parametrize("rule", IDENTITIES, ids=lambda rule: rule.name)
 def test_balance_identity(
     sp: dict[str, Any],

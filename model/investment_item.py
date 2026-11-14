@@ -27,7 +27,7 @@ class AbstractInvestmentItem:
         :return:
         """
         return 0.0
-
+# TODO: Correggere gli id degli item con una factory
 class EmployeeHireInvestment(AbstractInvestmentItem):
     def __init__(self,
                  title: str,
@@ -88,6 +88,7 @@ class EmployeeHireInvestment(AbstractInvestmentItem):
             value_constant=1,
             where=BalanceLocation.CE
         ))
+        # TODO: Costi strumentali
         effects.append(TimeToProductivityEffect(
             average=ttp_normal_average,
             variance=ttp_normal_variance
