@@ -10,3 +10,5 @@ class GlobalParameters:
     last_available_years: int
     sim_id: int
     tax_perc: float
+    cost_gr_avg: float
+    cost_gr_var: float

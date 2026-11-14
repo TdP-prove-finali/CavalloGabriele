@@ -5,7 +5,7 @@ from PySide6.QtCore import QObject, Signal, Slot
 
 from dao.simulation.simulation_dao import SimulationDAO
 from model.balance_snap import BalanceSnaphot
-from model.investment_effect import OrganicGrowthEffect, EffectFrequency
+from model.investment_effect import OrganicGrowthEffect, EffectFrequency, CostGrowthEffect
 from model.sim_output import SimulationOutput
 from model.sim_state import SimulationCompleteModel
 
@@ -24,7 +24,9 @@ class SimulationWorker(QObject):
         :return:
         """
         g = OrganicGrowthEffect(self.model.simulation_state.global_parameters.organic_growth_avg, self.model.simulation_state.global_parameters.organic_growth_var, "organic-growth")
+        c = CostGrowthEffect(self.model.simulation_state.global_parameters.cost_gr_avg, self.model.simulation_state.global_parameters.cost_gr_var, "cost-growth")
         self.model.project.global_effects.append(g)
+        self.model.project.global_effects.append(c)
         self.__year_init__()
 
     def __year_init__(self):

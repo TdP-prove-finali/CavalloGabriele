@@ -140,7 +140,9 @@ class InvestProjectController(AbstractController[InvestSimWindow, InvestmentProj
             organic_growth_var=parse(self.view.ui.organigGRVarEdit.text()) / 100,
             last_available_years=self.parent_model.company_data.available_years,
             sim_id=SimulationDAO.create_sim_id(),
-            tax_perc=parse(self.view.ui.aliquotaImpostaEdit.text())/100
+            tax_perc=parse(self.view.ui.aliquotaImpostaEdit.text())/100,
+            cost_gr_avg=parse(self.view.ui.costGrowthAverage.text()) / 100,
+            cost_gr_var=parse(self.view.ui.costGrowthVariance.text()) / 100
         )
 
         self.view.ui.simStatusBar.setValue(0)

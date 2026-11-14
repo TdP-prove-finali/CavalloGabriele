@@ -444,6 +444,50 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_5.addLayout(self.horizontalLayout_14)
 
+        self.horizontalLayout_15 = QHBoxLayout()
+        self.horizontalLayout_15.setObjectName(u"horizontalLayout_15")
+        self.label_20 = QLabel(self.groupBox_2)
+        self.label_20.setObjectName(u"label_20")
+        sizePolicy1.setHeightForWidth(self.label_20.sizePolicy().hasHeightForWidth())
+        self.label_20.setSizePolicy(sizePolicy1)
+
+        self.horizontalLayout_15.addWidget(self.label_20)
+
+        self.costGrowthAverage = QDoubleSpinBox(self.groupBox_2)
+        self.costGrowthAverage.setObjectName(u"costGrowthAverage")
+        sizePolicy2.setHeightForWidth(self.costGrowthAverage.sizePolicy().hasHeightForWidth())
+        self.costGrowthAverage.setSizePolicy(sizePolicy2)
+        self.costGrowthAverage.setValue(1.500000000000000)
+
+        self.horizontalLayout_15.addWidget(self.costGrowthAverage)
+
+        self.label_21 = QLabel(self.groupBox_2)
+        self.label_21.setObjectName(u"label_21")
+
+        self.horizontalLayout_15.addWidget(self.label_21)
+
+        self.horizontalSpacer_14 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.horizontalLayout_15.addItem(self.horizontalSpacer_14)
+
+        self.label_22 = QLabel(self.groupBox_2)
+        self.label_22.setObjectName(u"label_22")
+
+        self.horizontalLayout_15.addWidget(self.label_22)
+
+        self.costGrowthVariance = QDoubleSpinBox(self.groupBox_2)
+        self.costGrowthVariance.setObjectName(u"costGrowthVariance")
+
+        self.horizontalLayout_15.addWidget(self.costGrowthVariance)
+
+        self.label_23 = QLabel(self.groupBox_2)
+        self.label_23.setObjectName(u"label_23")
+
+        self.horizontalLayout_15.addWidget(self.label_23)
+
+
+        self.verticalLayout_5.addLayout(self.horizontalLayout_15)
+
         self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.verticalLayout_5.addItem(self.verticalSpacer)
@@ -493,7 +537,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 1436, 30))
+        self.menubar.setGeometry(QRect(0, 0, 1436, 33))
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QStatusBar(MainWindow)
         self.statusbar.setObjectName(u"statusbar")
@@ -538,7 +582,7 @@ class Ui_MainWindow(object):
 #endif // QT_CONFIG(tooltip)
         self.label_5.setText(QCoreApplication.translate("MainWindow", u"Numero di anni", None))
 #if QT_CONFIG(tooltip)
-        self.label_7.setToolTip(QCoreApplication.translate("MainWindow", u"Crescita spontanea del fatturato senza operazioni", None))
+        self.label_7.setToolTip(QCoreApplication.translate("MainWindow", u"<html><head/><body><p>Crescita spontanea del fatturato senza operazioni legate al progetto di investimento. Rappresentata tramite un modello Browniano di cui \u00e8 possibile specificare valore medio e varianza. </p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
         self.label_7.setText(QCoreApplication.translate("MainWindow", u"Crescita organica media", None))
         self.label_8.setText(QCoreApplication.translate("MainWindow", u"%", None))
@@ -563,6 +607,13 @@ class Ui_MainWindow(object):
 #endif // QT_CONFIG(tooltip)
         self.label_18.setText(QCoreApplication.translate("MainWindow", u"Tasso di interesse", None))
         self.label_19.setText(QCoreApplication.translate("MainWindow", u"%", None))
+#if QT_CONFIG(tooltip)
+        self.label_20.setToolTip(QCoreApplication.translate("MainWindow", u"Crescita media dei costi operativi di anno in anno per l'azienda", None))
+#endif // QT_CONFIG(tooltip)
+        self.label_20.setText(QCoreApplication.translate("MainWindow", u"Crescita media costi operativi", None))
+        self.label_21.setText(QCoreApplication.translate("MainWindow", u"%", None))
+        self.label_22.setText(QCoreApplication.translate("MainWindow", u"Varianza", None))
+        self.label_23.setText(QCoreApplication.translate("MainWindow", u"%", None))
         self.stopSimBtn.setText(QCoreApplication.translate("MainWindow", u"Ferma simulazione", None))
         self.startSimBtn.setText(QCoreApplication.translate("MainWindow", u"Avvia simulazione", None))
     # retranslateUi

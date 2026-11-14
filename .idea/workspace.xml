@@ -4,12 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d1f57556-a68b-4407-9511-95d58864d413" name="Changes" comment="Migliora struttura di calcolo e corregge quadratura Stato Patrimoniale">
+    <list default="true" id="d1f57556-a68b-4407-9511-95d58864d413" name="Changes" comment="Accantonamenti in fondi vari">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/ui_generated/ui_invest_sim_window.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/ui_generated/ui_invest_sim_window.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controller/invest_proj_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/controller/invest_proj_controller.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/controller/simulation_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/controller/simulation_controller.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/balance_snap.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/balance_snap.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/investment_item.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/investment_item.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/investment_effect.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/investment_effect.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/sim_params.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/sim_params.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tests/test_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_data.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/invest_sim_window.ui" beforeDir="false" afterPath="$PROJECT_DIR$/ui/invest_sim_window.ui" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -70,7 +73,7 @@
     "Python tests.Python tests for test_balance.test_serialize.executor": "Run",
     "Python tests.Python tests for test_balance.test_sim.executor": "Run",
     "Python tests.Python tests for test_balance.test_simulation.executor": "Run",
-    "Python tests.Python tests for test_balance.test_simulation_multiple_year.executor": "Debug",
+    "Python tests.Python tests for test_balance.test_simulation_multiple_year.executor": "Run",
     "Python tests.Python tests for test_balance.test_simulation_single_year.executor": "Run",
     "Python tests.Python tests for test_balance.test_stato_patrimoniale.executor": "Run",
     "Python tests.Python tests for test_balance.test_stato_patrimoniale_passivo.executor": "Run",
@@ -129,7 +132,7 @@
       <recent name="$PROJECT_DIR$/dataset/test" />
     </key>
   </component>
-  <component name="RunManager" selected="Python tests.Python tests for test_balance.test_simulation_multiple_year">
+  <component name="RunManager" selected="Python tests.Python tests for test_balance.test_balance_identity">
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="CavalloGabriele" />
       <option name="ENV_FILES" value="" />
@@ -241,10 +244,10 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python tests.Python tests for test_balance.test_simulation_multiple_year" />
-        <item itemvalue="Python tests.Python tests in test_balance.py" />
         <item itemvalue="Python tests.Python tests for test_balance.test_balance_identity" />
         <item itemvalue="Python tests.Python tests for test_balance.test_simulation_single_year" />
+        <item itemvalue="Python tests.Python tests in test_balance.py" />
+        <item itemvalue="Python tests.Python tests for test_balance.test_simulation_multiple_year" />
         <item itemvalue="Python tests.Python tests for test_balance.test_attivo" />
       </list>
     </recent_temporary>
@@ -299,23 +302,7 @@
       <workItem from="1794487202323" duration="5552000" />
       <workItem from="1794516999044" duration="2156000" />
       <workItem from="1794519188195" duration="4685000" />
-      <workItem from="1794584152465" duration="37069000" />
-    </task>
-    <task id="LOCAL-00048" summary="Struttura finestra principale con visualizzazione situazione azienda">
-      <option name="closed" value="true" />
-      <created>1791819219363</created>
-      <option name="number" value="00048" />
-      <option name="presentableId" value="LOCAL-00048" />
-      <option name="project" value="LOCAL" />
-      <updated>1791819219363</updated>
-    </task>
-    <task id="LOCAL-00049" summary="Apertura finestra principale e passaggio dati company">
-      <option name="closed" value="true" />
-      <created>1791828371194</created>
-      <option name="number" value="00049" />
-      <option name="presentableId" value="LOCAL-00049" />
-      <option name="project" value="LOCAL" />
-      <updated>1791828371194</updated>
+      <workItem from="1794584152465" duration="41211000" />
     </task>
     <task id="LOCAL-00050" summary="Implementa caricamento tabella profilo finanziario">
       <option name="closed" value="true" />
@@ -693,7 +680,23 @@
       <option name="project" value="LOCAL" />
       <updated>1794674063298</updated>
     </task>
-    <option name="localTasksCounter" value="97" />
+    <task id="LOCAL-00097" summary="Corregge simulazione su più anni e implementa limite crescita fondi ammortamento">
+      <option name="closed" value="true" />
+      <created>1794677370414</created>
+      <option name="number" value="00097" />
+      <option name="presentableId" value="LOCAL-00097" />
+      <option name="project" value="LOCAL" />
+      <updated>1794677370414</updated>
+    </task>
+    <task id="LOCAL-00098" summary="Accantonamenti in fondi vari">
+      <option name="closed" value="true" />
+      <created>1794679819935</created>
+      <option name="number" value="00098" />
+      <option name="presentableId" value="LOCAL-00098" />
+      <option name="project" value="LOCAL" />
+      <updated>1794679819935</updated>
+    </task>
+    <option name="localTasksCounter" value="99" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -711,8 +714,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Simulazione base dipendenti" />
-    <MESSAGE value="Aggiorna latex" />
     <MESSAGE value="Implementa grafico struttura stato patrimoniale" />
     <MESSAGE value="Implementa aggregazione risultato finale simulazione" />
     <MESSAGE value="Funzioni di navigazione tra parent e child nel bilancio" />
@@ -736,20 +737,22 @@
     <MESSAGE value="Minor changes" />
     <MESSAGE value="Nuova struttura motore simulazione. Simulazione conto economico completo e corretto" />
     <MESSAGE value="Migliora struttura di calcolo e corregge quadratura Stato Patrimoniale" />
-    <option name="LAST_COMMIT_MESSAGE" value="Migliora struttura di calcolo e corregge quadratura Stato Patrimoniale" />
+    <MESSAGE value="Corregge simulazione su più anni e implementa limite crescita fondi ammortamento" />
+    <MESSAGE value="Accantonamenti in fondi vari" />
+    <option name="LAST_COMMIT_MESSAGE" value="Accantonamenti in fondi vari" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/controller/simulation_controller.py</url>
-          <line>107</line>
+          <line>109</line>
           <option name="timeStamp" value="128" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/model/balance_snap.py</url>
-          <line>365</line>
-          <option name="timeStamp" value="131" />
+          <url>file://$PROJECT_DIR$/model/investment_effect.py</url>
+          <line>208</line>
+          <option name="timeStamp" value="133" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
@@ -762,7 +765,7 @@
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/CavalloGabriele$.coverage" NAME=" Coverage Results" MODIFIED="1794677014308" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
+    <SUITE FILE_PATH="coverage/CavalloGabriele$.coverage" NAME=" Coverage Results" MODIFIED="1794681330135" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/CavalloGabriele$main.coverage" NAME="main Coverage Results" MODIFIED="1794523661620" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

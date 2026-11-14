@@ -1,3 +1,4 @@
+import math
 from enum import Enum
 from math import exp, sqrt
 from typing import Callable, Any
@@ -192,3 +193,23 @@ class OrganicGrowthEffect(InvestmentEffect):
         )
         state.working_snapshot.set_field_value(self.field_name, BalanceLocation.CE, X_tn1 - prev_value, month=self.current_write_index(state))
         return state.working_snapshot
+
+class CostGrowthEffect(InvestmentEffect):
+    """
+    Effetto automatico di aumento dei costi per materie prime e consumo.
+    """
+    def __init__(self, avg, var, title):
+        super().__init__(title, EffectType.INCREASE,"materie_prime_e_consumo",
+                         EffectFrequency.MONTHLY,
+                         BalanceLocation.CE)
+        self.var = var
+        self.avg = avg
+
+    def apply(self, state: SimulationState) -> BalanceSnaphot:
+        prev_value = state.working_snapshot.get_field_value(self.field_name,BalanceLocation.CE, 0) / 12
+        rng = np.random.default_rng(seed=42)
+        aum_perc = rng.lognormal(mean=self.avg, sigma=math.sqrt(self.var))
+        state.working_snapshot.set_field_value(self.field_name, BalanceLocation.CE, prev_value * aum_perc, month=self.current_write_index(state))
+
+        return state.working_snapshot
+

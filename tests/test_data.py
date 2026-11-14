@@ -9131,7 +9131,9 @@ GLOBAL_CONFIG_SINGLE = GlobalParameters(
                     last_available_years=complete_company_1.available_years,
                     sim_id=5,
                 organic_growth_var=0.3,
-                tax_perc=0.26
+                tax_perc=0.26,
+    cost_gr_var=0.20,
+    cost_gr_avg=0.10
                 )
 
 GLOBAL_CONFIG_MUL = GlobalParameters(
@@ -9141,5 +9143,7 @@ GLOBAL_CONFIG_MUL = GlobalParameters(
                     last_available_years=complete_company_1.available_years,
                     sim_id=5,
                 organic_growth_var=0.2,
-                tax_perc=0.26
+                tax_perc=0.26,
+    cost_gr_var=0.20,
+    cost_gr_avg=0.30
                 )
