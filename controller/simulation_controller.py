@@ -1,3 +1,5 @@
+import math
+
 import simpy
 from PySide6.QtCore import QObject, Signal, Slot
 
@@ -39,7 +41,10 @@ class SimulationWorker(QObject):
         return self.model.simulation_state.current_month != 0 and (self.model.simulation_state.current_month + 1) % 12 == 0
 
     def __current_year__(self):
-        return self.model.simulation_state.current_month % 12
+        if self.model.simulation_state.current_month == 0:
+            return 1
+
+        return math.floor((self.model.simulation_state.current_month + 1) / 12)
 
     @Slot()
     def start(self):
@@ -109,14 +114,17 @@ class SimulationWorker(QObject):
                     f_s.copy_column_from_snapshot(
                         snapshot=self.model.simulation_state.working_snapshot,
                         source_column=14,
-                        dest_column=f_s.available_columns - 1
+                        dest_column=f_s.available_columns - 1,
+                        column_title=f"Anno {self.__current_year__()}"
                     )
-                    self.model.simulation_state.working_snapshot.copy_column(14, 0)     # Il nuovo anno utilizzerà come bilancio storico quello generato dalla simulazione
                     if self.model.simulation_state.working_snapshot.get_total_liquidity(14) < 0:
                         print(f"WARNING: Al termine dell'anno {self.__current_year__()} la liquidità è diventata negativa. ")
 
                     # pulizia e re-inizializzazione
-                    self.model.simulation_state.working_snapshot.reset_columns(2, 14)
+                    self.model.simulation_state.working_snapshot.reset_columns(2, 15)   # resetto anche la colonna year start e year end
+                    # tra un anno e l'altro il CE viene resettato (perchè rappresenta una situazione transitoria) mentre lo SP è ereditato di anno in anno,
+                    # in modo tale che i fondi aumentino nel tempo e non ripartano ogni anno dallo stesso valore storico.
+                    self.model.simulation_state.working_snapshot.copy_sp_fields_from_snapshot(f_s, self.__current_year__(), 1)
 
                 yield env.timeout(1)
                 m.simulation_state.current_month += 1
@@ -132,6 +140,7 @@ class SimulationWorker(QObject):
         )
         self.save_generated_data(output)
         self.finished.emit(output)
+        return output   # utile se si chiama il worker senza creare un thread
 
     def save_generated_data(self, output):
         try:

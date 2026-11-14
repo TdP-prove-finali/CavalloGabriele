@@ -9124,9 +9124,19 @@ complete_company_1 = CompanyData(company_name='PARAMOUNT GLOBAL ITALIA S.R.L.',
                                                                                         30163358],
                                                               'subsections': {}}}})
 
-GLOBAL_CONFIG = GlobalParameters(
+GLOBAL_CONFIG_SINGLE = GlobalParameters(
                     complete_company_1.fiscal_code,
                     1,
+                    organic_growth_avg=0.9,
+                    last_available_years=complete_company_1.available_years,
+                    sim_id=5,
+                organic_growth_var=0.3,
+                tax_perc=0.26
+                )
+
+GLOBAL_CONFIG_MUL = GlobalParameters(
+                    complete_company_1.fiscal_code,
+                    3,
                     organic_growth_avg=0.9,
                     last_available_years=complete_company_1.available_years,
                     sim_id=5,

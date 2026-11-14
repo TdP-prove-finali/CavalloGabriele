@@ -95,7 +95,9 @@ def step_up_numbering(old_numeration: str, where: BalanceLocation | None = None)
         sub_letter = match.group("sottolettera") or None
         spec = match.group("specificazione") or None
 
-        if spec is not None:
+        if spec is not None and where == BalanceLocation.SP_ATTIVO and sub_letter is not None:
+            return f"{letter}{number or ""}{sub_number}"
+        elif spec is not None:
             return f"{letter}{number or ""}"
         elif sub_letter is not None:
             return f"{letter}{number or ""}{sub_number or ""}"
@@ -121,7 +123,7 @@ def step_up_field(field_name: str, where: BalanceLocation | None = None)-> str:
             if ntk is not None and len(ntk) == 1:   # Ho solo la lettera nella numerazione
                 return ntk
             elif ntk is not None and len(ntk) > 1:
-                r = step_up_numbering(ntk)
+                r = step_up_numbering(ntk, where)
                 return f"{r}"
 
         return f"{ntk[0] if ntk is not None and len(ntk) > 0 else ""}"

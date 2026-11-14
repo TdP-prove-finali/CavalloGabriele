@@ -38,6 +38,12 @@ class InvestmentEffect:
         self.value_constant = value_constant
         self.frequency = frequency
 
+    def current_write_index(self, state):
+        return 2 + (state.current_month % 12)
+
+    def current_read_index(self, state):
+        return 1
+
     def apply(self, state: SimulationState) -> BalanceSnaphot:
         """
         Applica l'effetto sullo snapshot corrente del bilancio. Viene chiamata in automatico sulla base della frequenza dell'effetto.
@@ -61,8 +67,8 @@ class InvestmentEffect:
                 value=state.working_snapshot.get_field_value(
                     field_name=self.field_name,
                     where=self.where,
-                    month=1) + val,
-                month=state.current_month + 2
+                    month=self.current_read_index(state)) + val,
+                month=self.current_write_index(state)
             )
         elif self.type == EffectType.DECREASE:
             val = self.value_constant
@@ -76,8 +82,8 @@ class InvestmentEffect:
                 value=state.working_snapshot.get_field_value(
                     field_name=self.field_name,
                     where=self.where,
-                    month=1) - val,
-                month=state.current_month + 2
+                    month=self.current_read_index(state)) - val,
+                month=self.current_write_index(state)
             )
         elif self.type == EffectType.CONST:
             val = self.value_constant
@@ -88,21 +94,21 @@ class InvestmentEffect:
             prev_value = state.working_snapshot.get_field_value(
                 field_name=self.field_name,
                 where=self.where,
-                month=state.current_month + 2
+                month=self.current_write_index(state)
             )
             if prev_value is None or prev_value == '' or prev_value == 0:
                 state.working_snapshot.set_field_value(
                     field_name=self.field_name,
                     location=self.where,
                     value=val,
-                    month=state.current_month + 2
+                    month=self.current_write_index(state)
                 )
             elif type(prev_value) is int or type(prev_value) is float:      # Se il campo contiene già un valore, significa che un altro effetto ci ha già lavorato. Sovrascrivendolo perderei quell'effetto, quindi viene sommato
                 state.working_snapshot.set_field_value(
                     field_name=self.field_name,
                     location=self.where,
                     value=val + prev_value,
-                    month=state.current_month + 2
+                    month=self.current_write_index(state)
                 )
         elif self.type == EffectType.VAL_FUNCT:
             func: Callable = self.value_func
@@ -112,12 +118,12 @@ class InvestmentEffect:
             newVal = func(state.working_snapshot.get_field_value(
                     field_name=self.field_name,
                     where=self.where,
-                    month=1))
+                    month=self.current_read_index(state)))
             state.working_snapshot.set_field_value(
                 field_name=self.field_name,
                 location=self.where,
                 value=newVal,
-                month=state.current_month + 2
+                month=self.current_write_index(state)
             )
 
     def __str__(self):
@@ -184,5 +190,5 @@ class OrganicGrowthEffect(InvestmentEffect):
             (self.average - self.variance / 2) * dt
             + sqrt(self.variance * dt) * Z_n
         )
-        state.working_snapshot.set_field_value(self.field_name, BalanceLocation.CE, X_tn1 - prev_value, month=current_month + 2)
+        state.working_snapshot.set_field_value(self.field_name, BalanceLocation.CE, X_tn1 - prev_value, month=self.current_write_index(state))
         return state.working_snapshot
