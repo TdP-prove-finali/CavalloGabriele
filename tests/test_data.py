@@ -9136,10 +9136,10 @@ GLOBAL_CONFIG_SINGLE = GlobalParameters(
 
 GLOBAL_CONFIG_MUL = GlobalParameters(
                     complete_company_1.fiscal_code,
-                    3,
-                    organic_growth_avg=0.9,
+                    7,
+                    organic_growth_avg=0.5,
                     last_available_years=complete_company_1.available_years,
                     sim_id=5,
-                organic_growth_var=0.3,
+                organic_growth_var=0.2,
                 tax_perc=0.26
                 )

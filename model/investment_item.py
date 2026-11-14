@@ -84,7 +84,7 @@ class EmployeeHireInvestment(AbstractInvestmentItem):
             title="employee-number",
             inv_type=EffectType.CONST,
             field_name="dipendenti",
-            frequency=EffectFrequency.ONCE,     # Una volta cambiato il campo rimane lo stesso nel tempo
+            frequency=EffectFrequency.ANNUAL,     # Una volta cambiato il campo rimane lo stesso nel tempo
             value_constant=1,
             where=BalanceLocation.CE
         ))

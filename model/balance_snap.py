@@ -368,6 +368,29 @@ class BalanceSnaphot:
         self.sum_field_value('fondo_ammto_immob_immateriali', BalanceLocation.SP_ATTIVO, amm_immat, self.YEAR_END_COL)
         self.sum_field_value('fondo_ammto_immob_materiali', BalanceLocation.SP_ATTIVO, amm_mat, self.YEAR_END_COL)
 
+        # per l'anno successivo, controllo se i fondi non hanno superato il valore delle immobilizzazioni. In tal caso le azzero di qui in poi
+        fdo_immat = self.get_field_value('fondo_ammto_immob_immateriali', BalanceLocation.SP_ATTIVO, self.YEAR_END_COL)
+        fdo_mat = self.get_field_value('fondo_ammto_immob_materiali', BalanceLocation.SP_ATTIVO, self.YEAR_END_COL)
+        tot_immat_net = self.sum_children_values("totale_immob_immateriali", BalanceLocation.SP_ATTIVO, self.YEAR_END_COL, exclude_fields=["fondo_ammto_immob_immateriali"])
+        tot_mat_net = self.sum_children_values("totale_immob_materiali", BalanceLocation.SP_ATTIVO, self.YEAR_END_COL, exclude_fields=["fondo_ammto_immob_materiali"])
+
+        diff = tot_immat_net - fdo_immat
+        if diff == 0 or amm_immat > diff:
+            # Il fondo ha raggiunto il valore delle immobilizzazioni da ammortare oppure lo supererà con il prossimo pagamento degli ammortamenti
+            self.set_field_value("amm_immob_immat", BalanceLocation.CE, diff, self.YEAR_START_COL)
+            print(f"EVENTO: Il valore degli ammortamenti per immob. immateriali è stato impostato a {diff} per completare il fondo. ")
+        elif diff < 0:
+            raise Exception(f"Il fondo di ammortamento delle immob. immateriali parte da un valore superiore a quello delle immobilizzazioni che deve ammortizzare. {fdo_immat}€")
+
+        diff2 = tot_mat_net - fdo_mat
+        if diff2 == 0 or amm_mat > diff2:
+            # Il fondo ha raggiunto il valore delle immobilizzazioni da ammortare oppure lo supererà con il prossimo pagamento degli ammortamenti
+            self.set_field_value("amm_immob_mat", BalanceLocation.CE, diff2, self.YEAR_START_COL)
+            print(
+                f"EVENTO: Il valore degli ammortamenti per immob. materiali è stato impostato a {diff} per completare il fondo nell'anno successivo. ")
+        elif diff2 < 0:
+            raise Exception(f"Il fondo di ammortamento delle immob. materiali parte da un valore superiore a quello delle immobilizzazioni che deve ammortizzare. {fdo_mat}€")
+
     def __tfr_fondo_sp__(self):
         # destinazione tfr a fondo
         tfr = self.get_field_value("tratt_fine_rapporto", BalanceLocation.CE, self.YEAR_END_COL)
@@ -709,8 +732,6 @@ class BalanceSnaphot:
         if len(successors) == 0 or Flag.IGNORE_CHILDREN in node.flags or Node.all_dc_dicui(successors):
             # Il nodo è una foglia oppure è stato marcato per essere trattato come una foglia
             # restituisco il suo valore alla colonna year end
-            node.remove_flag(Flag.UPDATED)
-            node.remove_flag(Flag.NEED_RECALC)
             return node.value[self.YEAR_END_COL]
         else:
             s = 0
@@ -732,8 +753,15 @@ class BalanceSnaphot:
                 # Applico il risultato solo se il campo non è virtuale
                 node.value[self.YEAR_END_COL] = s
 
-            node.remove_flag(Flag.NEED_RECALC)
             return s
+
+    def reset_calc_flags(self):
+        def rst(key, values, node, where):
+            node.remove_flag(Flag.NEED_RECALC)
+            node.remove_flag(Flag.UPDATED)
+
+        self.for_each_ce_field(rst, exclude_context_fields=True)
+        self.for_each_sp_field(rst, exclude_context_fields=True)
 
     def recalculate_balance(self):
         """

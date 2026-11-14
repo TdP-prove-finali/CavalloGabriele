@@ -4,6 +4,7 @@ import simpy
 from PySide6.QtCore import QObject, Signal, Slot
 
 from dao.simulation.simulation_dao import SimulationDAO
+from model.balance_snap import BalanceSnaphot
 from model.investment_effect import OrganicGrowthEffect, EffectFrequency
 from model.sim_output import SimulationOutput
 from model.sim_state import SimulationCompleteModel
@@ -122,9 +123,10 @@ class SimulationWorker(QObject):
 
                     # pulizia e re-inizializzazione
                     self.model.simulation_state.working_snapshot.reset_columns(2, 15)   # resetto anche la colonna year start e year end
-                    # tra un anno e l'altro il CE viene resettato (perchè rappresenta una situazione transitoria) mentre lo SP è ereditato di anno in anno,
-                    # in modo tale che i fondi aumentino nel tempo e non ripartano ogni anno dallo stesso valore storico.
-                    self.model.simulation_state.working_snapshot.copy_sp_fields_from_snapshot(f_s, self.__current_year__(), 1)
+                    self.model.simulation_state.working_snapshot.reset_calc_flags()
+                    # tra un anno e l'altro eredito solo lo stato patrimoniale
+                    self.model.simulation_state.working_snapshot.copy_sp_fields_from_snapshot(f_s, self.__current_year__(), BalanceSnaphot.YEAR_START_COL)
+                    # i campi del CE vengono mantenuti identici a quelli di inizializzazione, in modo tale che gli effetti economici non siano moltiplicativi tra di loro
 
                 yield env.timeout(1)
                 m.simulation_state.current_month += 1

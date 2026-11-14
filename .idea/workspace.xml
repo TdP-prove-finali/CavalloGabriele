@@ -4,15 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d1f57556-a68b-4407-9511-95d58864d413" name="Changes" comment="Nuova struttura motore simulazione. Simulazione conto economico completo e corretto">
+    <list default="true" id="d1f57556-a68b-4407-9511-95d58864d413" name="Changes" comment="Migliora struttura di calcolo e corregge quadratura Stato Patrimoniale">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/controller/simulation_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/controller/simulation_controller.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dao/util.py" beforeDir="false" afterPath="$PROJECT_DIR$/dao/util.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/model/balance_snap.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/balance_snap.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/investment_effect.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/investment_effect.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/model/investment_item.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/investment_item.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/node.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/node.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_balance.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_balance.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tests/test_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_data.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -133,7 +129,7 @@
       <recent name="$PROJECT_DIR$/dataset/test" />
     </key>
   </component>
-  <component name="RunManager" selected="Python tests.Python tests in test_balance.py">
+  <component name="RunManager" selected="Python tests.Python tests for test_balance.test_simulation_multiple_year">
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="CavalloGabriele" />
       <option name="ENV_FILES" value="" />
@@ -192,7 +188,7 @@
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
-    <configuration name="Python tests for test_balance.test_init" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
+    <configuration name="Python tests for test_balance.test_simulation_multiple_year" type="tests" factoryName="Autodetect" temporary="true" nameIsGenerated="true">
       <module name="CavalloGabriele" />
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -205,7 +201,7 @@
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="RUN_TOOL" value="" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;test_balance.test_init&quot;" />
+      <option name="_new_target" value="&quot;test_balance.test_simulation_multiple_year&quot;" />
       <option name="_new_targetType" value="&quot;PYTHON&quot;" />
       <method v="2" />
     </configuration>
@@ -245,11 +241,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python tests.Python tests for test_balance.test_simulation_multiple_year" />
         <item itemvalue="Python tests.Python tests in test_balance.py" />
         <item itemvalue="Python tests.Python tests for test_balance.test_balance_identity" />
         <item itemvalue="Python tests.Python tests for test_balance.test_simulation_single_year" />
         <item itemvalue="Python tests.Python tests for test_balance.test_attivo" />
-        <item itemvalue="Python tests.Python tests for test_balance.test_init" />
       </list>
     </recent_temporary>
   </component>
@@ -303,15 +299,7 @@
       <workItem from="1794487202323" duration="5552000" />
       <workItem from="1794516999044" duration="2156000" />
       <workItem from="1794519188195" duration="4685000" />
-      <workItem from="1794584152465" duration="33657000" />
-    </task>
-    <task id="LOCAL-00047" summary="Aggiunge test caricamento">
-      <option name="closed" value="true" />
-      <created>1791814069449</created>
-      <option name="number" value="00047" />
-      <option name="presentableId" value="LOCAL-00047" />
-      <option name="project" value="LOCAL" />
-      <updated>1791814069449</updated>
+      <workItem from="1794584152465" duration="37069000" />
     </task>
     <task id="LOCAL-00048" summary="Struttura finestra principale con visualizzazione situazione azienda">
       <option name="closed" value="true" />
@@ -697,7 +685,15 @@
       <option name="project" value="LOCAL" />
       <updated>1794597273777</updated>
     </task>
-    <option name="localTasksCounter" value="96" />
+    <task id="LOCAL-00096" summary="Migliora struttura di calcolo e corregge quadratura Stato Patrimoniale">
+      <option name="closed" value="true" />
+      <created>1794674063298</created>
+      <option name="number" value="00096" />
+      <option name="presentableId" value="LOCAL-00096" />
+      <option name="project" value="LOCAL" />
+      <updated>1794674063298</updated>
+    </task>
+    <option name="localTasksCounter" value="97" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -715,7 +711,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Implementa crescita organica del fatturato in simulazione" />
     <MESSAGE value="Simulazione base dipendenti" />
     <MESSAGE value="Aggiorna latex" />
     <MESSAGE value="Implementa grafico struttura stato patrimoniale" />
@@ -740,15 +735,21 @@
     <MESSAGE value="Implementa thread separato per import da Excel con statusbar" />
     <MESSAGE value="Minor changes" />
     <MESSAGE value="Nuova struttura motore simulazione. Simulazione conto economico completo e corretto" />
-    <option name="LAST_COMMIT_MESSAGE" value="Nuova struttura motore simulazione. Simulazione conto economico completo e corretto" />
+    <MESSAGE value="Migliora struttura di calcolo e corregge quadratura Stato Patrimoniale" />
+    <option name="LAST_COMMIT_MESSAGE" value="Migliora struttura di calcolo e corregge quadratura Stato Patrimoniale" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/controller/simulation_controller.py</url>
-          <line>106</line>
+          <line>107</line>
           <option name="timeStamp" value="128" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/model/balance_snap.py</url>
+          <line>365</line>
+          <option name="timeStamp" value="131" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
@@ -761,7 +762,7 @@
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/CavalloGabriele$.coverage" NAME=" Coverage Results" MODIFIED="1794673842144" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
+    <SUITE FILE_PATH="coverage/CavalloGabriele$.coverage" NAME=" Coverage Results" MODIFIED="1794677014308" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/CavalloGabriele$main.coverage" NAME="main Coverage Results" MODIFIED="1794523661620" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
