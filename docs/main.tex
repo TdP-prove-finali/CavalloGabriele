@@ -47,6 +47,13 @@ L'ordine è fondamentale, sia orizzontalmente (ordine temporale) che verticalmen
 
 Per garantire anche l'ordine verticale, ad ogni voce di ogni documento viene associato un nome tecnico generato dinamicamente (non scritto nell'applicazione) secondo un criterio di trasformazione che parte dalla descrizione testuale della voce. Questo viene chiamato field\_name ed è un identificatore python valido, generato tramite un'apposita funzione. La caratteristica del field\_name è quella di permettere di ricostruire la posizione del campo nel documento, mantenendo i riferimenti di lettera e numero se presenti. 
 
+\begin{figure}
+    \centering
+    \includegraphics[width=0.9\linewidth]{classi.png}
+    \caption{Diagramma delle classi - Gestione Company}
+    \label{fig:placeholder}
+\end{figure}
+
 
 \section{Tipi di investimento supportati}
 L'applicazione supporta una selezione di "tipi di investimento" che raccolgono le caratteristiche delle operazioni più importanti che si possono pianificare. Ognuno di essi ha una serie di parametri di configurazione impostati dall'utente in un apposito dialogo e racchiude al suo interno una serie di effetti atomici applicati alle singole voci di bilancio. Oltre ad investimenti veri e propri, come l'assunzione di un dipendente o l'acquisto di cespiti, vengono anche fornite le principali metodologie di finanziamento di tali operazioni, in modo tale da rendere la simulazione effettivamente realistica. 
@@ -152,6 +159,10 @@ Per l'esecuzione della simulazione possono essere impostati dei parametri global
 \begin{enumerate}
     \item \label{item:organic-growth} Crescita organica
     \item Numero di anni
+    \item Incasso crediti e capacità di riscossione
+    \item Pagamento debiti residui
+    \item Aliquota di imposta sul reddito
+    \item Crescita costi operativi
 \end{enumerate}
 
 \subsection{Crescita organica}
@@ -194,14 +205,88 @@ Un miglioramento successivo potrebbe essere quello di limitare anche il valore m
 La simulazione può essere svolta lungo un orizzonte temporale definito nel numero di anni a partire dall'ultimo presente nei bilanci storici. 
 Lo svolgimento dei calcoli e degli step discreti è però mensile, siccome il mese rappresenta l'unità più atomica di tutti gli effetti del progetto di investimento. 
 
+\subsection{Incasso crediti e capacità di riscossione}
+All'interno della sezione Attivo dello Stato Patrimoniale del bilancio storico, utilizzato per inizializzare la simulazione, possono essere presenti dei crediti ancora da incassare alla data del bilancio. 
+Il simulatore implementa una logica semplice per gestire automaticamente questi crediti e rendere il risultato più realistico. 
+
+In generale le voci di credito vengono categorizzate in 2 componenti: i crediti "entro" (ossia esigibili entro il prossimo esercizio) e i crediti "oltre" (ossia esigibili dopo il prossimo esercizio). 
+L'effetto \textit{CreditCollect} gestisce questa meccanica. 
+
+L'incasso dei crediti "entro" viene regolato tramite una distribuzione Beta, che è per sua natura vincolata tra 0 e 1 e rappresenta nel simulatore la percentuale di crediti esigibili entro l'anno effettivamente incassati. E' una misura della capacità di riscossione dell'impresa. 
+
+Al termine dell'anno, se risultano ancora crediti non incassati, questi saranno ereditati dal nuovo anno simulato come crediti "entro" e continuerà la logica di incasso. 
+
+Per i crediti "oltre" viene invece applicata una \textbf{percentuale di crediti in scadenza} $CPERC$, che indica la parte di questi crediti che ogni nuovo anno passerà da "oltre" ad "entro", diventando esigibili durante l'esercizio corrente. Al termine di ogni anno, un importo pari a $CPERC * TOT CREDITI OLTRE$ verrà trasferita dai crediti "a oltre" a quelli "a entro" per essere poi incassata seguendo la distribuzione appena menzionata. Il trasferimento tiene chiaramente conto anche di eventuali crediti non ancora incassati. 
+
+L'impatto di questo effetto è direttamente osservabile sulla liquidità. Incassando più velocemente i crediti, l'azienda avrà a disposizione più liquidità a fine anno, riducendo il rischio di fallimento (rappresentato nel simulatore dalla situazione di liquidità negativa). 
+
+\subsubsection{Nascita di nuovi crediti}
+Per semplicità di simulazione si assume che tutto il fatturato realizzato dall'impresa (generato dall'effetto Organic Growth oppure dagli aumenti di produttività dovuti alle nuove assunzioni) sia interamente incassato entro il termine dell'anno a cui fa riferimento. 
+Un'ulteriore evoluzione potrebbe essere quella di integrare una distribuzione per l'incasso del fatturato. 
+\subsection{Pagamento debiti residui}
+Come con i crediti, anche per i debiti lo Stato Patrimoniale civilistico richiede la classificazione in "entro" e "oltre". 
+Il simulatore, tramite l'effetto \textit{DebitPay} gestisce il pagamento automatico dei debiti e la loro diminuzione alla fine di ogni anno, se la liquidità lo permette. 
+I debiti "entro", per ipotesi semplificativa, vengono sempre saldati per intero. La meccanica con cui un debito da pagare non venisse saldato porterebbe ad un notevole aumento della complessità e ad un potenziale fallimento giuridico dell'impresa. 
+Nel caso in cui, tramite la liquidità presente al termine dell'anno, non fosse possibile pagare i debiti "entro", il simulatore determinerà il fallimento dell'impresa. 
+Per i debiti "a oltre", tra i parametri globali della simulazione viene fornito il parametro "anni di ammortamento debiti" che indica, in anni simulati, entro quanti anni i debiti "a oltre" devono essere estinti. E' stato scelto questo parametro perchè risulta simile al funzionamento reale dei debiti verso banche. 
+
+Al termine dell'anno, l'effetto \textit{DebitPay} si occupa di trasferire la giusta quota di debiti "a oltre" nei rispettivi debiti "a breve", lavorando su tutte le voci di debito e applicando lo stesso coefficiente. 
+
+
+Il pagamento dei debiti comporta tipicamente anche un \textbf{esborso dovuto agli interessi finanziari passivi}, di cui il simulatore riassume gli effetti copiando, durante l'inizializzazione, l'importo degli oneri finanziari del Conto Economico (C.17. Totale oneri finanziari). Tale importo viene azzerato in automatico per il nuovo anno se tutti i debiti sono stati estinti (totale debiti entro + oltre = 0). 
+Questa è un'ipotesi semplificativa che trascura la natura del debito specifico, non avendo a livello di bilancio le informazioni necessarie. I rapporti intragruppo vengono trattati come debiti bancari, allo stesso modo di tutti gli altri debiti. 
+
+\subsection{Aliquota di imposta sul reddito}
+TODO
+
 \section{Motore di simulazione}
 Il programma funziona grazie ad un motore di simulazione che è stato implementato ad hoc, sulla base del framework SimPy, che fornisce la struttura base di gestione dei processi e degli eventi. Di seguito viene descritta la struttura del motore e, successivamente, il dettaglio di tutte le tipologie possibili di componenti di investimento insieme.
 \subsection{Funzionamento generale}
 GG
+\subsection{Inizializzazione della simulazione}
+Ad ogni anno la simulazione viene inizializzata con un nuovo bilancio, che viene costruito secondo criteri diversi a seconda del documento. 
+\subsubsection{Inizializzazione del Conto Economico}
+Il conto economico, che conterrà le informazioni di risultato ottenute durante il nuovo esercizio simulato, viene inizializzato azzerando i ricavi e tutti i proventi derivati dalla gestione straordinaria dell'impresa. 
+La voce "A.5 Altri ricavi" viene considerata come contenente ricavi straordinari e inizializzata a 0 durante la simulazione. 
+La voce "A.4 Incrementi di immobilizzazioni" viene utilizzata per capitalizzare i lavori interni che hanno prodotto dei beni durevoli il cui valori si manifesta su più esercizi. Si ipotizza che questi effetti continuino su tutti gli anni della simulazione, per tanto sono copiati di anno in anno. 
+Per quanto riguarda i costi, vengono copiati quelli sostenuti nell'esercizio precedente. La maggior parte di essi viene considerata come costi fissi (soprattutto personale e stipendi). 
+Solo per i costi di materie prime e consumo viene applicata una curva di aumento legata alla crescita organica dell'impresa, dettagliata successivamente. 
+
+Gli \textbf{ammortamenti e gli accantonamenti} sono considerati costanti tra un esercizio e l'altro, pertanto vengono copiati dal bilancio storico e ereditati di anno in anno, causando una crescita costante dei rispettivi fondi. Viene però imposto un limite alla crescita di questi fondi, fino a quando il loro totale non supera per la prima volta il valore delle immobilizzazioni a cui fanno riferimento. 
+Una volta superato questo limite, gli ammortamenti verranno azzerati in CE e non saranno più applicati. 
+
+Tra gli ammortamenti è presente il campo \textbf{"B.10.c Altre svalutazioni immobilizzazioni"} che rappresenta la perdita di valore subita dalle immobilizzazioni, non riconducibile agli ammortamenti. Nel simulatore viene ignorato e inizializzato a 0. 
+
+Il simulatore non gestisce il rischio di credito, pertanto il campo \textbf{"B.10.d – Svalutazioni dei crediti compresi nell'attivo circolante e delle disponibilità liquide"} viene inizializzato a 0 e il suo valore è ignorato. 
+
+I \textbf{proventi e oneri finanziari}, essendo legati a partecipazioni, titoli o debiti, vengono considerati costanti nel tempo e copiati di anno in anno. Per la logica di gestione automatica dei debiti, si veda la sezione \ref{section:debiti-section}
+
+Le \textbf{rettifiche per attività finanziarie} vengono inizializzate a 0, essendo una voce definita dagli amministratori e del quale la simulazione non si occupa. 
+
+
+Tutte le \textbf{voci derivate} dai campi precedentemente menzionati nel CE (\textit{utile}, \textit{risultato operativo}, \textit{valore aggiunto}, etc...) vengono inizializzate a 0 e saranno ricalcolate al termine di ogni anno. 
+Il numero di dipendenti, presente come campo informativo nel Conto Economico, viene copiato di anno in anno prendendo il valore storico. La simulazione si occupa poi di aumentarlo nel caso di nuove assunzioni ancora in essere al termine dell'esercizio. 
+Nota: le assunzioni dei dipendenti non aumentano gli oneri sociali. 
+
+\subsubsection{Inizializzazione dello Stato Patrimoniale}
+Lo Stato Patrimoniale (SP) rappresenta una fotografia del patrimonio dell'impresa al termine dell'esercizio simulato. Passando di anno in anno esso viene copiato interamente, senza apportare modifiche legate all'inizializzazione. Questo è valido anche per i campi legati all'utile di esercizio (rispettivamente il campo "A.IX Utile/perdita di esercizio" e "A.VIII. Utile/perdita a nuovo"). Nel caso del primo, esso rappresenta il risultato dell'ultimo esercizio presente (quindi il bilancio storico oppure l'ultimo anno simulato), nel caso del secondo si tratta di un campo incrementale che contiene tutti gli utili o perdite che sono stati re-investiti nell'impresa o portati a nuovo per essere ripagati dalle gestioni successive. 
+I ratei e risconti passivi e attivi vengono considerati come da estinguersi nell'esercizio successivo, in mancanza di informazioni più specifiche su come gestirli. Vengono inizializzati copiandone la presenza e al termine dell'esercizio avverrà la loro gestione che porterà all'estinzione. 
+I crediti vengono copiati perchè rappresentano le quantità di denaro ancora da incassare ma già contrattualizzate, la stessa cosa vale per i debiti, per i quali è stata introdotta nella simulazione una gestione automatica specifica. 
+Anche i valori di liquidità sono copiati perchè rappresentano la quantità di denaro immediatamente disponibile per l'impresa all'inizio del nuovo anno simulato. 
+
+\end{itemize}
+\subsection{Esecuzione della simulazione}
+Exec
+\subsection{Operazioni contabili di fine anno}
+Gli accantonamenti per rischi del Conto Economico vengono destinati al fondo "B.4 Altri fondi" dello stato patrimoniale passivo, sezione "Patrimonio netto". 
+
 \subsection{Diagramma delle classi}
 GG
 
 \bibliographystyle{alpha}
 \bibliography{sample}
+
+\section{Ringraziamenti}
+Grazie mille a me, me stesso e io per l'aiuto che mi sono dato. 
 
 \end{document}
