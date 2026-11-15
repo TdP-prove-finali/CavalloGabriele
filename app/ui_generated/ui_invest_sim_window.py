@@ -308,6 +308,7 @@ class Ui_MainWindow(object):
 
         self.organicGRAvgEdit = QDoubleSpinBox(self.groupBox_2)
         self.organicGRAvgEdit.setObjectName(u"organicGRAvgEdit")
+        self.organicGRAvgEdit.setMinimum(0.100000000000000)
         self.organicGRAvgEdit.setValue(12.000000000000000)
 
         self.horizontalLayout_9.addWidget(self.organicGRAvgEdit)
@@ -332,6 +333,7 @@ class Ui_MainWindow(object):
 
         self.organigGRVarEdit = QDoubleSpinBox(self.groupBox_2)
         self.organigGRVarEdit.setObjectName(u"organigGRVarEdit")
+        self.organigGRVarEdit.setMinimum(0.100000000000000)
         self.organigGRVarEdit.setValue(0.400000000000000)
 
         self.horizontalLayout_9.addWidget(self.organigGRVarEdit)
@@ -377,6 +379,7 @@ class Ui_MainWindow(object):
 
         self.cpercEdit = QDoubleSpinBox(self.groupBox_2)
         self.cpercEdit.setObjectName(u"cpercEdit")
+        self.cpercEdit.setMinimum(0.100000000000000)
 
         self.horizontalLayout_10.addWidget(self.cpercEdit)
 
@@ -401,6 +404,7 @@ class Ui_MainWindow(object):
         self.aliquotaImpostaEdit.setObjectName(u"aliquotaImpostaEdit")
         sizePolicy2.setHeightForWidth(self.aliquotaImpostaEdit.sizePolicy().hasHeightForWidth())
         self.aliquotaImpostaEdit.setSizePolicy(sizePolicy2)
+        self.aliquotaImpostaEdit.setMinimum(0.100000000000000)
         self.aliquotaImpostaEdit.setValue(26.000000000000000)
 
         self.horizontalLayout_13.addWidget(self.aliquotaImpostaEdit)
@@ -444,21 +448,6 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_14.addItem(self.horizontalSpacer_13)
 
-        self.label_18 = QLabel(self.groupBox_2)
-        self.label_18.setObjectName(u"label_18")
-
-        self.horizontalLayout_14.addWidget(self.label_18)
-
-        self.fidoInterestSpinBox = QDoubleSpinBox(self.groupBox_2)
-        self.fidoInterestSpinBox.setObjectName(u"fidoInterestSpinBox")
-
-        self.horizontalLayout_14.addWidget(self.fidoInterestSpinBox)
-
-        self.label_19 = QLabel(self.groupBox_2)
-        self.label_19.setObjectName(u"label_19")
-
-        self.horizontalLayout_14.addWidget(self.label_19)
-
 
         self.verticalLayout_5.addLayout(self.horizontalLayout_14)
 
@@ -498,6 +487,8 @@ class Ui_MainWindow(object):
 
         self.costGrowthVariance = QDoubleSpinBox(self.groupBox_2)
         self.costGrowthVariance.setObjectName(u"costGrowthVariance")
+        self.costGrowthVariance.setMinimum(0.100000000000000)
+        self.costGrowthVariance.setValue(0.100000000000000)
 
         self.horizontalLayout_15.addWidget(self.costGrowthVariance)
 
@@ -517,6 +508,7 @@ class Ui_MainWindow(object):
 
         self.alphaRiscEdit = QDoubleSpinBox(self.groupBox_2)
         self.alphaRiscEdit.setObjectName(u"alphaRiscEdit")
+        self.alphaRiscEdit.setMinimum(0.100000000000000)
         self.alphaRiscEdit.setValue(80.000000000000000)
 
         self.horizontalLayout_15.addWidget(self.alphaRiscEdit)
@@ -540,6 +532,7 @@ class Ui_MainWindow(object):
 
         self.betaRiscEdit = QDoubleSpinBox(self.groupBox_2)
         self.betaRiscEdit.setObjectName(u"betaRiscEdit")
+        self.betaRiscEdit.setMinimum(0.100000000000000)
         self.betaRiscEdit.setValue(20.000000000000000)
 
         self.horizontalLayout_15.addWidget(self.betaRiscEdit)
@@ -671,11 +664,6 @@ class Ui_MainWindow(object):
         self.label_16.setText(QCoreApplication.translate("MainWindow", u"Soglia massima fido in c.c", None))
         self.maxFidoCCEdit.setText(QCoreApplication.translate("MainWindow", u"40000", None))
         self.label_17.setText(QCoreApplication.translate("MainWindow", u"\u20ac", None))
-#if QT_CONFIG(tooltip)
-        self.label_18.setToolTip(QCoreApplication.translate("MainWindow", u"Tasso di interesse del fido in conto corrente (sconfinamento negativo)", None))
-#endif // QT_CONFIG(tooltip)
-        self.label_18.setText(QCoreApplication.translate("MainWindow", u"Tasso di interesse", None))
-        self.label_19.setText(QCoreApplication.translate("MainWindow", u"%", None))
 #if QT_CONFIG(tooltip)
         self.label_20.setToolTip(QCoreApplication.translate("MainWindow", u"Crescita media dei costi operativi di anno in anno per l'azienda", None))
 #endif // QT_CONFIG(tooltip)

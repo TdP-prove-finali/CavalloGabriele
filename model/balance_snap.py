@@ -55,6 +55,7 @@ def serialize_id_map(id_map: dict[str, Node], where: BalanceLocation)->dict[str,
 class BalanceSnaphot:
     CE_FIELD_FLAGS: dict[str, Flag] = {
         "ricavi_vendite_e_prestazioni": Flag.NO_COPY,
+        'materie_prime_e_consumo': Flag.NO_COPY,
         "risultato_operativo": Flag.NO_COPY,
         "valore_aggiunto": Flag.NO_COPY,
         "totale_proventi_frac_oneri_straordinari": Flag.NO_COPY,

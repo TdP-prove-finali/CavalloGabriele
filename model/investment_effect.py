@@ -174,8 +174,8 @@ class OrganicGrowthEffect(InvestmentEffect):
     field_target = "ricavi_vendite_e_prestazioni"
 
     def __init__(self, avg, var, title):
-        self.average = avg
-        self.variance = var
+        self.average = avg / 12
+        self.variance = var / 12
         super().__init__(title, EffectType.INCREASE,"ricavi_vendite_e_prestazioni",
                          EffectFrequency.MONTHLY,
                          BalanceLocation.CE)
@@ -219,26 +219,30 @@ class CostGrowthEffect(InvestmentEffect):
         CostGrowthEffect.seed = np.random.default_rng(seed=42)
 
     def apply(self, state: SimulationState) -> BalanceSnaphot:
-        annual_base = state.working_snapshot.get_field_value(
-            self.field_name,
-            BalanceLocation.CE,
-            0
-        )
-        monthly_base = annual_base / 12.0
-        growth_mean = self.avg
-        growth_var = self.var
+        current_month = state.current_month
+        prev_value = 0
+        if current_month == 0 or (
+                current_month % 12) == 0:
+            prev_value = state.working_snapshot.get_field_value(self.field_name, BalanceLocation.CE, 0) / 12
+            if prev_value is None:
+                raise Exception("Attenzione: non è disponibile un'informazione di costo storico")
+        else:
+            # leggo il marginale precedente che è già diviso per 12
+            prev_value = state.working_snapshot.get_field_value(self.field_name, BalanceLocation.CE,
+                                                                state.current_write_index() - 1)
+
+        growth_mean = self.avg / 12
+        growth_var = self.var / 12
         factor_mean = 1.0 + growth_mean
         sigma2 = math.log1p(growth_var / (factor_mean ** 2))
         sigma = math.sqrt(sigma2)
         mu = math.log(factor_mean) - sigma2 / 2.0
         rng = CostGrowthEffect.seed
         growth_factor = rng.lognormal(mean=mu,sigma=sigma)
-        growth_rate = growth_factor - 1
-        marginal = monthly_base * growth_rate
         state.working_snapshot.set_field_value(
             self.field_name,
             BalanceLocation.CE,
-            marginal,
+            prev_value * growth_factor,
             month=self.current_write_index(state)
         )
 
