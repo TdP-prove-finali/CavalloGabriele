@@ -142,7 +142,10 @@ class InvestProjectController(AbstractController[InvestSimWindow, InvestmentProj
             sim_id=SimulationDAO.create_sim_id(),
             tax_perc=parse(self.view.ui.aliquotaImpostaEdit.text())/100,
             cost_gr_avg=parse(self.view.ui.costGrowthAverage.text()) / 100,
-            cost_gr_var=parse(self.view.ui.costGrowthVariance.text()) / 100
+            cost_gr_var=parse(self.view.ui.costGrowthVariance.text()) / 100,
+            cred_alpha=parse(self.view.ui.alphaRiscEdit.text()) / 100,
+            cred_betha=parse(self.view.ui.betaRiscEdit.text()) / 100,
+            cperc=parse(self.view.ui.cpercEdit.text()) / 100
         )
 
         self.view.ui.simStatusBar.setValue(0)

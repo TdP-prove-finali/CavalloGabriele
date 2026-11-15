@@ -1,3 +1,4 @@
+import re
 from copy import deepcopy
 from typing import Callable, Any
 import networkx as nx
@@ -108,7 +109,6 @@ class BalanceSnaphot:
             'totale_proventi_e_oneri_finanziari': self.__calc_prov_fin,
             "totale_rettifiche_att_finanz": self.tot_rettif
         }
-        # TODO: Formula di calcolo per le svalutazioni/rivalutazioni D totale rettifiche att finanz
         self.SP_SPEC_CALC_RULES: dict[str, Callable[[Node, DiGraph], float]] = {
             "totale_immob_immateriali": self.tot_immob,
             "totale_immob_materiali": self.tot_immob
@@ -666,18 +666,22 @@ class BalanceSnaphot:
             global_config=self.global_config
         )
 
-    def get_children(self, field_name: str, where: BalanceLocation) -> list[Node]:
+    def get_children(self, field_name: str, where: BalanceLocation, name_regex: str | None = None) -> list[Node]:
         """
         Restituisce tutti i campi che sono figli di primo livello del campo field_name
         :param field_name: Nome (senza numerazione) del campo da cui partire
         :param where: Posizione del campo
+        :param name_regex Regex per filtrare i nomi dei campi
         :return:
         """
         source: Node = self.__get_id_map(where)[field_name]
         graph: DiGraph = self.conto_economico if where == BalanceLocation.CE else self.stato_patrimoniale
         l = []
         for s, d in list(graph.out_edges(source)):
-            l.append(d)
+            if name_regex is None:
+                l.append(d)
+            elif name_regex is not None and re.compile(name_regex).match(d.name):
+                l.append(d)
 
         return l
 
@@ -702,21 +706,27 @@ class BalanceSnaphot:
                     field_name, where, res
                 )
 
-    def sum_children_values(self, field_name: str, where: BalanceLocation, column: int, exclude_fields: list[str] = []) -> float:
+    def sum_children_values(self, field_name: str, where: BalanceLocation, column: int, exclude_fields: list[str] = [], name_regex: str | None = None) -> float:
         """
         Calcola la somma di tutti i campi figli di field_name
         Restituisce il vettore con la somma di tutti i campi, con tanti elementi quante sono le colonne presenti
         nello snapshot
         :param field_name:
         :param where:
+        :param name_regex Tutti i campi che fanno match con questa regex verranno sommati, se specificata
         :return:
         """
+        if exclude_fields != [] and name_regex is not None:
+            raise Exception("Non è possibile specificare sia una regex che una esclusione per nome")
+
         children = self.get_children(field_name, where)
         res = 0
         for child in children:
-            if not exclude_fields:
+            if not exclude_fields and not name_regex:
                 res += child.value[column]
-            elif child.name not in exclude_fields and child.field_name not in exclude_fields:
+            elif exclude_fields != [] and child.name not in exclude_fields and child.field_name not in exclude_fields:
+                res += child.value[column]
+            elif name_regex is not None and re.compile(name_regex).match(child.name):
                 res += child.value[column]
 
         return res
@@ -869,6 +879,22 @@ class BalanceSnaphot:
 
     def set_column_title(self, index: int, title: str):
         self.ce_id_map["data"].value[index] = title
+
+    def get_total_credit_entro(self, column: int):
+        """
+        Calcola il totale dei crediti entro e lo restituisce
+        :param column: Colonna su cui calcolarlo
+        :return:
+        """
+        return self.sum_children_values("totale_crediti", BalanceLocation.SP_ATTIVO, column, name_regex=r".*entro.*")
+
+    def get_total_credit_oltre(self, column: int):
+        """
+        Calcola il totale dei crediti entro e lo restituisce
+        :param column: Colonna su cui calcolarlo
+        :return:
+        """
+        return self.sum_children_values("totale_crediti", BalanceLocation.SP_ATTIVO, column, name_regex=r".*oltre.*")
 
     def copy_sp_fields_from_snapshot(self, snapshot, source_column: int, dest_column: int):
         """

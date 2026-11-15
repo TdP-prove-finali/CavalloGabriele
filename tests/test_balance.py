@@ -371,6 +371,8 @@ def test_attivo():
     assert snapshot.get_field_value("tot_crediti_imm_fin",
                                     BalanceLocation.SP_ATTIVO, 0) == r
 
+    assert snapshot.sum_children_values("totale_crediti", BalanceLocation.SP_ATTIVO, 0, name_regex=r".*entro.*") == 68848647
+
 
 def test_conto_economico():
     b = complete_company_1

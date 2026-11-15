@@ -5,6 +5,7 @@ from typing import Callable, Any
 
 from dao.util import BalanceLocation
 from model.balance_snap import BalanceSnaphot
+from model.node import Flag
 from model.sim_state import SimulationState
 import numpy as np
 
@@ -171,7 +172,6 @@ class HyperPerformerEffect(InvestmentEffect):
 class OrganicGrowthEffect(InvestmentEffect):
     seed = None
 
-    # TODO: Aspetti patrimoniali e gestione dei crediti
     def __init__(self, avg, var, title):
         self.average = avg
         self.variance = var
@@ -237,3 +237,52 @@ class CostGrowthEffect(InvestmentEffect):
 
         return state.working_snapshot
 
+class CreditCollectEffect(InvestmentEffect):
+    seed: np.random.Generator | None = None  # Il seed è condiviso così non si resetta ad ogni applicazione
+
+    """
+    Effetto automatico di incasso dei crediti. 
+    """
+    def __init__(self, alpha: float, betha: float, cperc: float, title: str):
+        super().__init__(title, EffectType.INCREASE, "",
+                         EffectFrequency.ANNUAL,
+                         BalanceLocation.SP_ATTIVO)
+        self.alpha = alpha
+        self.betha = betha
+        self.cperc = cperc
+        CreditCollectEffect.seed = np.random.default_rng(seed=42)
+
+    def apply(self, state: SimulationState) -> BalanceSnaphot:
+        # Sorteggiare una percentuale dalla distribuzione beta
+        perc = CreditCollectEffect.seed.beta(self.alpha, self.betha)
+
+        children = state.working_snapshot.get_children("totale_crediti", BalanceLocation.SP_ATTIVO, name_regex=r".*entro.*")
+        for c in children:
+            h = c.value[BalanceSnaphot.YEAR_START_COL]
+            inc = h * perc      # Valore effettivamente incassato a fine anno
+            # devo mettere un marginale che, sommato al valore storico diminuisca i crediti dell'importo incassato
+            c.value[self.current_write_index(state)] = -1 * inc
+
+        oltre = state.working_snapshot.get_children("totale_crediti", BalanceLocation.SP_ATTIVO, name_regex=r".*oltre.*")
+        for o in oltre:
+            h = o.value[BalanceSnaphot.YEAR_START_COL]
+            trasf = h * self.cperc
+
+            if trasf == 0:
+                continue
+
+            # devono essere sommati per non perdere gli incassi altrimenti i conti non tornano
+            o.value[self.current_write_index(state)] = -1 * trasf
+            n = None
+            try:
+                # provo a cercarlo con il nome, se lo trovo verifico che sia esattamente lui
+                n = state.working_snapshot.get_node_by_name(o.name.replace("oltre", "entro").replace("_o1_", "_"), BalanceLocation.SP_ATTIVO)
+                if n.field_name != o.field_name.replace("oltre", "entro").replace("_o1_", "_"):
+                    raise Exception()
+            except:
+                n = state.working_snapshot.get_node_by_name(o.field_name.replace("oltre", "entro").replace("_o1_", "_"), BalanceLocation.SP_ATTIVO)
+
+            n.value[self.current_write_index(state)] = trasf
+            o.set_flag(Flag.UPDATED)
+
+        return state.working_snapshot

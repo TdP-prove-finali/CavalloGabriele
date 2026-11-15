@@ -15,11 +15,11 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QDoubleSpinBox, QGroupBox, QHBoxLayout,
-    QLabel, QLineEdit, QListView, QMainWindow,
-    QMenuBar, QProgressBar, QPushButton, QSizePolicy,
-    QSpacerItem, QSpinBox, QStatusBar, QTextEdit,
-    QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QApplication, QDoubleSpinBox, QFrame, QGroupBox,
+    QHBoxLayout, QLabel, QLineEdit, QListView,
+    QMainWindow, QMenuBar, QProgressBar, QPushButton,
+    QSizePolicy, QSpacerItem, QSpinBox, QStatusBar,
+    QTextEdit, QVBoxLayout, QWidget)
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -318,9 +318,12 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_9.addWidget(self.label_8)
 
-        self.horizontalSpacer_8 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        self.line_3 = QFrame(self.groupBox_2)
+        self.line_3.setObjectName(u"line_3")
+        self.line_3.setFrameShape(QFrame.Shape.VLine)
+        self.line_3.setFrameShadow(QFrame.Shadow.Sunken)
 
-        self.horizontalLayout_9.addItem(self.horizontalSpacer_8)
+        self.horizontalLayout_9.addWidget(self.line_3)
 
         self.label_11 = QLabel(self.groupBox_2)
         self.label_11.setObjectName(u"label_11")
@@ -366,6 +369,21 @@ class Ui_MainWindow(object):
         self.horizontalSpacer_12 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.horizontalLayout_10.addItem(self.horizontalSpacer_12)
+
+        self.label_28 = QLabel(self.groupBox_2)
+        self.label_28.setObjectName(u"label_28")
+
+        self.horizontalLayout_10.addWidget(self.label_28)
+
+        self.cpercEdit = QDoubleSpinBox(self.groupBox_2)
+        self.cpercEdit.setObjectName(u"cpercEdit")
+
+        self.horizontalLayout_10.addWidget(self.cpercEdit)
+
+        self.label_29 = QLabel(self.groupBox_2)
+        self.label_29.setObjectName(u"label_29")
+
+        self.horizontalLayout_10.addWidget(self.label_29)
 
 
         self.verticalLayout_5.addLayout(self.horizontalLayout_10)
@@ -461,14 +479,17 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_15.addWidget(self.costGrowthAverage)
 
+        self.line = QFrame(self.groupBox_2)
+        self.line.setObjectName(u"line")
+        self.line.setFrameShape(QFrame.Shape.VLine)
+        self.line.setFrameShadow(QFrame.Shadow.Sunken)
+
+        self.horizontalLayout_15.addWidget(self.line)
+
         self.label_21 = QLabel(self.groupBox_2)
         self.label_21.setObjectName(u"label_21")
 
         self.horizontalLayout_15.addWidget(self.label_21)
-
-        self.horizontalSpacer_14 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-
-        self.horizontalLayout_15.addItem(self.horizontalSpacer_14)
 
         self.label_22 = QLabel(self.groupBox_2)
         self.label_22.setObjectName(u"label_22")
@@ -484,6 +505,49 @@ class Ui_MainWindow(object):
         self.label_23.setObjectName(u"label_23")
 
         self.horizontalLayout_15.addWidget(self.label_23)
+
+        self.horizontalSpacer_15 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.horizontalLayout_15.addItem(self.horizontalSpacer_15)
+
+        self.label_24 = QLabel(self.groupBox_2)
+        self.label_24.setObjectName(u"label_24")
+
+        self.horizontalLayout_15.addWidget(self.label_24)
+
+        self.alphaRiscEdit = QDoubleSpinBox(self.groupBox_2)
+        self.alphaRiscEdit.setObjectName(u"alphaRiscEdit")
+        self.alphaRiscEdit.setValue(80.000000000000000)
+
+        self.horizontalLayout_15.addWidget(self.alphaRiscEdit)
+
+        self.label_25 = QLabel(self.groupBox_2)
+        self.label_25.setObjectName(u"label_25")
+
+        self.horizontalLayout_15.addWidget(self.label_25)
+
+        self.line_2 = QFrame(self.groupBox_2)
+        self.line_2.setObjectName(u"line_2")
+        self.line_2.setFrameShape(QFrame.Shape.VLine)
+        self.line_2.setFrameShadow(QFrame.Shadow.Sunken)
+
+        self.horizontalLayout_15.addWidget(self.line_2)
+
+        self.label_26 = QLabel(self.groupBox_2)
+        self.label_26.setObjectName(u"label_26")
+
+        self.horizontalLayout_15.addWidget(self.label_26)
+
+        self.betaRiscEdit = QDoubleSpinBox(self.groupBox_2)
+        self.betaRiscEdit.setObjectName(u"betaRiscEdit")
+        self.betaRiscEdit.setValue(20.000000000000000)
+
+        self.horizontalLayout_15.addWidget(self.betaRiscEdit)
+
+        self.label_27 = QLabel(self.groupBox_2)
+        self.label_27.setObjectName(u"label_27")
+
+        self.horizontalLayout_15.addWidget(self.label_27)
 
 
         self.verticalLayout_5.addLayout(self.horizontalLayout_15)
@@ -592,6 +656,11 @@ class Ui_MainWindow(object):
         self.lastAvYearsLabel.setText(QCoreApplication.translate("MainWindow", u"5", None))
         self.lastAvYearsLabel.setProperty(u"cssClass", QCoreApplication.translate("MainWindow", u"number-label", None))
 #if QT_CONFIG(tooltip)
+        self.label_28.setToolTip(QCoreApplication.translate("MainWindow", u"Percentuale di crediti \"oltre\" che vengono trasferiti ogni anno a quelli \"entro\"", None))
+#endif // QT_CONFIG(tooltip)
+        self.label_28.setText(QCoreApplication.translate("MainWindow", u"Percentuale trasf. crediti", None))
+        self.label_29.setText(QCoreApplication.translate("MainWindow", u"%", None))
+#if QT_CONFIG(tooltip)
         self.label_6.setToolTip(QCoreApplication.translate("MainWindow", u"Aliquota di imposta applicata sull'utile (quando presente)", None))
 #endif // QT_CONFIG(tooltip)
         self.label_6.setText(QCoreApplication.translate("MainWindow", u"Aliquota di imposta sul reddito", None))
@@ -614,6 +683,13 @@ class Ui_MainWindow(object):
         self.label_21.setText(QCoreApplication.translate("MainWindow", u"%", None))
         self.label_22.setText(QCoreApplication.translate("MainWindow", u"Varianza", None))
         self.label_23.setText(QCoreApplication.translate("MainWindow", u"%", None))
+#if QT_CONFIG(tooltip)
+        self.label_24.setToolTip(QCoreApplication.translate("MainWindow", u"<html><head/><body><p>Distribuzione della capacit\u00e0 di riscossione crediti dell'impresa (distribuzione beta con parametri alfa e beta)</p></body></html>", None))
+#endif // QT_CONFIG(tooltip)
+        self.label_24.setText(QCoreApplication.translate("MainWindow", u"Capacit\u00e0 riscossione (alfa)", None))
+        self.label_25.setText(QCoreApplication.translate("MainWindow", u"%", None))
+        self.label_26.setText(QCoreApplication.translate("MainWindow", u"Beta", None))
+        self.label_27.setText(QCoreApplication.translate("MainWindow", u"%", None))
         self.stopSimBtn.setText(QCoreApplication.translate("MainWindow", u"Ferma simulazione", None))
         self.startSimBtn.setText(QCoreApplication.translate("MainWindow", u"Avvia simulazione", None))
     # retranslateUi

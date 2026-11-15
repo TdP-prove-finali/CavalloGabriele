@@ -12,3 +12,6 @@ class GlobalParameters:
     tax_perc: float
     cost_gr_avg: float
     cost_gr_var: float
+    cred_alpha: float
+    cred_betha: float
+    cperc: float

@@ -9133,7 +9133,10 @@ GLOBAL_CONFIG_SINGLE = GlobalParameters(
                 organic_growth_var=0.3,
                 tax_perc=0.26,
     cost_gr_var=0.20,
-    cost_gr_avg=0.10
+    cost_gr_avg=0.10,
+    cred_alpha=0.20,
+    cred_betha=0.40,
+    cperc=0.40
                 )
 
 GLOBAL_CONFIG_MUL = GlobalParameters(
@@ -9145,5 +9148,8 @@ GLOBAL_CONFIG_MUL = GlobalParameters(
                 organic_growth_var=0.2,
                 tax_perc=0.26,
     cost_gr_var=0.20,
-    cost_gr_avg=0.30
+    cost_gr_avg=0.30,
+cred_alpha=0.20,
+    cred_betha=0.40,
+    cperc=0.40
                 )

@@ -5,7 +5,7 @@ from PySide6.QtCore import QObject, Signal, Slot
 
 from dao.simulation.simulation_dao import SimulationDAO
 from model.balance_snap import BalanceSnaphot
-from model.investment_effect import OrganicGrowthEffect, EffectFrequency, CostGrowthEffect
+from model.investment_effect import OrganicGrowthEffect, EffectFrequency, CostGrowthEffect, CreditCollectEffect
 from model.sim_output import SimulationOutput
 from model.sim_state import SimulationCompleteModel
 
@@ -23,10 +23,13 @@ class SimulationWorker(QObject):
         Inizializza la simulazione aggiungendo gli effetti globali
         :return:
         """
-        g = OrganicGrowthEffect(self.model.simulation_state.global_parameters.organic_growth_avg, self.model.simulation_state.global_parameters.organic_growth_var, "organic-growth")
-        c = CostGrowthEffect(self.model.simulation_state.global_parameters.cost_gr_avg, self.model.simulation_state.global_parameters.cost_gr_var, "cost-growth")
+        g_pars = self.model.simulation_state.global_parameters
+        g = OrganicGrowthEffect(g_pars.organic_growth_avg, g_pars.organic_growth_var, "organic-growth")
+        c = CostGrowthEffect(g_pars.cost_gr_avg, g_pars.cost_gr_var, "cost-growth")
+        cc = CreditCollectEffect(g_pars.cred_alpha, g_pars.cred_betha, g_pars.cperc, "credit-collect")
         self.model.project.global_effects.append(g)
         self.model.project.global_effects.append(c)
+        self.model.project.global_effects.append(cc)
         self.__year_init__()
 
     def __year_init__(self):
