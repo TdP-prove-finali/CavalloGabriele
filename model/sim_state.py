@@ -25,6 +25,8 @@ class SimulationState:
                                                             effect_pointer="",
                                                             single_year=True,
                                                             global_config=self.global_parameters)
+    def current_write_index(self):
+        return 2 + (self.current_month % 12)
 
 class SimulationCompleteModel:
     def __init__(self, simulation_state: SimulationState, project):

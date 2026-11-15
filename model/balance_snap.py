@@ -9,7 +9,7 @@ from model.node import Node, NodeType, Flag
 from model.raw_company_data import CompanyData
 from model.sim_params import GlobalParameters
 
-PRIVATE_FIELDS = ["data", "moneta", "periodo", "subsections"]
+PRIVATE_FIELDS = ["data", "moneta", "periodo", "subsections", "ics"]
 
 def get_matching_node(numeration: str, graph: DiGraph, where: BalanceLocation) -> Node | None:
     """Restituisce il nodo che ha esattamente la stessa numerazione di quella indicata e che si trova esattamente nella stessa sezione
@@ -876,6 +876,10 @@ class BalanceSnaphot:
 
         if column_title is not None:
             self.set_column_title(dest_column, column_title)
+
+    def copy_field_from_snapshot(self, field_name: str, where: BalanceLocation, snap, source_col: int, dest_col: int):
+        v = snap.get_field_value(field_name, where, source_col)
+        self.set_field_value(field_name, where, v, dest_col)
 
     def set_column_title(self, index: int, title: str):
         self.ce_id_map["data"].value[index] = title

@@ -2,8 +2,8 @@ import math
 
 import simpy
 from PySide6.QtCore import QObject, Signal, Slot
-
 from dao.simulation.simulation_dao import SimulationDAO
+from dao.util import BalanceLocation
 from model.balance_snap import BalanceSnaphot
 from model.investment_effect import OrganicGrowthEffect, EffectFrequency, CostGrowthEffect, CreditCollectEffect
 from model.sim_output import SimulationOutput
@@ -132,6 +132,9 @@ class SimulationWorker(QObject):
                     # tra un anno e l'altro eredito solo lo stato patrimoniale
                     self.model.simulation_state.working_snapshot.copy_sp_fields_from_snapshot(f_s, self.__current_year__(), BalanceSnaphot.YEAR_START_COL)
                     # i campi del CE vengono mantenuti identici a quelli di inizializzazione, in modo tale che gli effetti economici non siano moltiplicativi tra di loro
+                    # gli unici che vengono copiati sono i campi utilizzati dagli effetti globali
+                    self.model.simulation_state.working_snapshot.copy_field_from_snapshot(OrganicGrowthEffect.field_target, BalanceLocation.CE, f_s, self.__current_year__(), BalanceSnaphot.HISTORIC_COL)
+                    self.model.simulation_state.working_snapshot.copy_field_from_snapshot(CostGrowthEffect.field_target, BalanceLocation.CE, f_s, self.__current_year__(), BalanceSnaphot.HISTORIC_COL)
 
                 yield env.timeout(1)
                 m.simulation_state.current_month += 1

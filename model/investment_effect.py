@@ -171,6 +171,7 @@ class HyperPerformerEffect(InvestmentEffect):
 
 class OrganicGrowthEffect(InvestmentEffect):
     seed = None
+    field_target = "ricavi_vendite_e_prestazioni"
 
     def __init__(self, avg, var, title):
         self.average = avg
@@ -182,22 +183,28 @@ class OrganicGrowthEffect(InvestmentEffect):
 
     def apply(self, state) -> BalanceSnaphot:
         current_month = state.current_month
-        # Il valore della colonna year start è annuale, quindi viene diviso per 12 per renderlo mensile
-        prev_value = state.working_snapshot.get_field_value(self.field_name,BalanceLocation.CE, 0) / 12
-        if prev_value is None:
-            raise Exception("Attenzione: non è disponibile un'informazione di fatturato storico")
+        prev_value = 0
+        if current_month == 0 or (current_month % 12) == 0:   # Primo mese dell'anno, prendo come valore iniziale lo storico
+            # Il valore della colonna year start è annuale, quindi viene diviso per 12 per renderlo mensile
+            prev_value = state.working_snapshot.get_field_value(self.field_name,BalanceLocation.CE, 0) / 12
+            if prev_value is None:
+                raise Exception("Attenzione: non è disponibile un'informazione di fatturato storico")
+        else:
+            # leggo il marginale precedente che è già diviso per 12
+            prev_value = state.working_snapshot.get_field_value(self.field_name,BalanceLocation.CE, state.current_write_index() - 1)
 
         rng = OrganicGrowthEffect.seed
         Z_n = rng.normal(loc=0, scale=1)
-        dt = (current_month / 12) + 1
+        dt = 1 / 12
         X_tn1 = prev_value * exp(
             (self.average - self.variance / 2) * dt
             + sqrt(self.variance * dt) * Z_n
         )
-        state.working_snapshot.set_field_value(self.field_name, BalanceLocation.CE, X_tn1 - prev_value, month=self.current_write_index(state))
+        state.working_snapshot.set_field_value(self.field_name, BalanceLocation.CE, X_tn1, month=self.current_write_index(state))
         return state.working_snapshot
 
 class CostGrowthEffect(InvestmentEffect):
+    field_target = "materie_prime_e_consumo"
     seed = None     # Il seed è condiviso così non si resetta ad ogni applicazione
 
     """
