@@ -84,7 +84,8 @@ def test_sim():
                 "test",
                 "test",
                 []
-            )
+            ),
+        reason_exit="fine-tempo"
         )
 
     SimulationDAO.save_simulation(ctrl)
@@ -544,8 +545,8 @@ def test_simulation_single_year():
                     4000,
                     100,
                     0,
-                    0.1,
-                    0.1,
+                    300,
+                    3,
                     6,
                     0.24,
                     0.5,
@@ -858,8 +859,8 @@ def test_simulation_multiple_year():
                     4000,
                     100,
                     0,
-                    0.1,
-                    0.1,
+                    300,
+                    6,
                     6,
                     0.24,
                     0.5,

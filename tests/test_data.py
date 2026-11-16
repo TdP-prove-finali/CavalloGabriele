@@ -9129,7 +9129,7 @@ GLOBAL_CONFIG_SINGLE = GlobalParameters(
                     1,
                     organic_growth_avg=0.9,
                     last_available_years=complete_company_1.available_years,
-                    sim_id=5,
+                    sim_id=42,
                 organic_growth_var=0.3,
                 tax_perc=0.26,
     cost_gr_var=0.20,

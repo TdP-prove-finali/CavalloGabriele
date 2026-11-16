@@ -169,7 +169,7 @@ class ProductivityIncreaseEffect(InvestmentEffect):
 
     def apply(self, state: SimulationState) -> BalanceSnaphot:
         if self.r is None:
-            self.r = state.working_snapshot.get_field_value(self.field_name, self.where, BalanceSnaphot.HISTORIC_COL) / state.working_snapshot.get_field_value("dipendenti", BalanceLocation.CE, BalanceSnaphot.HISTORIC_COL)
+            self.r = state.working_snapshot.get_field_value(self.field_name, self.where, BalanceSnaphot.HISTORIC_COL) / state.working_snapshot.get_field_value("dipendenti", BalanceLocation.CE, BalanceSnaphot.HISTORIC_COL) / 12
 
         t = state.current_month + 1
 
@@ -181,7 +181,7 @@ class ProductivityIncreaseEffect(InvestmentEffect):
             hp = lomax.rvs(c=self.hp_lomax_shape, scale=self.hp_lomax_scale)
 
         val = (self.r * alpha_t) + hp
-        state.working_snapshot.sum_field_value(self.field_name, self.where, val, state.current_write_index())
+        state.working_snapshot.sum_field_value(self.field_name, self.where, val, self.current_write_index(state))
 
         return state.working_snapshot
 
