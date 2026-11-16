@@ -126,7 +126,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
     <rect>
      <x>30</x>
      <y>80</y>
-     <width>271</width>
+     <width>301</width>
      <height>166</height>
     </rect>
    </property>
@@ -197,6 +197,30 @@ li.checked::marker { content: &quot;\2612&quot;; }
        <widget class="QLabel" name="label_3">
         <property name="text">
          <string>€</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <item>
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string>Durata ammortamento (anni)</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QSpinBox" name="durationEdit">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimum">
+         <number>1</number>
         </property>
        </widget>
       </item>

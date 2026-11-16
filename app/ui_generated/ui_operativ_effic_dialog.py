@@ -17,8 +17,8 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QAbstractButton, QApplication, QDialog, QDialogButtonBox,
     QDoubleSpinBox, QGroupBox, QHBoxLayout, QLabel,
-    QLineEdit, QSizePolicy, QSpacerItem, QTextBrowser,
-    QVBoxLayout, QWidget)
+    QLineEdit, QSizePolicy, QSpacerItem, QSpinBox,
+    QTextBrowser, QVBoxLayout, QWidget)
 
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
@@ -60,7 +60,7 @@ class Ui_Dialog(object):
 
         self.layoutWidget = QWidget(Dialog)
         self.layoutWidget.setObjectName(u"layoutWidget")
-        self.layoutWidget.setGeometry(QRect(30, 80, 271, 166))
+        self.layoutWidget.setGeometry(QRect(30, 80, 301, 166))
         self.verticalLayout = QVBoxLayout(self.layoutWidget)
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)
@@ -105,15 +105,36 @@ class Ui_Dialog(object):
 
         self.verticalLayout.addLayout(self.horizontalLayout_3)
 
+        self.horizontalLayout_2 = QHBoxLayout()
+        self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
+        self.label_4 = QLabel(self.layoutWidget)
+        self.label_4.setObjectName(u"label_4")
+
+        self.horizontalLayout_2.addWidget(self.label_4)
+
+        self.durationEdit = QSpinBox(self.layoutWidget)
+        self.durationEdit.setObjectName(u"durationEdit")
+        sizePolicy = QSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.durationEdit.sizePolicy().hasHeightForWidth())
+        self.durationEdit.setSizePolicy(sizePolicy)
+        self.durationEdit.setMinimum(1)
+
+        self.horizontalLayout_2.addWidget(self.durationEdit)
+
+
+        self.verticalLayout.addLayout(self.horizontalLayout_2)
+
         self.horizontalLayout_6 = QHBoxLayout()
         self.horizontalLayout_6.setObjectName(u"horizontalLayout_6")
         self.label_17 = QLabel(self.layoutWidget)
         self.label_17.setObjectName(u"label_17")
-        sizePolicy = QSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Preferred)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.label_17.sizePolicy().hasHeightForWidth())
-        self.label_17.setSizePolicy(sizePolicy)
+        sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Preferred)
+        sizePolicy1.setHorizontalStretch(0)
+        sizePolicy1.setVerticalStretch(0)
+        sizePolicy1.setHeightForWidth(self.label_17.sizePolicy().hasHeightForWidth())
+        self.label_17.setSizePolicy(sizePolicy1)
 
         self.horizontalLayout_6.addWidget(self.label_17)
 
@@ -128,8 +149,8 @@ class Ui_Dialog(object):
 
         self.label_18 = QLabel(self.layoutWidget)
         self.label_18.setObjectName(u"label_18")
-        sizePolicy.setHeightForWidth(self.label_18.sizePolicy().hasHeightForWidth())
-        self.label_18.setSizePolicy(sizePolicy)
+        sizePolicy1.setHeightForWidth(self.label_18.sizePolicy().hasHeightForWidth())
+        self.label_18.setSizePolicy(sizePolicy1)
 
         self.horizontalLayout_6.addWidget(self.label_18)
 
@@ -171,6 +192,7 @@ class Ui_Dialog(object):
         self.totalImportEdit.setInputMask("")
         self.totalImportEdit.setText("")
         self.label_3.setText(QCoreApplication.translate("Dialog", u"\u20ac", None))
+        self.label_4.setText(QCoreApplication.translate("Dialog", u"Durata ammortamento (anni)", None))
 #if QT_CONFIG(tooltip)
         self.label_17.setToolTip(QCoreApplication.translate("Dialog", u"Costo una tantum speso dall'azienda per formare inizialmente il dipendente nuovo", None))
 #endif // QT_CONFIG(tooltip)

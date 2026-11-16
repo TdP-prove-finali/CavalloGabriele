@@ -104,7 +104,9 @@ class InvestProjectController(AbstractController[InvestSimWindow, InvestmentProj
 
     @Slot()
     def handleCreateEffic(self):
-        dialog = OperativeImprovementDialog()
+        dialog = OperativeImprovementDialog(
+            self.parent_model.company_data.conto_economico["b7_servizi"][-1]
+        )
         self.set_internal_pointer("dialog", dialog)
         result = dialog.exec()
 

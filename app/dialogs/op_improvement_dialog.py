@@ -8,13 +8,14 @@ from model.investment_item import FundingInvestment, FundingType, ProductivityIm
 
 
 class OperativeImprovementDialog(QDialog):
-    def __init__(self):
+    def __init__(self, operative_costs: float):
         super().__init__()
         self.ui = Ui_Dialog()
         self.ui.setupUi(self)
         self.__item__: ProductivityImprovementInvestment | None = None
         regex = QRegularExpression(r"-?\d+(?:[.,]\d+)?")
         self.ui.totalImportEdit.setValidator(QRegularExpressionValidator(regex, self.ui.totalImportEdit))
+        self.operative_costs = operative_costs
 
     def accept(self, /):
         t = self.ui.operationTitleEdit.text()
@@ -28,12 +29,14 @@ class OperativeImprovementDialog(QDialog):
             msgBox.exec()
             return
 
+        p = parse(s) / 100
 
         self.__item__ = ProductivityImprovementInvestment(
             title=t,
             id=1,
             total_cost=parse(c_l),
-            yearly_op_cost_reduction=parse(s)
+            yearly_op_red=self.operative_costs * p,
+            duration=parse(self.ui.durationEdit.text())
         )
         super().accept()
 

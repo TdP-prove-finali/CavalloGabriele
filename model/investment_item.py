@@ -125,18 +125,29 @@ class AssetInvestment(AbstractInvestmentItem):
         self.amortization_quote = self.total_cost / self.duration_years
         effects = [
         ]
-        if self.type == AssetType.MATERIAL:
-            field = "amm_immob_mat"
+        if self.asset_type == AssetType.MATERIAL:
+            field_amm = "amm_immob_mat"
+            field_immob = "costi_ricerca_e_pubb"
         else:
-            field = "amm_immob_immat"
+            field_amm = "amm_immob_immat"
+            field_immob = "impianti"
 
         effects.append(InvestmentEffect(
                 title="ammortamento-cespite",
                 inv_type=EffectType.CONST,
-                field_name=field,
+                field_name=field_amm,
                 frequency=EffectFrequency.ANNUAL,
                 where=BalanceLocation.CE,
                 value_constant=self.amortization_quote))
+
+        effects.append(InvestmentEffect(
+            title="incremento-immobilizzazioni",
+            inv_type=EffectType.CONST,
+            field_name=field_immob,
+            frequency=EffectFrequency.ONCE,
+            value_constant=self.total_cost,
+            where=BalanceLocation.SP_ATTIVO
+        ))
 
         super().__init__(title, id, self.type, effects)
 
@@ -148,16 +159,42 @@ class ProductivityImprovementInvestment(AbstractInvestmentItem):
                  title: str,
                  id: int,
                  total_cost: float,
-                 yearly_op_cost_reduction: float
+                 yearly_op_red: float,
+                 duration: int
                  ):
         self.type = "op-improvement-investment"
-
+        self.duration = duration
         if total_cost < 0:
             raise ValueError("Il costo del cespite non può essere negativo")
 
-        self.yearly_op_cost_reduction = yearly_op_cost_reduction
+        self.yearly_op_cost_red_perc = yearly_op_red
         self.total_cost = total_cost
-        effects = []            # TODO: Impostare effetti
+        effects = [
+            InvestmentEffect(
+                title="cost-reduction",
+                field_name="servizi",
+                value_constant=self.yearly_op_cost_red_perc * (-1),
+                frequency=EffectFrequency.ANNUAL,
+                where=BalanceLocation.CE,
+                inv_type=EffectType.CONST
+            ),
+            InvestmentEffect(
+                title="cost-amortization",
+                field_name="amm_immob_immat",
+                inv_type=EffectType.CONST,
+                frequency=EffectFrequency.ANNUAL,
+                value_constant=self.total_cost / self.duration,
+                where=BalanceLocation.CE,
+            ),
+            InvestmentEffect(
+                title="incremento-immobilizzazioni",
+                inv_type=EffectType.CONST,
+                field_name="costi_impianto_e_ampl",
+                frequency=EffectFrequency.ONCE,
+                value_constant=self.total_cost,
+                where=BalanceLocation.SP_ATTIVO
+            )
+        ]
         super().__init__(title, id, self.type, effects)
 
     def total_expenditure_first_month(self) -> float:
@@ -180,6 +217,44 @@ class FundingInvestment(AbstractInvestmentItem):
         self.interest_rate = interest_rate
         self.duration = duration
         effects = []
+        if type == FundingType.BANK:
+            effects.append(InvestmentEffect(
+                field_name="banche_entro_lesercizio",
+                where=BalanceLocation.SP_PASSIVO_DEBITI,
+                value_constant=self.total_import / self.duration,
+                frequency=EffectFrequency.ANNUAL,
+                inv_type=EffectType.CONST,
+                title="banche_entro"
+            ))
+            effects.append(InvestmentEffect(
+                field_name="banche_oltre_lesercizio",
+                where=BalanceLocation.SP_PASSIVO_DEBITI,
+                value_constant=self.total_import - (self.total_import / self.duration),
+                frequency=EffectFrequency.ONCE,
+                inv_type=EffectType.CONST,
+                title="banche_oltre"
+            ))
+            effects.append(
+                InvestmentEffect(
+                    field_name="totale_oneri_finanziari",
+                    where=BalanceLocation.CE,
+                    frequency=EffectFrequency.ANNUAL,
+                    value_constant=self.interest_rate * self.total_import,
+                    title="interessi-passivi",
+                    inv_type=EffectType.CONST
+                )
+            )
+        elif type == FundingType.STOCK:
+            effects.append(
+                InvestmentEffect(
+                    field_name="capitale_sociale",
+                    where=BalanceLocation.SP_PASSIVO_PATRIM,
+                    value_constant=self.total_import,
+                    frequency=EffectFrequency.ONCE,
+                    inv_type=EffectType.CONST,
+                    title="versamento-cap-sociale"
+                )
+            )
         super().__init__(title, id, "funding-investment", effects)
 
     def total_funding_request_first_month(self) -> float:
