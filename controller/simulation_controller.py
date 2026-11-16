@@ -5,9 +5,10 @@ from PySide6.QtCore import QObject, Signal, Slot
 from dao.simulation.simulation_dao import SimulationDAO
 from dao.util import BalanceLocation
 from model.balance_snap import BalanceSnaphot
-from model.event.custom_events import BankruptcyEvent, SimulationStopEvent
+from model.event.custom_events import BankruptcyEvent, SimulationStopEvent, DebitorInsolvencyEvent, \
+    MoveCentralizedTreasury
 from model.investment_effect import OrganicGrowthEffect, EffectFrequency, CostGrowthEffect, CreditCollectEffect, \
-    InvestmentEffect
+    InvestmentEffect, EffectExecFlags, DebitPayEffect
 from model.sim_output import SimulationOutput
 from model.sim_state import SimulationCompleteModel, SimulationState
 
@@ -19,9 +20,10 @@ class SimulationWorker(QObject):
     def __init__(self, model: SimulationCompleteModel):
         super().__init__()
         self.model = model
-        self.sim_finish_event = None
-        self.bankrupt_event = None
+        self.sim_finish_event: SimulationStopEvent | None = None
+        self.bankrupt_event: BankruptcyEvent | None = None
         self.timeout_event = None
+        self.insolvency_event: DebitorInsolvencyEvent | None = None
 
     def simulation_init(self):
         """
@@ -32,9 +34,11 @@ class SimulationWorker(QObject):
         g = OrganicGrowthEffect(g_pars.organic_growth_avg, g_pars.organic_growth_var, "organic-growth")
         c = CostGrowthEffect(g_pars.cost_gr_avg, g_pars.cost_gr_var, "cost-growth")
         cc = CreditCollectEffect(g_pars.cred_alpha, g_pars.cred_betha, g_pars.cperc, "credit-collect")
+        dbt = DebitPayEffect(2, "debit-pay")
         self.model.project.global_effects.append(g)
         self.model.project.global_effects.append(c)
         self.model.project.global_effects.append(cc)
+        self.model.project.global_effects.append(dbt)
         self.__year_init__()
 
     def __year_init__(self):
@@ -86,7 +90,17 @@ class SimulationWorker(QObject):
         :return:
         """
         for effect in self.model.project.global_effects:
-            self.__execute_effect__(effect)
+            if EffectExecFlags.YEAR_END not in effect.flags:
+                self.__execute_effect__(effect)
+
+    def __execute_global_effects_year_end_(self):
+        """
+        Esegue gli effetti globali, controllando se si applicano
+        :return:
+        """
+        for effect in self.model.project.global_effects:
+            if EffectExecFlags.YEAR_END in effect.flags:
+                self.__execute_effect__(effect)
 
     def __execute_project_effects__(self):
         """
@@ -98,17 +112,38 @@ class SimulationWorker(QObject):
             for effect in item.effects:
                 self.__execute_effect__(effect)
 
-    def __bankruptcy_check__(self, snapshot: BalanceSnaphot, column: int):
+    def __bankruptcy_check__(self, snapshot: BalanceSnaphot, column: int) -> simpy.events.Event | None:
         """
         Controlla le condizioni di bancarotta (liquidità negativa o impossibilità di pagamento debiti entro
         :param snapshot: Bilancio da leggere
         :return:
         """
-        if snapshot.get_total_liquidity(column) < 0:
-            print(f"WARNING: Al termine dell'anno {self.__current_year__()} la liquidità è diventata negativa. ")
-            return True
+        liq = snapshot.get_total_liquidity(column)
+        acc = snapshot.get_field_value("attivita_finanziarie_per_la_gestione_accentrata_della_tesoreria", BalanceLocation.SP_ATTIVO, column)
+        if liq + acc < 0:
+            self.bankrupt_event.declare_bankruptcy(
+                self.__current_year__(),
+                self.model.simulation_state.working_snapshot.get_total_liquidity(
+                    BalanceSnaphot.YEAR_END_COL))
+            return self.bankrupt_event
 
-        return False
+        t_debt_entro = snapshot.get_total_debit_entro(column)
+        if  t_debt_entro > liq + acc:
+
+            self.insolvency_event.declare_insolvency(self.__current_year__(),
+                self.model.simulation_state.working_snapshot.get_total_liquidity(
+                    BalanceSnaphot.YEAR_END_COL),
+                    self.model.simulation_state.working_snapshot.get_total_debit_entro(column))
+
+            return self.insolvency_event
+
+        diff = t_debt_entro - liq
+        if diff > 0:
+            mv = MoveCentralizedTreasury(self.model.env, diff, self.__current_year__(), self.model.simulation_state.working_snapshot)
+            mv.require_move()
+            return mv
+
+        return None
 
     @Slot()
     def start(self):
@@ -131,13 +166,16 @@ class SimulationWorker(QObject):
                     self.model.simulation_state.working_snapshot.aggregate_by_year()
                     self.model.simulation_state.working_snapshot.recalculate_balance()
                     # logica di gestione del debito e fallimento
-                    if self.__bankruptcy_check__(self.model.simulation_state.working_snapshot, BalanceSnaphot.YEAR_END_COL):
-                        self.bankrupt_event.declare_bankruptcy(
-                            self.__current_year__(),
-                            self.model.simulation_state.working_snapshot.get_total_liquidity(
-                                BalanceSnaphot.YEAR_END_COL))
-                        yield self.bankrupt_event
+                    evt = self.__bankruptcy_check__(self.model.simulation_state.working_snapshot, BalanceSnaphot.YEAR_END_COL)
+                    if evt is not None:
+                        yield evt
 
+                    print("Ora ricalcolo i debiti")
+                    self.__execute_global_effects_year_end_()
+                    # azzero solo lo stato patrimoniale
+                    self.model.simulation_state.working_snapshot.reset_columns(BalanceSnaphot.YEAR_END_COL, BalanceSnaphot.YEAR_END_COL, 0, no_ce=True)
+                    self.model.simulation_state.working_snapshot.aggregate_by_year(no_ce=True)
+                    self.model.simulation_state.working_snapshot.recalculate_balance(only_sp=True)
                     self.model.simulation_state.working_snapshot.calc_indicies()
                     f_s = self.model.simulation_state.final_result_snapshot
                     f_s.create_column(f"Anno {self.__current_year__()}")
@@ -165,6 +203,7 @@ class SimulationWorker(QObject):
         self.model.env = simpy.Environment()
         self.sim_finish_event = SimulationStopEvent(self.model.env)
         self.bankrupt_event = BankruptcyEvent(self.model.env, self.sim_finish_event)
+        self.insolvency_event = DebitorInsolvencyEvent(self.model.env, self.sim_finish_event)
         self.timeout_event = self.model.env.timeout((self.model.simulation_state.global_parameters.number_of_years * 12) - 1)
         self.model.env.process(effect_spawner(self.model.env))
         result = self.model.env.run(until=self.sim_finish_event | self.timeout_event)

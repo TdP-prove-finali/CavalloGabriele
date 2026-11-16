@@ -60,6 +60,9 @@ ROMAN_FIELD_REGEX = re.compile(
     r"(?=_|$)"
 )
 
+def normalize_zero(value: float) -> float:
+    return 0.0 if abs(value) < 0.01 else value
+
 def step_up_numbering(old_numeration: str, where: BalanceLocation | None = None) -> str:
     """
     Restituisce la numerazione del parent a cui appartiene il campo, gestendo sia la numerazione araba che quella romana

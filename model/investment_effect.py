@@ -37,8 +37,12 @@ class InvestmentEffect:
                  value_constant: float | None = None,
                  value_func: Callable[[Any], float] | None = None,
                  flags=None):
+
         if flags is None:
-            flags = []
+            self.flags = []
+        else:
+            self.flags = flags
+
         self.title = title
         self.type = inv_type
         self.field_name = field_name
@@ -301,7 +305,63 @@ class CreditCollectEffect(InvestmentEffect):
             except:
                 n = state.working_snapshot.get_node_by_name(o.field_name.replace("oltre", "entro").replace("_o1_", "_"), BalanceLocation.SP_ATTIVO)
 
-            n.value[self.current_write_index(state)] = trasf
+            n.value[self.current_write_index(state)] += trasf
+            o.set_flag(Flag.UPDATED)
+
+        return state.working_snapshot
+
+class DebitPayEffect(InvestmentEffect):
+    """
+        Effetto automatico di pagamento dei debiti a entro e trasferimento debiti a oltre.
+    """
+
+    def __init__(self, years_ammort: float, title: str):
+        super().__init__(title, EffectType.INCREASE, "",
+                         EffectFrequency.ANNUAL,
+                         BalanceLocation.SP_ATTIVO,
+                         flags=[EffectExecFlags.YEAR_END])
+
+        self.years_ammort = years_ammort
+        self.ammort_quote: dict[str, float] = {}
+
+
+    def apply(self, state: SimulationState) -> BalanceSnaphot:
+        children = state.working_snapshot.get_children("totale_debiti", BalanceLocation.SP_PASSIVO_DEBITI,
+                                                       name_regex=r".*entro.*")
+        for c in children:
+            h = c.value[BalanceSnaphot.YEAR_START_COL]
+
+            # devo mettere un marginale che, sommato al valore storico diminuisca i debiti a entro e li porti a 0
+            c.value[self.current_write_index(state)] = -1 * h
+
+        oltre = state.working_snapshot.get_children("totale_debiti", BalanceLocation.SP_PASSIVO_DEBITI,
+                                                    name_regex=r".*oltre.*")
+        for o in oltre:
+            if self.ammort_quote.get(o.name) is None:
+                h = o.value[BalanceSnaphot.YEAR_START_COL]
+                quote = h / self.years_ammort
+                self.ammort_quote[o.name] = quote
+            else:
+                quote = self.ammort_quote.get(o.name)
+
+            if quote == 0 or o.value[BalanceSnaphot.YEAR_START_COL] == 0:
+                continue
+
+            # devono essere sommati per non perdere gli incassi altrimenti i conti non tornano
+            o.value[self.current_write_index(state)] -= quote
+            n = None
+            try:
+                # provo a cercarlo con il nome, se lo trovo verifico che sia esattamente lui
+                n = state.working_snapshot.get_node_by_name(o.name.replace("oltre", "entro").replace("_o1_", "_"),
+                                                            BalanceLocation.SP_PASSIVO_DEBITI)
+                if n.field_name != o.field_name.replace("oltre", "entro").replace("_o1_", "_"):
+                    raise Exception()
+            except:
+                n = state.working_snapshot.get_node_by_name(o.field_name.replace("oltre", "entro").replace("_o1_", "_"),
+                                                            BalanceLocation.SP_PASSIVO_DEBITI)
+
+
+            n.value[self.current_write_index(state)] += quote
             o.set_flag(Flag.UPDATED)
 
         return state.working_snapshot

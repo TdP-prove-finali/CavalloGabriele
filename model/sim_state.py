@@ -32,3 +32,4 @@ class SimulationCompleteModel:
     def __init__(self, simulation_state: SimulationState, project):
         self.simulation_state = simulation_state
         self.project = project
+        self.env: simpy.Environment | None = None

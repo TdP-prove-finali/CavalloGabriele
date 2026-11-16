@@ -3,7 +3,7 @@ from copy import deepcopy
 from typing import Callable, Any
 import networkx as nx
 from networkx.classes import DiGraph
-from dao.util import step_up_field, extract_field_identif, SECTION_HEAD, BalanceLocation, sum_vectors
+from dao.util import step_up_field, extract_field_identif, SECTION_HEAD, BalanceLocation, sum_vectors, normalize_zero
 from model.FieldNotFoundException import FieldNotFoundException
 from model.node import Node, NodeType, Flag
 from model.raw_company_data import CompanyData
@@ -66,7 +66,6 @@ class BalanceSnaphot:
         "imposte_correnti": Flag.NO_COPY,
         "imposte_relative_a_esercizi_precedenti": Flag.NO_COPY,
         '_21_utile_frac_perdita_di_esercizio': Flag.NO_COPY,
-        "altri_ricavi": Flag.NO_COPY,
         "altre_svalut_immob": Flag.NO_COPY,
         "svalut_crediti": Flag.NO_COPY
     }
@@ -427,8 +426,10 @@ class BalanceSnaphot:
         altri = self.get_field_value("altri_accantonamenti", BalanceLocation.CE, self.YEAR_END_COL)
         self.sum_field_value("altri_fondi", BalanceLocation.SP_PASSIVO_PATRIM, altri, self.YEAR_END_COL)
 
-    def calc_terminal_fields(self):
-        self.calc_ce_terminal_fields(column=self.YEAR_END_COL)
+    def calc_terminal_fields(self, only_sp):
+        if not only_sp:
+            self.calc_ce_terminal_fields(column=self.YEAR_END_COL)
+
         self.__ammortamenti_sp__()
         self.__destinazione_utili__()
 
@@ -557,7 +558,7 @@ class BalanceSnaphot:
         utl = ebt - tss
         self.set_field_value('_21_utile_frac_perdita_di_esercizio', BalanceLocation.CE, utl, column)
 
-    def aggregate_by_year(self):
+    def aggregate_by_year(self, no_ce = False):
         """
         Aggrega tutti i marginali delle variazioni (colonne da 2 a 13 incluse) in un unico valore per riga
         e lo scrive sulla colonna 14 (year end)
@@ -571,7 +572,8 @@ class BalanceSnaphot:
             s = sum(vals_to_agg)
             node.value[14] = s + year_start_value
 
-        self.for_each_ce_field(aggr, exclude_context_fields=True)
+        if not no_ce:
+            self.for_each_ce_field(aggr, exclude_context_fields=True)
         self.for_each_sp_field(aggr, exclude_context_fields=True)
 
     def for_each_ce_field(self, function: Callable[[str, list[Any], Node, BalanceLocation], None | list[Any]],
@@ -799,13 +801,14 @@ class BalanceSnaphot:
         self.for_each_ce_field(rst, exclude_context_fields=True)
         self.for_each_sp_field(rst, exclude_context_fields=True)
 
-    def recalculate_balance(self):
+    def recalculate_balance(self, only_sp = False):
         """
         Ricalcola tutti gli aggregati del bilancio (prima il CE, poi trasporta i valori patrimoniali e poi SP)
         :return:
         """
-        self.__calc_from_node(self.ce_id_map["conto_economico"], self.conto_economico)
-        self.calc_terminal_fields()
+        if not only_sp:
+            self.__calc_from_node(self.ce_id_map["conto_economico"], self.conto_economico)
+        self.calc_terminal_fields(only_sp)
 
     def serialize(self) -> tuple[dict, dict]:
         """
@@ -892,6 +895,23 @@ class BalanceSnaphot:
         :return:
         """
         return self.sum_children_values("totale_crediti", BalanceLocation.SP_ATTIVO, column, name_regex=r".*entro.*")
+
+    def get_total_debit_entro(self, column: int):
+        """
+        Calcola il totale dei debiti entro e lo restituisce
+        :param column: Colonna su cui calcolarlo
+        :return:
+        """
+        return self.sum_children_values("totale_debiti", BalanceLocation.SP_PASSIVO_DEBITI, column, name_regex=r".*entro.*")
+
+    def get_total_debit_oltre(self, column: int):
+        """
+        Calcola il totale dei crediti entro e lo restituisce
+        :param column: Colonna su cui calcolarlo
+        :return:
+        """
+        return self.sum_children_values("totale_debiti", BalanceLocation.SP_PASSIVO_DEBITI, column,
+                                        name_regex=r".*oltre.*")
 
     def get_total_credit_oltre(self, column: int):
         """
@@ -1013,7 +1033,7 @@ class BalanceSnaphot:
             column=column,
             exclude_fields=["totale_attivo"],
         )
-        liq = tot_passivo - tot_att_senza_depositi
+        liq = normalize_zero(tot_passivo - tot_att_senza_depositi)
         self.set_field_value(
             "depositi_bancari",
             BalanceLocation.SP_ATTIVO,
@@ -1041,7 +1061,7 @@ class BalanceSnaphot:
         return self.get_field_value("tot_dispon_liquide", BalanceLocation.SP_ATTIVO, column)
 
 
-    def reset_columns(self, col_start: int, col_end: int, default_value = 0):
+    def reset_columns(self, col_start: int, col_end: int, default_value = 0, no_ce = False):
         """
         Resetta un blocco di colonne
         :param col_start:
@@ -1056,6 +1076,7 @@ class BalanceSnaphot:
             else:
                 for i in range(col_start, col_end):
                     node.value[i] = default_value
+        if not no_ce:
+            self.for_each_ce_field(rst, exclude_context_fields=True)
 
-        self.for_each_ce_field(rst, exclude_context_fields=True)
         self.for_each_sp_field(rst, exclude_context_fields=True)
