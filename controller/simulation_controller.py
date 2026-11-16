@@ -5,9 +5,11 @@ from PySide6.QtCore import QObject, Signal, Slot
 from dao.simulation.simulation_dao import SimulationDAO
 from dao.util import BalanceLocation
 from model.balance_snap import BalanceSnaphot
-from model.investment_effect import OrganicGrowthEffect, EffectFrequency, CostGrowthEffect, CreditCollectEffect
+from model.event.custom_events import BankruptcyEvent, SimulationStopEvent
+from model.investment_effect import OrganicGrowthEffect, EffectFrequency, CostGrowthEffect, CreditCollectEffect, \
+    InvestmentEffect
 from model.sim_output import SimulationOutput
-from model.sim_state import SimulationCompleteModel
+from model.sim_state import SimulationCompleteModel, SimulationState
 
 class SimulationWorker(QObject):
     finished = Signal(object)
@@ -17,6 +19,9 @@ class SimulationWorker(QObject):
     def __init__(self, model: SimulationCompleteModel):
         super().__init__()
         self.model = model
+        self.sim_finish_event = None
+        self.bankrupt_event = None
+        self.timeout_event = None
 
     def simulation_init(self):
         """
@@ -52,70 +57,89 @@ class SimulationWorker(QObject):
 
         return math.floor((self.model.simulation_state.current_month + 1) / 12)
 
+    def __execute_effect__(self, effect: InvestmentEffect):
+        """
+        Esegue un effetto (se è arrivato il suo momento)
+        :param effect:
+        :return:
+        """
+        m: SimulationCompleteModel = self.model
+        if effect.frequency == EffectFrequency.MONTHLY:
+            print("Eseguo l'effetto mensile " + effect.title)
+            effect.apply(self.model.simulation_state)
+        elif effect.frequency == EffectFrequency.ANNUAL and self.__is_year_end():
+            print("Eseguo l'effetto annuale " + effect.title)
+            effect.apply(self.model.simulation_state)
+        elif effect.frequency == EffectFrequency.BI_MONTHLY and m.simulation_state.current_month % 2 == 0:
+            print("Eseguo l'effetto bimestrale " + effect.title)
+            effect.apply(self.model.simulation_state)
+        elif effect.frequency == EffectFrequency.TRI_MONTHLY and m.simulation_state.current_month % 3 == 0:
+            print("Eseguo l'effetto trimestrale " + effect.title)
+            effect.apply(self.model.simulation_state)
+        elif effect.frequency == EffectFrequency.ONCE and m.simulation_state.current_month == 0:
+            print("Eseguo effetto once " + effect.title)
+            effect.apply(self.model.simulation_state)
+
+    def __execute_global_effects__(self):
+        """
+        Esegue gli effetti globali, controllando se si applicano
+        :return:
+        """
+        for effect in self.model.project.global_effects:
+            self.__execute_effect__(effect)
+
+    def __execute_project_effects__(self):
+        """
+        Esegue gli effetti del progetto, se si applicano
+        :return:
+        """
+        for item in self.model.project.items:  # Effetti legati alle componenti di investimento impostate
+            print(f"Applicazione componente {item}")
+            for effect in item.effects:
+                self.__execute_effect__(effect)
+
+    def __bankruptcy_check__(self, snapshot: BalanceSnaphot, column: int):
+        """
+        Controlla le condizioni di bancarotta (liquidità negativa o impossibilità di pagamento debiti entro
+        :param snapshot: Bilancio da leggere
+        :return:
+        """
+        if snapshot.get_total_liquidity(column) < 0:
+            print(f"WARNING: Al termine dell'anno {self.__current_year__()} la liquidità è diventata negativa. ")
+            return True
+
+        return False
+
     @Slot()
     def start(self):
-        m: SimulationCompleteModel = self.model
         self.simulation_init()
 
         def effect_spawner(env):
-            # TODO: Cambiare struttura
-            # al termine di ogni anno, eseguire:
-            # 1. Aggregazione dei valori orizzontali
-            # 2. Calcolo voci terminali tramite algoritmo ricorsivo
-            # 3. Calcolo indici
-            # tutto sulla colonna 14 che contiene lo year end
-            # copiare la colonna 14 nello snapshot dei final results
-            # rimuovere tutte le colonne tranne la 0
-            # copiare lo year end nella colonna 0 del working snapshot
-            # al termine dell'anno, verificare se la cassa è negativa:
-            # se supera la soglia del fido (impostata da parametri simulazione) bloccare la simulazione e indicare che l'azienda è fallita
-            # se non supera la soglia di fido, far nascere un debito e vedere come va successivamente
-
-            id = m.simulation_state.global_parameters.sim_id
+            id = self.model.simulation_state.global_parameters.sim_id
             print("Simulation id " + str(id))
-            m.simulation_state.current_month = 0
+            self.model.simulation_state.current_month = 0
 
             while True:
                 print("===================")
-                print("Mese " + str(m.simulation_state.current_month))
-                # Esecuzione effetti globali
-                for effect in self.model.project.global_effects:
-                    if effect.frequency == EffectFrequency.MONTHLY:
-                        print("Eseguo l'effetto mensile " + effect.title)
-                        effect.apply(self.model.simulation_state)
-                    elif effect.frequency == EffectFrequency.ANNUAL and self.__is_year_end():
-                        print("Eseguo l'effetto annuale " + effect.title)
-                        effect.apply(self.model.simulation_state)
-                    elif effect.frequency == EffectFrequency.ONCE and m.simulation_state.current_month == 0:
-                        print("Eseguo effetto once " + effect.title)
-                        effect.apply(self.model.simulation_state)
-
-                for item in self.model.project.items:   # Effetti legati alle componenti di investimento impostate
-                    print(f"Applicazione componente {item}")
-                    for effect in item.effects:
-                        if effect.frequency == EffectFrequency.MONTHLY:
-                            print("Eseguo l'effetto mensile " + effect.title)
-                            effect.apply(self.model.simulation_state)
-                        elif effect.frequency == EffectFrequency.ANNUAL and self.__is_year_end():
-                            print("Eseguo l'effetto annuale " + effect.title)
-                            effect.apply(self.model.simulation_state)
-                        elif effect.frequency == EffectFrequency.BI_MONTHLY and m.simulation_state.current_month % 2 == 0:
-                            print("Eseguo l'effetto bimestrale " + effect.title)
-                            effect.apply(self.model.simulation_state)
-                        elif effect.frequency == EffectFrequency.TRI_MONTHLY and m.simulation_state.current_month % 3 == 0:
-                            print("Eseguo l'effetto trimestrale " + effect.title)
-                            effect.apply(self.model.simulation_state)
-                        elif effect.frequency == EffectFrequency.ONCE and m.simulation_state.current_month == 0:
-                            print("Eseguo effetto once " + effect.title)
-                            effect.apply(self.model.simulation_state)
+                print("Mese " + str(self.model.simulation_state.current_month))
+                self.__execute_global_effects__()
+                self.__execute_project_effects__()
 
                 if self.__is_year_end():
                     print(f"Raggiunto termine anno {self.__current_year__()}")
                     # azioni da svolgere a fine anno sullo snapshot
                     self.model.simulation_state.working_snapshot.aggregate_by_year()
                     self.model.simulation_state.working_snapshot.recalculate_balance()
+                    # logica di gestione del debito e fallimento
+                    if self.__bankruptcy_check__(self.model.simulation_state.working_snapshot, BalanceSnaphot.YEAR_END_COL):
+                        self.bankrupt_event.declare_bankruptcy(
+                            self.__current_year__(),
+                            self.model.simulation_state.working_snapshot.get_total_liquidity(
+                                BalanceSnaphot.YEAR_END_COL))
+                        yield self.bankrupt_event
+
                     self.model.simulation_state.working_snapshot.calc_indicies()
-                    f_s = m.simulation_state.final_result_snapshot
+                    f_s = self.model.simulation_state.final_result_snapshot
                     f_s.create_column(f"Anno {self.__current_year__()}")
                     f_s.copy_column_from_snapshot(
                         snapshot=self.model.simulation_state.working_snapshot,
@@ -123,8 +147,6 @@ class SimulationWorker(QObject):
                         dest_column=f_s.available_columns - 1,
                         column_title=f"Anno {self.__current_year__()}"
                     )
-                    if self.model.simulation_state.working_snapshot.get_total_liquidity(14) < 0:
-                        print(f"WARNING: Al termine dell'anno {self.__current_year__()} la liquidità è diventata negativa. ")
 
                     # pulizia e re-inizializzazione
                     self.model.simulation_state.working_snapshot.reset_columns(2, 15)   # resetto anche la colonna year start e year end
@@ -137,16 +159,29 @@ class SimulationWorker(QObject):
                     self.model.simulation_state.working_snapshot.copy_field_from_snapshot(CostGrowthEffect.field_target, BalanceLocation.CE, f_s, self.__current_year__(), BalanceSnaphot.HISTORIC_COL)
 
                 yield env.timeout(1)
-                m.simulation_state.current_month += 1
+                self.model.simulation_state.current_month += 1
                 print("===================")
 
         self.model.env = simpy.Environment()
+        self.sim_finish_event = SimulationStopEvent(self.model.env)
+        self.bankrupt_event = BankruptcyEvent(self.model.env, self.sim_finish_event)
+        self.timeout_event = self.model.env.timeout((self.model.simulation_state.global_parameters.number_of_years * 12) - 1)
         self.model.env.process(effect_spawner(self.model.env))
-        self.model.env.run(until=m.simulation_state.global_parameters.number_of_years * 12)
+        result = self.model.env.run(until=self.sim_finish_event | self.timeout_event)
+
+        r = ""
+        if self.sim_finish_event in result:
+            print("Simulazione interrotta per:", self.sim_finish_event.motivation)
+            r = self.sim_finish_event.motivation
+        elif self.timeout_event in result:
+            print("Simulazione completata per raggiungimento del tempo massimo")
+            r = "Raggiungimento del tempo massimo"
+
         output = SimulationOutput(
             balance=self.model.simulation_state.final_result_snapshot,
             project=self.model.project,
-            global_parameters=self.model.simulation_state.global_parameters
+            global_parameters=self.model.simulation_state.global_parameters,
+            reason_exit=r
         )
         self.save_generated_data(output)
         self.finished.emit(output)

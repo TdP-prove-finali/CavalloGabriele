@@ -30,6 +30,5 @@ class SimulationState:
 
 class SimulationCompleteModel:
     def __init__(self, simulation_state: SimulationState, project):
-        self.sim_env = simpy.Environment()      # Il model contiene l'ambiente della simulazione e altre variabili
         self.simulation_state = simulation_state
         self.project = project

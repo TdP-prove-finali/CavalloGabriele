@@ -9142,13 +9142,13 @@ GLOBAL_CONFIG_SINGLE = GlobalParameters(
 GLOBAL_CONFIG_MUL = GlobalParameters(
                     complete_company_1.fiscal_code,
                     7,
-                    organic_growth_avg=0.5,
+                    organic_growth_avg=0.1,
                     last_available_years=complete_company_1.available_years,
                     sim_id=5,
                 organic_growth_var=0.2,
                 tax_perc=0.26,
     cost_gr_var=0.20,
-    cost_gr_avg=0.30,
+    cost_gr_avg=1.9,
 cred_alpha=0.20,
     cred_betha=0.40,
     cperc=0.40

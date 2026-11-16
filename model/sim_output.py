@@ -11,3 +11,4 @@ class SimulationOutput:
     balance: BalanceSnaphot
     project: InvestmentProject
     global_parameters: GlobalParameters
+    reason_exit: str

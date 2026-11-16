@@ -1,5 +1,5 @@
 import math
-from enum import Enum
+from enum import Enum, IntEnum
 from math import exp, sqrt
 from typing import Callable, Any
 
@@ -26,12 +26,19 @@ class EffectFrequency(Enum):
     BI_MONTHLY = 4,
     ONCE = 5
 
+class EffectExecFlags(IntEnum):
+    YEAR_START = 1,
+    YEAR_END = 2
+
 class InvestmentEffect:
     def __init__(self, title: str, inv_type: EffectType, field_name: str,
                  frequency: EffectFrequency,
                  where: BalanceLocation,
                  value_constant: float | None = None,
-                 value_func: Callable[[Any], float] | None = None):
+                 value_func: Callable[[Any], float] | None = None,
+                 flags=None):
+        if flags is None:
+            flags = []
         self.title = title
         self.type = inv_type
         self.field_name = field_name
@@ -39,6 +46,7 @@ class InvestmentEffect:
         self.value_func = value_func
         self.value_constant = value_constant
         self.frequency = frequency
+        self.exec_flags = flags
 
     def current_write_index(self, state):
         return 2 + (state.current_month % 12)

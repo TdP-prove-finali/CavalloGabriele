@@ -263,6 +263,22 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_2.addItem(self.horizontalSpacer_9)
 
+        self.label_9 = QLabel(self.groupBox_2)
+        self.label_9.setObjectName(u"label_9")
+        self.label_9.setFont(font2)
+
+        self.horizontalLayout_2.addWidget(self.label_9)
+
+        self.lastAvYearsLabel = QLabel(self.groupBox_2)
+        self.lastAvYearsLabel.setObjectName(u"lastAvYearsLabel")
+        font5 = QFont()
+        font5.setPointSize(13)
+        font5.setItalic(True)
+        self.lastAvYearsLabel.setFont(font5)
+        self.lastAvYearsLabel.setStyleSheet(u"")
+
+        self.horizontalLayout_2.addWidget(self.lastAvYearsLabel)
+
 
         self.verticalLayout_5.addLayout(self.horizontalLayout_2)
 
@@ -352,26 +368,6 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_10 = QHBoxLayout()
         self.horizontalLayout_10.setObjectName(u"horizontalLayout_10")
-        self.label_9 = QLabel(self.groupBox_2)
-        self.label_9.setObjectName(u"label_9")
-        self.label_9.setFont(font2)
-
-        self.horizontalLayout_10.addWidget(self.label_9)
-
-        self.lastAvYearsLabel = QLabel(self.groupBox_2)
-        self.lastAvYearsLabel.setObjectName(u"lastAvYearsLabel")
-        font5 = QFont()
-        font5.setPointSize(13)
-        font5.setItalic(True)
-        self.lastAvYearsLabel.setFont(font5)
-        self.lastAvYearsLabel.setStyleSheet(u"")
-
-        self.horizontalLayout_10.addWidget(self.lastAvYearsLabel)
-
-        self.horizontalSpacer_12 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-
-        self.horizontalLayout_10.addItem(self.horizontalSpacer_12)
-
         self.label_28 = QLabel(self.groupBox_2)
         self.label_28.setObjectName(u"label_28")
 
@@ -387,6 +383,64 @@ class Ui_MainWindow(object):
         self.label_29.setObjectName(u"label_29")
 
         self.horizontalLayout_10.addWidget(self.label_29)
+
+        self.horizontalSpacer_8 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.horizontalLayout_10.addItem(self.horizontalSpacer_8)
+
+        self.label_24 = QLabel(self.groupBox_2)
+        self.label_24.setObjectName(u"label_24")
+
+        self.horizontalLayout_10.addWidget(self.label_24)
+
+        self.alphaRiscEdit = QDoubleSpinBox(self.groupBox_2)
+        self.alphaRiscEdit.setObjectName(u"alphaRiscEdit")
+        sizePolicy2.setHeightForWidth(self.alphaRiscEdit.sizePolicy().hasHeightForWidth())
+        self.alphaRiscEdit.setSizePolicy(sizePolicy2)
+        self.alphaRiscEdit.setMinimum(0.100000000000000)
+        self.alphaRiscEdit.setValue(80.000000000000000)
+
+        self.horizontalLayout_10.addWidget(self.alphaRiscEdit)
+
+        self.label_25 = QLabel(self.groupBox_2)
+        self.label_25.setObjectName(u"label_25")
+
+        self.horizontalLayout_10.addWidget(self.label_25)
+
+        self.line_4 = QFrame(self.groupBox_2)
+        self.line_4.setObjectName(u"line_4")
+        self.line_4.setFrameShape(QFrame.Shape.VLine)
+        self.line_4.setFrameShadow(QFrame.Shadow.Sunken)
+
+        self.horizontalLayout_10.addWidget(self.line_4)
+
+        self.label_26 = QLabel(self.groupBox_2)
+        self.label_26.setObjectName(u"label_26")
+        sizePolicy1.setHeightForWidth(self.label_26.sizePolicy().hasHeightForWidth())
+        self.label_26.setSizePolicy(sizePolicy1)
+
+        self.horizontalLayout_10.addWidget(self.label_26)
+
+        self.betaRiscEdit = QDoubleSpinBox(self.groupBox_2)
+        self.betaRiscEdit.setObjectName(u"betaRiscEdit")
+        sizePolicy2.setHeightForWidth(self.betaRiscEdit.sizePolicy().hasHeightForWidth())
+        self.betaRiscEdit.setSizePolicy(sizePolicy2)
+        self.betaRiscEdit.setMinimum(0.100000000000000)
+        self.betaRiscEdit.setValue(20.000000000000000)
+
+        self.horizontalLayout_10.addWidget(self.betaRiscEdit)
+
+        self.label_27 = QLabel(self.groupBox_2)
+        self.label_27.setObjectName(u"label_27")
+
+        self.horizontalLayout_10.addWidget(self.label_27)
+
+        self.line_2 = QFrame(self.groupBox_2)
+        self.line_2.setObjectName(u"line_2")
+        self.line_2.setFrameShape(QFrame.Shape.VLine)
+        self.line_2.setFrameShadow(QFrame.Shadow.Sunken)
+
+        self.horizontalLayout_10.addWidget(self.line_2)
 
 
         self.verticalLayout_5.addLayout(self.horizontalLayout_10)
@@ -417,6 +471,17 @@ class Ui_MainWindow(object):
         self.horizontalSpacer_6 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.horizontalLayout_13.addItem(self.horizontalSpacer_6)
+
+        self.label_18 = QLabel(self.groupBox_2)
+        self.label_18.setObjectName(u"label_18")
+
+        self.horizontalLayout_13.addWidget(self.label_18)
+
+        self.yearsDebtAmmortEdit = QSpinBox(self.groupBox_2)
+        self.yearsDebtAmmortEdit.setObjectName(u"yearsDebtAmmortEdit")
+        self.yearsDebtAmmortEdit.setMinimum(1)
+
+        self.horizontalLayout_13.addWidget(self.yearsDebtAmmortEdit)
 
 
         self.verticalLayout_5.addLayout(self.horizontalLayout_13)
@@ -501,47 +566,6 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_15.addItem(self.horizontalSpacer_15)
 
-        self.label_24 = QLabel(self.groupBox_2)
-        self.label_24.setObjectName(u"label_24")
-
-        self.horizontalLayout_15.addWidget(self.label_24)
-
-        self.alphaRiscEdit = QDoubleSpinBox(self.groupBox_2)
-        self.alphaRiscEdit.setObjectName(u"alphaRiscEdit")
-        self.alphaRiscEdit.setMinimum(0.100000000000000)
-        self.alphaRiscEdit.setValue(80.000000000000000)
-
-        self.horizontalLayout_15.addWidget(self.alphaRiscEdit)
-
-        self.label_25 = QLabel(self.groupBox_2)
-        self.label_25.setObjectName(u"label_25")
-
-        self.horizontalLayout_15.addWidget(self.label_25)
-
-        self.line_2 = QFrame(self.groupBox_2)
-        self.line_2.setObjectName(u"line_2")
-        self.line_2.setFrameShape(QFrame.Shape.VLine)
-        self.line_2.setFrameShadow(QFrame.Shadow.Sunken)
-
-        self.horizontalLayout_15.addWidget(self.line_2)
-
-        self.label_26 = QLabel(self.groupBox_2)
-        self.label_26.setObjectName(u"label_26")
-
-        self.horizontalLayout_15.addWidget(self.label_26)
-
-        self.betaRiscEdit = QDoubleSpinBox(self.groupBox_2)
-        self.betaRiscEdit.setObjectName(u"betaRiscEdit")
-        self.betaRiscEdit.setMinimum(0.100000000000000)
-        self.betaRiscEdit.setValue(20.000000000000000)
-
-        self.horizontalLayout_15.addWidget(self.betaRiscEdit)
-
-        self.label_27 = QLabel(self.groupBox_2)
-        self.label_27.setObjectName(u"label_27")
-
-        self.horizontalLayout_15.addWidget(self.label_27)
-
 
         self.verticalLayout_5.addLayout(self.horizontalLayout_15)
 
@@ -594,7 +618,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 1436, 33))
+        self.menubar.setGeometry(QRect(0, 0, 1436, 30))
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QStatusBar(MainWindow)
         self.statusbar.setObjectName(u"statusbar")
@@ -634,43 +658,25 @@ class Ui_MainWindow(object):
         self.totalFundingLabel.setProperty(u"cssClass", QCoreApplication.translate("MainWindow", u"number-label", None))
         self.groupBox_2.setTitle(QCoreApplication.translate("MainWindow", u"Parametri simulazione", None))
         self.label.setText(QCoreApplication.translate("MainWindow", u"Azienda selezionata", None))
+        self.label_9.setText(QCoreApplication.translate("MainWindow", u"Anni passati disponibili", None))
+        self.lastAvYearsLabel.setText(QCoreApplication.translate("MainWindow", u"5", None))
+        self.lastAvYearsLabel.setProperty(u"cssClass", QCoreApplication.translate("MainWindow", u"number-label", None))
 #if QT_CONFIG(tooltip)
         self.label_5.setToolTip(QCoreApplication.translate("MainWindow", u"Numero di anni su cui strutturare la simulazione", None))
 #endif // QT_CONFIG(tooltip)
         self.label_5.setText(QCoreApplication.translate("MainWindow", u"Numero di anni", None))
 #if QT_CONFIG(tooltip)
-        self.label_7.setToolTip(QCoreApplication.translate("MainWindow", u"<html><head/><body><p>Crescita spontanea del fatturato senza operazioni legate al progetto di investimento. Rappresentata tramite un modello Browniano di cui \u00e8 possibile specificare valore medio e varianza. </p></body></html>", None))
+        self.label_7.setToolTip(QCoreApplication.translate("MainWindow", u"<html><head/><body><p>Crescita spontanea annuale del fatturato senza operazioni legate al progetto di investimento. Rappresentata tramite un modello Browniano di cui \u00e8 possibile specificare valore medio e varianza. </p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
         self.label_7.setText(QCoreApplication.translate("MainWindow", u"Crescita organica media", None))
         self.label_8.setText(QCoreApplication.translate("MainWindow", u"%", None))
         self.label_11.setText(QCoreApplication.translate("MainWindow", u"Varianza", None))
         self.label_12.setText(QCoreApplication.translate("MainWindow", u"%", None))
-        self.label_9.setText(QCoreApplication.translate("MainWindow", u"Anni passati disponibili", None))
-        self.lastAvYearsLabel.setText(QCoreApplication.translate("MainWindow", u"5", None))
-        self.lastAvYearsLabel.setProperty(u"cssClass", QCoreApplication.translate("MainWindow", u"number-label", None))
 #if QT_CONFIG(tooltip)
         self.label_28.setToolTip(QCoreApplication.translate("MainWindow", u"Percentuale di crediti \"oltre\" che vengono trasferiti ogni anno a quelli \"entro\"", None))
 #endif // QT_CONFIG(tooltip)
         self.label_28.setText(QCoreApplication.translate("MainWindow", u"Percentuale trasf. crediti", None))
         self.label_29.setText(QCoreApplication.translate("MainWindow", u"%", None))
-#if QT_CONFIG(tooltip)
-        self.label_6.setToolTip(QCoreApplication.translate("MainWindow", u"Aliquota di imposta applicata sull'utile (quando presente)", None))
-#endif // QT_CONFIG(tooltip)
-        self.label_6.setText(QCoreApplication.translate("MainWindow", u"Aliquota di imposta sul reddito", None))
-        self.label_14.setText(QCoreApplication.translate("MainWindow", u"%", None))
-#if QT_CONFIG(tooltip)
-        self.label_16.setToolTip(QCoreApplication.translate("MainWindow", u"<html><head/><body><p>Quantit\u00e0 massima di \u20ac che la banca \u00e8 disposta a fornire come fido in conto corrente. Impatta il fallimento dell'impresa e viene utilizzato quando la cassa diventa negativa. Qualora durante la simulazione la cassa dovesse diventare negativa e superare la quantit\u00e0 di fido disponibile l'azienda verr\u00e0 dichiarata come fallita prima del termine della simulazione. </p><p>Nota: se impostato a 0 la simulazione non accetter\u00e0 valori di cassa (liquidit\u00e0) negativi</p></body></html>", None))
-#endif // QT_CONFIG(tooltip)
-        self.label_16.setText(QCoreApplication.translate("MainWindow", u"Soglia massima fido in c.c", None))
-        self.maxFidoCCEdit.setText(QCoreApplication.translate("MainWindow", u"40000", None))
-        self.label_17.setText(QCoreApplication.translate("MainWindow", u"\u20ac", None))
-#if QT_CONFIG(tooltip)
-        self.label_20.setToolTip(QCoreApplication.translate("MainWindow", u"Crescita media dei costi operativi di anno in anno per l'azienda", None))
-#endif // QT_CONFIG(tooltip)
-        self.label_20.setText(QCoreApplication.translate("MainWindow", u"Crescita media costi operativi", None))
-        self.label_21.setText(QCoreApplication.translate("MainWindow", u"%", None))
-        self.label_22.setText(QCoreApplication.translate("MainWindow", u"Varianza", None))
-        self.label_23.setText(QCoreApplication.translate("MainWindow", u"%", None))
 #if QT_CONFIG(tooltip)
         self.label_24.setToolTip(QCoreApplication.translate("MainWindow", u"<html><head/><body><p>Distribuzione della capacit\u00e0 di riscossione crediti dell'impresa (distribuzione beta con parametri alfa e beta)</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
@@ -678,6 +684,28 @@ class Ui_MainWindow(object):
         self.label_25.setText(QCoreApplication.translate("MainWindow", u"%", None))
         self.label_26.setText(QCoreApplication.translate("MainWindow", u"Beta", None))
         self.label_27.setText(QCoreApplication.translate("MainWindow", u"%", None))
+#if QT_CONFIG(tooltip)
+        self.label_6.setToolTip(QCoreApplication.translate("MainWindow", u"Aliquota di imposta applicata sull'utile (quando presente)", None))
+#endif // QT_CONFIG(tooltip)
+        self.label_6.setText(QCoreApplication.translate("MainWindow", u"Aliquota di imposta sul reddito", None))
+        self.label_14.setText(QCoreApplication.translate("MainWindow", u"%", None))
+#if QT_CONFIG(tooltip)
+        self.label_18.setToolTip(QCoreApplication.translate("MainWindow", u"Anni di ammortamento per i debiti gi\u00e0 presenti in bilancio (esclusi quelli dovuti al progetto di investimento)", None))
+#endif // QT_CONFIG(tooltip)
+        self.label_18.setText(QCoreApplication.translate("MainWindow", u"Anni ammortamento debiti", None))
+#if QT_CONFIG(tooltip)
+        self.label_16.setToolTip(QCoreApplication.translate("MainWindow", u"<html><head/><body><p>Quantit\u00e0 massima di \u20ac che la banca \u00e8 disposta a fornire come fido in conto corrente. Impatta il fallimento dell'impresa e viene utilizzato quando la cassa diventa negativa. Qualora durante la simulazione la cassa dovesse diventare negativa e superare la quantit\u00e0 di fido disponibile l'azienda verr\u00e0 dichiarata come fallita prima del termine della simulazione. </p><p>Nota: se impostato a 0 la simulazione non accetter\u00e0 valori di cassa (liquidit\u00e0) negativi</p></body></html>", None))
+#endif // QT_CONFIG(tooltip)
+        self.label_16.setText(QCoreApplication.translate("MainWindow", u"Soglia massima fido in c.c", None))
+        self.maxFidoCCEdit.setText(QCoreApplication.translate("MainWindow", u"40000", None))
+        self.label_17.setText(QCoreApplication.translate("MainWindow", u"\u20ac", None))
+#if QT_CONFIG(tooltip)
+        self.label_20.setToolTip(QCoreApplication.translate("MainWindow", u"<html><head/><body><p>Crescita media annuale dei costi operativi per l'azienda</p></body></html>", None))
+#endif // QT_CONFIG(tooltip)
+        self.label_20.setText(QCoreApplication.translate("MainWindow", u"Crescita media costi operativi", None))
+        self.label_21.setText(QCoreApplication.translate("MainWindow", u"%", None))
+        self.label_22.setText(QCoreApplication.translate("MainWindow", u"Varianza", None))
+        self.label_23.setText(QCoreApplication.translate("MainWindow", u"%", None))
         self.stopSimBtn.setText(QCoreApplication.translate("MainWindow", u"Ferma simulazione", None))
         self.startSimBtn.setText(QCoreApplication.translate("MainWindow", u"Avvia simulazione", None))
     # retranslateUi

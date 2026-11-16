@@ -4,11 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d1f57556-a68b-4407-9511-95d58864d413" name="Changes" comment="Corregge effetto globale crescita fatturato">
+    <list default="true" id="d1f57556-a68b-4407-9511-95d58864d413" name="Changes" comment="Nuovi paragrafi">
+      <change afterPath="$PROJECT_DIR$/model/event/custom_events.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/ui_generated/ui_invest_sim_window.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/ui_generated/ui_invest_sim_window.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/balance_snap.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/balance_snap.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controller/simulation_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/controller/simulation_controller.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/model/investment_effect.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/investment_effect.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/sim_output.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/sim_output.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/sim_state.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/sim_state.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_data.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ui/invest_sim_window.ui" beforeDir="false" afterPath="$PROJECT_DIR$/ui/invest_sim_window.ui" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -17,7 +21,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="207" />
+    <option name="cachedIndexableFilesCount" value="208" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -241,11 +245,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python tests.Python tests for test_balance.test_simulation_multiple_year" />
         <item itemvalue="Python tests.Python tests for test_balance.test_simulation_single_year" />
         <item itemvalue="Python tests.Python tests in test_balance.py" />
         <item itemvalue="Python tests.Python tests for test_balance.test_attivo" />
         <item itemvalue="Python tests.Python tests for test_balance.test_balance_identity" />
-        <item itemvalue="Python tests.Python tests for test_balance.test_simulation_multiple_year" />
       </list>
     </recent_temporary>
   </component>
@@ -299,23 +303,9 @@
       <workItem from="1794487202323" duration="5552000" />
       <workItem from="1794516999044" duration="2156000" />
       <workItem from="1794519188195" duration="4685000" />
-      <workItem from="1794584152465" duration="56251000" />
-    </task>
-    <task id="LOCAL-00054" summary="Migliora gestione dello header verticale delle tabelle">
-      <option name="closed" value="true" />
-      <created>1792513794776</created>
-      <option name="number" value="00054" />
-      <option name="presentableId" value="LOCAL-00054" />
-      <option name="project" value="LOCAL" />
-      <updated>1792513794777</updated>
-    </task>
-    <task id="LOCAL-00055" summary="Migliora architettura model per le tabelle">
-      <option name="closed" value="true" />
-      <created>1792515315717</created>
-      <option name="number" value="00055" />
-      <option name="presentableId" value="LOCAL-00055" />
-      <option name="project" value="LOCAL" />
-      <updated>1792515315717</updated>
+      <workItem from="1794584152465" duration="56848000" />
+      <workItem from="1794753839634" duration="39000" />
+      <workItem from="1794821043569" duration="6735000" />
     </task>
     <task id="LOCAL-00056" summary="Implementa sezione indici">
       <option name="closed" value="true" />
@@ -693,7 +683,23 @@
       <option name="project" value="LOCAL" />
       <updated>1794749955176</updated>
     </task>
-    <option name="localTasksCounter" value="103" />
+    <task id="LOCAL-00103" summary="Fix conversione parametri e inizializzazione">
+      <option name="closed" value="true" />
+      <created>1794753212077</created>
+      <option name="number" value="00103" />
+      <option name="presentableId" value="LOCAL-00103" />
+      <option name="project" value="LOCAL" />
+      <updated>1794753212077</updated>
+    </task>
+    <task id="LOCAL-00104" summary="Nuovi paragrafi">
+      <option name="closed" value="true" />
+      <created>1794753863267</created>
+      <option name="number" value="00104" />
+      <option name="presentableId" value="LOCAL-00104" />
+      <option name="project" value="LOCAL" />
+      <updated>1794753863267</updated>
+    </task>
+    <option name="localTasksCounter" value="105" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -711,8 +717,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Migliora gestione campi e numerazione interna" />
-    <MESSAGE value="Implementa creazione grafo bilancio e id-map" />
     <MESSAGE value="Navigazione figli nel grafo e serializzazione" />
     <MESSAGE value="Aggiunge numerazione artificiale a punti che hanno la stessa numerazione originale" />
     <MESSAGE value="Aggiunge contesto globale per numerazione campi top-level nello stesso documento" />
@@ -736,15 +740,22 @@
     <MESSAGE value="Fix rettifiche e taratura parametri" />
     <MESSAGE value="Implementa effetto CreditCollect" />
     <MESSAGE value="Corregge effetto globale crescita fatturato" />
-    <option name="LAST_COMMIT_MESSAGE" value="Corregge effetto globale crescita fatturato" />
+    <MESSAGE value="Fix conversione parametri e inizializzazione" />
+    <MESSAGE value="Nuovi paragrafi" />
+    <option name="LAST_COMMIT_MESSAGE" value="Nuovi paragrafi" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/controller/simulation_controller.py</url>
-          <line>35</line>
-          <option name="timeStamp" value="144" />
+          <line>128</line>
+          <option name="timeStamp" value="145" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/controller/simulation_controller.py</url>
+          <line>106</line>
+          <option name="timeStamp" value="146" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
@@ -757,7 +768,7 @@
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/CavalloGabriele$.coverage" NAME=" Coverage Results" MODIFIED="1794752566173" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
-    <SUITE FILE_PATH="coverage/CavalloGabriele$main.coverage" NAME="main Coverage Results" MODIFIED="1794752944990" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/CavalloGabriele$.coverage" NAME=" Coverage Results" MODIFIED="1794827470020" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
+    <SUITE FILE_PATH="coverage/CavalloGabriele$main.coverage" NAME="main Coverage Results" MODIFIED="1794827498017" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
