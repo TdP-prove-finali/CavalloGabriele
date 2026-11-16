@@ -6,7 +6,9 @@ from app.dialogs.employee_hire_dialog import EmployeeHireDialog
 from app.dialogs.funding_dialog import FundingDialog
 from app.dialogs.op_improvement_dialog import OperativeImprovementDialog
 from app.windows.investsimwindow import InvestSimWindow
+from app.windows.simresultwindow import SimResultWindow
 from controller.abstract import AbstractController
+from controller.sim_res_controller import SimResultController
 from controller.simulation_controller import SimulationWorker
 from dao.simulation.simulation_dao import SimulationDAO
 from dao.util import format_number, parse
@@ -207,6 +209,14 @@ class InvestProjectController(AbstractController[InvestSimWindow, InvestmentProj
         print(results)
         print("Finito")
         self.view.ui.simStatusBar.setValue(100)
+        v = SimResultWindow()
+        c = SimResultController(
+            model=results,
+            app=self.app,
+            view=v
+        )
+        self.set_internal_pointer("child-contr", c)
+        v.show()
 
     @Slot(str)
     def on_error(self, error: str) -> None:

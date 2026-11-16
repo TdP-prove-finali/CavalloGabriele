@@ -436,15 +436,9 @@ class Ui_MainWindow(object):
         self.struttura_sp_tab = QWidget()
         self.struttura_sp_tab.setObjectName(u"struttura_sp_tab")
         self.chartTabWidget.addTab(self.struttura_sp_tab, "")
-        self.struttura_ce_tab = QWidget()
-        self.struttura_ce_tab.setObjectName(u"struttura_ce_tab")
-        self.chartTabWidget.addTab(self.struttura_ce_tab, "")
         self.evoluz_ricav_tab = QWidget()
         self.evoluz_ricav_tab.setObjectName(u"evoluz_ricav_tab")
         self.chartTabWidget.addTab(self.evoluz_ricav_tab, "")
-        self.evoluz_costi_tab = QWidget()
-        self.evoluz_costi_tab.setObjectName(u"evoluz_costi_tab")
-        self.chartTabWidget.addTab(self.evoluz_costi_tab, "")
 
         self.verticalLayout_2.addWidget(self.chartTabWidget)
 
@@ -477,7 +471,7 @@ class Ui_MainWindow(object):
         self.openWebsiteButton.setDefault(True)
         self.balanceTabWidget.setCurrentIndex(1)
         self.indiciesTabWidget.setCurrentIndex(0)
-        self.chartTabWidget.setCurrentIndex(0)
+        self.chartTabWidget.setCurrentIndex(1)
 
 
         QMetaObject.connectSlotsByName(MainWindow)
@@ -536,9 +530,7 @@ class Ui_MainWindow(object):
         self.indiciesTabWidget.setTabText(self.indiciesTabWidget.indexOf(self.tab_2), QCoreApplication.translate("MainWindow", u"Tab 2", None))
         self.chartSection.setTitle(QCoreApplication.translate("MainWindow", u"Grafici", None))
         self.chartTabWidget.setTabText(self.chartTabWidget.indexOf(self.struttura_sp_tab), QCoreApplication.translate("MainWindow", u"Struttura SP", None))
-        self.chartTabWidget.setTabText(self.chartTabWidget.indexOf(self.struttura_ce_tab), QCoreApplication.translate("MainWindow", u"Struttura CE", None))
         self.chartTabWidget.setTabText(self.chartTabWidget.indexOf(self.evoluz_ricav_tab), QCoreApplication.translate("MainWindow", u"Evoluzione ricavi", None))
-        self.chartTabWidget.setTabText(self.chartTabWidget.indexOf(self.evoluz_costi_tab), QCoreApplication.translate("MainWindow", u"Evoluz. Costi", None))
         self.menuFile.setTitle(QCoreApplication.translate("MainWindow", u"File", None))
         self.menuProgetto_di_investimento.setTitle(QCoreApplication.translate("MainWindow", u"Progetto di investimento", None))
     # retranslateUi

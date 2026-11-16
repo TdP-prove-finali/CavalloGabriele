@@ -69,19 +69,19 @@ class SimulationWorker(QObject):
         """
         m: SimulationCompleteModel = self.model
         if effect.frequency == EffectFrequency.MONTHLY:
-            print("Eseguo l'effetto mensile " + effect.title)
+            self.model.log("Eseguo l'effetto mensile " + effect.title)
             effect.apply(self.model.simulation_state)
         elif effect.frequency == EffectFrequency.ANNUAL and self.__is_year_end():
-            print("Eseguo l'effetto annuale " + effect.title)
+            self.model.log("Eseguo l'effetto annuale " + effect.title)
             effect.apply(self.model.simulation_state)
         elif effect.frequency == EffectFrequency.BI_MONTHLY and m.simulation_state.current_month % 2 == 0:
-            print("Eseguo l'effetto bimestrale " + effect.title)
+            self.model.log("Eseguo l'effetto bimestrale " + effect.title)
             effect.apply(self.model.simulation_state)
         elif effect.frequency == EffectFrequency.TRI_MONTHLY and m.simulation_state.current_month % 3 == 0:
-            print("Eseguo l'effetto trimestrale " + effect.title)
+            self.model.log("Eseguo l'effetto trimestrale " + effect.title)
             effect.apply(self.model.simulation_state)
         elif effect.frequency == EffectFrequency.ONCE and m.simulation_state.current_month == 0:
-            print("Eseguo effetto once " + effect.title)
+            self.model.log("Eseguo effetto once " + effect.title)
             effect.apply(self.model.simulation_state)
 
     def __execute_global_effects__(self):
@@ -108,7 +108,7 @@ class SimulationWorker(QObject):
         :return:
         """
         for item in self.model.project.items:  # Effetti legati alle componenti di investimento impostate
-            print(f"Applicazione componente {item}")
+            self.model.log(f"Applicazione componente {item}")
             for effect in item.effects:
                 self.__execute_effect__(effect)
 
@@ -151,17 +151,17 @@ class SimulationWorker(QObject):
 
         def effect_spawner(env):
             id = self.model.simulation_state.global_parameters.sim_id
-            print("Simulation id " + str(id))
+            self.model.log("Simulation id " + str(id))
             self.model.simulation_state.current_month = 0
 
             while True:
-                print("===================")
-                print("Mese " + str(self.model.simulation_state.current_month))
+                self.model.log("===================")
+                self.model.log("Mese " + str(self.model.simulation_state.current_month))
                 self.__execute_global_effects__()
                 self.__execute_project_effects__()
 
                 if self.__is_year_end():
-                    print(f"Raggiunto termine anno {self.__current_year__()}")
+                    self.model.log(f"Raggiunto termine anno {self.__current_year__()}")
                     # azioni da svolgere a fine anno sullo snapshot
                     self.model.simulation_state.working_snapshot.aggregate_by_year()
                     self.model.simulation_state.working_snapshot.recalculate_balance()
@@ -170,7 +170,7 @@ class SimulationWorker(QObject):
                     if evt is not None:
                         yield evt
 
-                    print("Ora ricalcolo i debiti")
+                    self.model.log("Ricalcolo i debiti")
                     self.__execute_global_effects_year_end_()
                     # azzero solo lo stato patrimoniale
                     self.model.simulation_state.working_snapshot.reset_columns(BalanceSnaphot.YEAR_END_COL, BalanceSnaphot.YEAR_END_COL, 0, no_ce=True)
@@ -198,7 +198,7 @@ class SimulationWorker(QObject):
 
                 yield env.timeout(1)
                 self.model.simulation_state.current_month += 1
-                print("===================")
+                self.model.log("===================")
 
         self.model.env = simpy.Environment()
         self.sim_finish_event = SimulationStopEvent(self.model.env)
@@ -210,17 +210,19 @@ class SimulationWorker(QObject):
 
         r = ""
         if self.sim_finish_event in result:
-            print("Simulazione interrotta per:", self.sim_finish_event.motivation)
+            self.model.log(f"Simulazione interrotta per: { self.sim_finish_event.motivation}")
             r = self.sim_finish_event.motivation
         elif self.timeout_event in result:
-            print("Simulazione completata per raggiungimento del tempo massimo")
+            self.model.log("Simulazione completata per raggiungimento del tempo massimo")
             r = "Raggiungimento del tempo massimo"
 
         output = SimulationOutput(
             balance=self.model.simulation_state.final_result_snapshot,
             project=self.model.project,
             global_parameters=self.model.simulation_state.global_parameters,
-            reason_exit=r.__str__()
+            reason_exit=r.__str__(),
+            logs=self.model.simulation_state.relevant_logs,
+            id=self.model.simulation_state.global_parameters.sim_id
         )
         self.save_generated_data(output)
         self.finished.emit(output)
@@ -230,5 +232,5 @@ class SimulationWorker(QObject):
         try:
             SimulationDAO.save_simulation(output)
         except Exception as e:
-            print("Errore durante il salvataggio")
-            print(e)
+            self.model.log("Errore durante il salvataggio")
+            self.model.log(e)

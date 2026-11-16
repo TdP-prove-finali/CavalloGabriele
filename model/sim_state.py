@@ -10,6 +10,7 @@ class SimulationState:
         self.historical_company_data = h_comp_data
         self.global_parameters = global_parameters
         self.current_month: int = 0
+        self.relevant_logs = []
         initial_snapshot = BalanceSnaphot.from_company_data(h_comp_data,
                                                             sim_id=global_parameters.sim_id,
                                                             timestamp=self.current_month,
@@ -25,6 +26,11 @@ class SimulationState:
                                                             effect_pointer="",
                                                             single_year=True,
                                                             global_config=self.global_parameters)
+
+    def log(self, msg):
+        print(msg)
+        self.relevant_logs.append(msg)
+
     def current_write_index(self):
         return 2 + (self.current_month % 12)
 
@@ -33,3 +39,6 @@ class SimulationCompleteModel:
         self.simulation_state = simulation_state
         self.project = project
         self.env: simpy.Environment | None = None
+
+    def log(self, msg):
+        self.simulation_state.log(msg)

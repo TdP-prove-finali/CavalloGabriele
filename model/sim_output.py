@@ -12,3 +12,5 @@ class SimulationOutput:
     project: InvestmentProject
     global_parameters: GlobalParameters
     reason_exit: str
+    id: str
+    logs: list[str]

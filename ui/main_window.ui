@@ -857,26 +857,16 @@
           </font>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>1</number>
          </property>
          <widget class="QWidget" name="struttura_sp_tab">
           <attribute name="title">
            <string>Struttura SP</string>
           </attribute>
          </widget>
-         <widget class="QWidget" name="struttura_ce_tab">
-          <attribute name="title">
-           <string>Struttura CE</string>
-          </attribute>
-         </widget>
          <widget class="QWidget" name="evoluz_ricav_tab">
           <attribute name="title">
            <string>Evoluzione ricavi</string>
-          </attribute>
-         </widget>
-         <widget class="QWidget" name="evoluz_costi_tab">
-          <attribute name="title">
-           <string>Evoluz. Costi</string>
           </attribute>
          </widget>
         </widget>

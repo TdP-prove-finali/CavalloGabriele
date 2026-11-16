@@ -2,6 +2,7 @@ from PySide6.QtCore import QMargins
 from PySide6.QtWidgets import QMessageBox, QHeaderView, QTableView, QHBoxLayout, QWidget
 
 from app.charts.chart import create_balance_chart, create_chart_error
+from app.charts.financial_ce import add_financial_chart_to_tab
 from app.dialogs.balance_detail_dialog import BalanceDetailDialog
 from app.widget.resizable_vert_header import ResizableVerticalHeader
 from app.windows.investsimwindow import InvestSimWindow
@@ -58,6 +59,7 @@ class MainController(AbstractController[MainWindow, MainModel, None]):
             self.loadSPTView()
             self.loadIndiciesTables()
             self.loadPieChart()
+            self.loadEvoluzRicavi()
 
     def handleExpandBalance(self):
         dial = BalanceDetailDialog()
@@ -132,6 +134,30 @@ class MainController(AbstractController[MainWindow, MainModel, None]):
             self.view.ui.indiciesTabWidget.addTab(wrapper, title)  # Tolgo tutte le tab
 
         data.itersections(create_sec_tab)
+
+    def loadEvoluzRicavi(self):
+        c = self.model.company_data
+        r = c.conto_economico["a1_ricavi_vendite_e_prestazioni"].copy()
+        r.reverse()
+        cs = c.conto_economico["b6_materie_prime_e_consumo"].copy()
+        cs.reverse()
+        pd = c.conto_economico["data"].copy()
+        pd.reverse()
+        serv = c.conto_economico["b7_servizi"].copy()
+        serv.reverse()
+
+        if r is None or r[0] is None or cs[0] is None:
+            create_chart_error(self.view.ui.evoluz_ricav_tab)
+            return
+
+        add_financial_chart_to_tab(self.view.ui.evoluz_ricav_tab,
+                                   title="Evoluzione ricavi e costi",
+                                   periods=list(map(lambda it: it.split("/")[2], pd)),
+                                   revenues=r,
+                                   costs=cs,
+                                   extra_costs=serv,
+                                   extra_costs_name="Servizi"
+                                   )
 
     def loadPieChart(self):
         c = self.model.company_data

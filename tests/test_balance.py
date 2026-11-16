@@ -86,7 +86,8 @@ def test_sim():
                 "test",
                 []
             ),
-        reason_exit="fine-tempo"
+        reason_exit="fine-tempo",
+        logs=[]
         )
 
     SimulationDAO.save_simulation(ctrl)
