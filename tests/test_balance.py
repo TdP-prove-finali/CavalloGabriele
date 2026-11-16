@@ -542,7 +542,6 @@ def test_simulation_single_year():
             items=[
                 EmployeeHireInvestment(
                     "Assunzione dipendente",
-                    1,
                     4000,
                     100,
                     0,
@@ -856,7 +855,6 @@ def test_simulation_multiple_year():
             items=[
                 EmployeeHireInvestment(
                     "Assunzione dipendente",
-                    1,
                     4000,
                     100,
                     0,
@@ -910,7 +908,6 @@ def test_sim_cespiti():
                     title="Macchinari",
                     asset_type=AssetType.MATERIAL,
                     total_cost=20000,
-                    id=3,
                     duration_years=2,
                     maintenance_cost=0
                 )
@@ -936,7 +933,6 @@ def test_sim_mutuo():
                 FundingInvestment(
                     title="mutuo",
                     duration=3,
-                    id=5,
                     interest_rate=0.2,
                     total_import=20000,
                     type=FundingType.BANK

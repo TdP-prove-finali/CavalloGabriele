@@ -32,6 +32,14 @@ class EffectExecFlags(IntEnum):
     YEAR_START = 1,
     YEAR_END = 2
 
+class IdFactory:
+    last = 0
+
+    @staticmethod
+    def new_id():
+        IdFactory.last += 1
+        return IdFactory.last
+
 class InvestmentEffect:
     def __init__(self, title: str, inv_type: EffectType, field_name: str,
                  frequency: EffectFrequency,

@@ -49,7 +49,6 @@ class EmployeeHireDialog(QDialog):
 
         self.__item__ = EmployeeHireInvestment(
             title=t,
-            id=1,
             total_monthly_cost=parse(c_l),
             onboarding_cost=parse(o),
             strumental_cost=parse(s),

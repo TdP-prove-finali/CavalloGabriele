@@ -2,15 +2,15 @@ from enum import IntEnum
 
 from model.investment_effect import (InvestmentEffect,
                                      EffectFrequency,
-                                     EffectType, ProductivityIncreaseEffect, MoveImportInvEffect)
+                                     EffectType, ProductivityIncreaseEffect, MoveImportInvEffect, IdFactory)
 from model.node import BalanceLocation
 
 
 # TODO: Gestire l'unità di misura del denaro in modo comodo (se i dati sono in migliaia mettere /1000 altrimenti i conti non tornano
 class AbstractInvestmentItem:
-    def __init__(self, title: str, id: int, type: str, effects: list[InvestmentEffect]):
+    def __init__(self, title: str, type: str, effects: list[InvestmentEffect]):
         self.title = title
-        self.id = id
+        self.id = IdFactory.new_id()
         self.type = type
         self.effects = effects
 
@@ -32,7 +32,6 @@ class AbstractInvestmentItem:
 class EmployeeHireInvestment(AbstractInvestmentItem):
     def __init__(self,
                  title: str,
-                 id: int,
                  total_monthly_cost: float,
                  onboarding_cost: float,
                  strumental_cost: float,
@@ -91,7 +90,7 @@ class EmployeeHireInvestment(AbstractInvestmentItem):
             hp_lomax_scale=hp_lomax_scale
         ))
 
-        super().__init__(title, id, self.type, effects)
+        super().__init__(title, self.type, effects)
 
     def total_expenditure_first_month(self):
         return self.total_monthly_cost + self.strumental_cost + self.onboarding_cost + self.tfr_quote / 12
@@ -103,7 +102,6 @@ class AssetType(IntEnum):
 class AssetInvestment(AbstractInvestmentItem):
     def __init__(self,
                  title: str,
-                 id: int,
                  total_cost: float,
                  duration_years: int,
                  maintenance_cost: float,
@@ -151,7 +149,7 @@ class AssetInvestment(AbstractInvestmentItem):
             where=BalanceLocation.SP_ATTIVO
         ))
 
-        super().__init__(title, id, self.type, effects)
+        super().__init__(title, self.type, effects)
 
     def total_expenditure_first_month(self) -> float:
         return self.total_cost
@@ -159,7 +157,6 @@ class AssetInvestment(AbstractInvestmentItem):
 class ProductivityImprovementInvestment(AbstractInvestmentItem):
     def __init__(self,
                  title: str,
-                 id: int,
                  total_cost: float,
                  yearly_op_red: float,
                  duration: int
@@ -199,7 +196,7 @@ class ProductivityImprovementInvestment(AbstractInvestmentItem):
                 where=BalanceLocation.SP_ATTIVO
             )
         ]
-        super().__init__(title, id, self.type, effects)
+        super().__init__(title, self.type, effects)
 
     def total_expenditure_first_month(self) -> float:
         return self.total_cost
@@ -212,7 +209,6 @@ class FundingType(IntEnum):
 
 class FundingInvestment(AbstractInvestmentItem):
     def __init__(self, title: str,
-                 id: int,
                  total_import: float,
                  type: FundingType,
                  interest_rate: float | None,
@@ -271,7 +267,7 @@ class FundingInvestment(AbstractInvestmentItem):
                     title="versamento-cap-sociale"
                 )
             )
-        super().__init__(title, id, "funding-investment", effects)
+        super().__init__(title, "funding-investment", effects)
 
     def total_funding_request_first_month(self) -> float:
         return self.total_import

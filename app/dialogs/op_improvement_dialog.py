@@ -33,7 +33,6 @@ class OperativeImprovementDialog(QDialog):
 
         self.__item__ = ProductivityImprovementInvestment(
             title=t,
-            id=1,
             total_cost=parse(c_l),
             yearly_op_red=self.operative_costs * p,
             duration=parse(self.ui.durationEdit.text())

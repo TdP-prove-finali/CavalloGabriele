@@ -38,7 +38,6 @@ class FundingDialog(QDialog):
 
         self.__item__ = FundingInvestment(
             title=t,
-            id=1,
             duration=int(o),
             interest_rate=parse(s) / 100,
             total_import=parse(c_l),

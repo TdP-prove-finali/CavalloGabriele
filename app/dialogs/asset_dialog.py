@@ -33,7 +33,6 @@ class AssetDialog(QDialog):
 
         self.__item__ = AssetInvestment(
             title=t,
-            id=1,
             total_cost=parse(c_l),
             duration_years=parse(s),
             maintenance_cost=parse(o),
