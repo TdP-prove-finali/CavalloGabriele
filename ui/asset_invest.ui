@@ -281,7 +281,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
       <item>
        <widget class="QLabel" name="label_4">
         <property name="toolTip">
-         <string>Costo una tantum speso dall'azienda per formare inizialmente il dipendente nuovo</string>
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Costo di manutenzione annuale del cespite durante la sua vita utile&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
         <property name="text">
          <string>Costo di manutenzione</string>

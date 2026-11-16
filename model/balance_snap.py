@@ -506,7 +506,7 @@ class BalanceSnaphot:
         :param field_name alla colonna month nella sezione giusta del bilancio"""
         id_map = self.__get_id_map(location)
         node = id_map[field_name]
-        id_map[field_name].value[month] = value
+        id_map[field_name].value[month] = round(value)
         if set_flags == []:
             id_map[field_name].set_flag(Flag.UPDATED)
         else:

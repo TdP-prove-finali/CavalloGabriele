@@ -5,7 +5,6 @@ from model.investment_effect import (InvestmentEffect,
                                      EffectType, ProductivityIncreaseEffect, MoveImportInvEffect, IdFactory)
 from model.node import BalanceLocation
 
-
 # TODO: Gestire l'unità di misura del denaro in modo comodo (se i dati sono in migliaia mettere /1000 altrimenti i conti non tornano
 class AbstractInvestmentItem:
     def __init__(self, title: str, type: str, effects: list[InvestmentEffect]):
@@ -28,7 +27,6 @@ class AbstractInvestmentItem:
         """
         return 0.0
 
-# TODO: Correggere gli id degli item con una factory
 class EmployeeHireInvestment(AbstractInvestmentItem):
     def __init__(self,
                  title: str,
@@ -44,7 +42,7 @@ class EmployeeHireInvestment(AbstractInvestmentItem):
 
         effects = list()
         self.type = "employee-hire"
-        self.tfr_quote = (total_monthly_cost * 12) / 13.5
+        self.tfr_quote = round((total_monthly_cost * 12) / 13.5)
         self.role = role
         self.onboarding_cost = onboarding_cost
         self.strumental_cost = strumental_cost
@@ -120,7 +118,7 @@ class AssetInvestment(AbstractInvestmentItem):
 
         self.duration_years = duration_years
         self.maintenance_cost = maintenance_cost
-        self.amortization_quote = self.total_cost / self.duration_years
+        self.amortization_quote = round(self.total_cost / self.duration_years)
         effects = [
         ]
         if self.asset_type == AssetType.MATERIAL:
@@ -139,7 +137,14 @@ class AssetInvestment(AbstractInvestmentItem):
                 value_constant=self.amortization_quote,
             until=self.duration_years * 12
         ))
-
+        effects.append(InvestmentEffect(
+            field_name="servizi",
+            where=BalanceLocation.CE,
+            title="costo-manutenzione",
+            frequency=EffectFrequency.ANNUAL,
+            value_constant=self.maintenance_cost,
+            inv_type=EffectType.CONST
+        ))
         effects.append(InvestmentEffect(
             title="incremento-immobilizzazioni",
             inv_type=EffectType.CONST,
@@ -183,7 +188,7 @@ class ProductivityImprovementInvestment(AbstractInvestmentItem):
                 field_name="amm_immob_immat",
                 inv_type=EffectType.CONST,
                 frequency=EffectFrequency.ANNUAL,
-                value_constant=self.total_cost / self.duration,
+                value_constant=round(self.total_cost / self.duration),
                 where=BalanceLocation.CE,
                 until=self.duration * 12
             ),
@@ -218,7 +223,7 @@ class FundingInvestment(AbstractInvestmentItem):
         self.funding_type = type
         self.interest_rate = interest_rate
         self.duration = duration
-        self.capital_quote_y = self.total_import / self.duration
+        self.capital_quote_y = round(self.total_import / self.duration)
         effects = []
         if type == FundingType.BANK:
             # TODO: Correggere, questo non dura per sempre
@@ -236,7 +241,7 @@ class FundingInvestment(AbstractInvestmentItem):
                     field_name="totale_oneri_finanziari",
                     where=BalanceLocation.CE,
                     frequency=EffectFrequency.ANNUAL,
-                    value_constant=self.interest_rate * self.total_import,
+                    value_constant=round(self.interest_rate * self.total_import),
                     title="interessi-passivi",
                     inv_type=EffectType.CONST,
                     until=self.duration * 12
@@ -285,7 +290,7 @@ class InvestmentProject:
         for item in items:
             f += item.total_expenditure_first_month()
 
-        return f
+        return round(f)
 
     @staticmethod
     def total_funding_request(items: list[AbstractInvestmentItem]):
@@ -293,4 +298,4 @@ class InvestmentProject:
         for item in items:
             f += item.total_funding_request_first_month()
 
-        return f
+        return round(f)

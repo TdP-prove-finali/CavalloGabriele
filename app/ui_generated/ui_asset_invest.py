@@ -237,7 +237,7 @@ class Ui_Dialog(object):
         self.label_17.setText(QCoreApplication.translate("Dialog", u"Durata*", None))
         self.label_18.setText(QCoreApplication.translate("Dialog", u"anni", None))
 #if QT_CONFIG(tooltip)
-        self.label_4.setToolTip(QCoreApplication.translate("Dialog", u"Costo una tantum speso dall'azienda per formare inizialmente il dipendente nuovo", None))
+        self.label_4.setToolTip(QCoreApplication.translate("Dialog", u"<html><head/><body><p>Costo di manutenzione annuale del cespite durante la sua vita utile</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
         self.label_4.setText(QCoreApplication.translate("Dialog", u"Costo di manutenzione", None))
         self.maintenanceCostEdit.setText(QCoreApplication.translate("Dialog", u"100", None))
