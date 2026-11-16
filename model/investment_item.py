@@ -2,7 +2,7 @@ from enum import IntEnum
 
 from model.investment_effect import (InvestmentEffect,
                                      EffectFrequency,
-                                     EffectType, ProductivityIncreaseEffect)
+                                     EffectType, ProductivityIncreaseEffect, MoveImportInvEffect)
 from model.node import BalanceLocation
 
 
@@ -138,7 +138,9 @@ class AssetInvestment(AbstractInvestmentItem):
                 field_name=field_amm,
                 frequency=EffectFrequency.ANNUAL,
                 where=BalanceLocation.CE,
-                value_constant=self.amortization_quote))
+                value_constant=self.amortization_quote,
+            until=self.duration_years * 12
+        ))
 
         effects.append(InvestmentEffect(
             title="incremento-immobilizzazioni",
@@ -176,7 +178,8 @@ class ProductivityImprovementInvestment(AbstractInvestmentItem):
                 value_constant=self.yearly_op_cost_red_perc * (-1),
                 frequency=EffectFrequency.ANNUAL,
                 where=BalanceLocation.CE,
-                inv_type=EffectType.CONST
+                inv_type=EffectType.CONST,
+                until=self.duration * 12
             ),
             InvestmentEffect(
                 title="cost-amortization",
@@ -185,6 +188,7 @@ class ProductivityImprovementInvestment(AbstractInvestmentItem):
                 frequency=EffectFrequency.ANNUAL,
                 value_constant=self.total_cost / self.duration,
                 where=BalanceLocation.CE,
+                until=self.duration * 12
             ),
             InvestmentEffect(
                 title="incremento-immobilizzazioni",
@@ -204,6 +208,8 @@ class FundingType(IntEnum):
     BANK = 0,
     STOCK = 1
 
+
+
 class FundingInvestment(AbstractInvestmentItem):
     def __init__(self, title: str,
                  id: int,
@@ -216,20 +222,15 @@ class FundingInvestment(AbstractInvestmentItem):
         self.funding_type = type
         self.interest_rate = interest_rate
         self.duration = duration
+        self.capital_quote_y = self.total_import / self.duration
         effects = []
         if type == FundingType.BANK:
-            effects.append(InvestmentEffect(
-                field_name="banche_entro_lesercizio",
-                where=BalanceLocation.SP_PASSIVO_DEBITI,
-                value_constant=self.total_import / self.duration,
-                frequency=EffectFrequency.ANNUAL,
-                inv_type=EffectType.CONST,
-                title="banche_entro"
-            ))
+            # TODO: Correggere, questo non dura per sempre
+            # inizialmente registro l'importo totale del debito e poi l'effetto di spostamento (eseguito successivamente) ne sposterà una parte in quelli entro
             effects.append(InvestmentEffect(
                 field_name="banche_oltre_lesercizio",
                 where=BalanceLocation.SP_PASSIVO_DEBITI,
-                value_constant=self.total_import - (self.total_import / self.duration),
+                value_constant=self.total_import,
                 frequency=EffectFrequency.ONCE,
                 inv_type=EffectType.CONST,
                 title="banche_oltre"
@@ -241,9 +242,24 @@ class FundingInvestment(AbstractInvestmentItem):
                     frequency=EffectFrequency.ANNUAL,
                     value_constant=self.interest_rate * self.total_import,
                     title="interessi-passivi",
+                    inv_type=EffectType.CONST,
+                    until=self.duration * 12
+                )
+            )
+            effects.append(
+                MoveImportInvEffect(
+                    source_field_name="banche_oltre_lesercizio",
+                    dest_field_name="banche_entro_lesercizio",
+                    frequency=EffectFrequency.ANNUAL,
+                    value_constant=self.capital_quote_y,
+                    where=BalanceLocation.SP_PASSIVO_DEBITI,
+                    title="riduzione-debito",
+                    until=self.duration * 12,
                     inv_type=EffectType.CONST
                 )
             )
+            # TODO: Aggiungere effetto di trasferimento della quota capitale dai debiti oltre a quelli entro (eseguito necessariamente a fine anno)
+            # In questo modo, ogni anno, il totale da rimborsare viene diminuito della quota capitale
         elif type == FundingType.STOCK:
             effects.append(
                 InvestmentEffect(

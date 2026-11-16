@@ -1,3 +1,4 @@
+import copy
 from dataclasses import dataclass, field
 from typing import Any
 from model.section import Section
@@ -34,6 +35,11 @@ class CompanyData:
     @property
     def available_years(self) -> int:
         return self.informazioni_commerciali_e_legali["numero_di_anni_disponibili"]
+
+    def copy(self):
+        new_instance = self.__class__.__new__(self.__class__)
+        new_instance.__dict__ = copy.deepcopy(self.__dict__)
+        return new_instance
 
 class GlobalNumberContext:
     def __init__(self, value=0):

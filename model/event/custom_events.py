@@ -83,7 +83,7 @@ class MoveCentralizedTreasury(simpy.events.Event):
         return f"Prelevo liquidità dalla gestione accentrata verso l'azienda corrente per un importo di {self.amount} "
 
 
-class DebitorInsolvencyEvent(simpy.events.Event):
+class CreditorInsolvencyEvent(simpy.events.Event):
     """
     Rappresenta la situazione di insolvenza parziale o totale dei debiti verso creditori
     """
@@ -115,5 +115,5 @@ class DebitorInsolvencyEvent(simpy.events.Event):
         self.sim_stop_evt.require_stop(self)
 
     def __str__(self):
-        return f"Bancarotta all'anno {self.year} a causa di insolvenza verso i debitori. La liquidità è pari a {self.liquidity} ma i debiti sono di {self.total_debt_entro}"
+        return f"Bancarotta all'anno {self.year} a causa di insolvenza verso i creditori. La liquidità è pari a {self.liquidity} ma i debiti sono di {self.total_debt_entro}"
 

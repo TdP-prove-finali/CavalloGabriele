@@ -8,7 +8,8 @@ from controller.simulation_controller import SimulationWorker
 from dao.simulation.simulation_dao import SimulationDAO
 from dao.util import step_up_numbering, step_up_field, extract_complete_numbering, BalanceLocation
 from model.balance_snap import BalanceSnaphot
-from model.investment_item import InvestmentProject, EmployeeHireInvestment
+from model.investment_item import InvestmentProject, EmployeeHireInvestment, AssetInvestment, AssetType, \
+    FundingInvestment, FundingType
 from model.node import NodeType, Flag
 from model.sim_output import SimulationOutput
 from model.sim_state import SimulationCompleteModel, SimulationState
@@ -892,3 +893,57 @@ def test_copy_snap():
     s2.for_each_sp_field(check, exclude_context_fields=True)
     s2.for_each_ce_field(check, exclude_context_fields=True)
 
+def test_sim_cespiti():
+    c = complete_company_1.copy()
+    c.stato_patrimoniale["subsections"]["attivo"]["bii5_o1_fondo_ammto_immob_materiali"][0] = 20000000
+    worker = SimulationWorker(SimulationCompleteModel(
+        SimulationState(
+            c,
+            GLOBAL_CONFIG_MUL
+        ),
+        InvestmentProject(
+            "Progetto test",
+            "Progetto simulazione di test",
+            [],
+            items=[
+                AssetInvestment(
+                    title="Macchinari",
+                    asset_type=AssetType.MATERIAL,
+                    total_cost=20000,
+                    id=3,
+                    duration_years=2,
+                    maintenance_cost=0
+                )
+            ]
+        )
+    ), )
+
+    res = worker.start()
+    print(res)
+
+def test_sim_mutuo():
+    c = complete_company_1.copy()
+    worker = SimulationWorker(SimulationCompleteModel(
+        SimulationState(
+            c,
+            GLOBAL_CONFIG_MUL
+        ),
+        InvestmentProject(
+            "Progetto test",
+            "Progetto simulazione di test",
+            [],
+            items=[
+                FundingInvestment(
+                    title="mutuo",
+                    duration=3,
+                    id=5,
+                    interest_rate=0.2,
+                    total_import=20000,
+                    type=FundingType.BANK
+                )
+            ]
+        )
+    ), )
+
+    res = worker.start()
+    print(res)

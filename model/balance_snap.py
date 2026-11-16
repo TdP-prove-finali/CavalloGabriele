@@ -311,7 +311,8 @@ class BalanceSnaphot:
         :return:
         """
         if Flag.UPDATED in node.flags:
-            raise Exception(f"Impossibile inizializzare il bilancio. Alcuni campi sono stati modificati {node}")
+            print(f"Campo {node} skippato da inizializzazione perchè già inizializzato esternamente")
+            return
 
         if Flag.NO_COPY in node.flags and isinstance(node.value[read_column], (int, float)):
             node.value[write_column] = 0.0
@@ -382,29 +383,37 @@ class BalanceSnaphot:
         amm_mat = self.get_field_value("amm_immob_mat", BalanceLocation.CE, self.YEAR_END_COL)
         self.sum_field_value('fondo_ammto_immob_immateriali', BalanceLocation.SP_ATTIVO, amm_immat, self.YEAR_END_COL)
         self.sum_field_value('fondo_ammto_immob_materiali', BalanceLocation.SP_ATTIVO, amm_mat, self.YEAR_END_COL)
+        self.__check_ammort_next_year__()
 
+    def __check_ammort_next_year__(self, source_col = YEAR_END_COL):
         # per l'anno successivo, controllo se i fondi non hanno superato il valore delle immobilizzazioni. In tal caso le azzero di qui in poi
-        fdo_immat = self.get_field_value('fondo_ammto_immob_immateriali', BalanceLocation.SP_ATTIVO, self.YEAR_END_COL)
-        fdo_mat = self.get_field_value('fondo_ammto_immob_materiali', BalanceLocation.SP_ATTIVO, self.YEAR_END_COL)
-        tot_immat_net = self.sum_children_values("totale_immob_immateriali", BalanceLocation.SP_ATTIVO, self.YEAR_END_COL, exclude_fields=["fondo_ammto_immob_immateriali"])
-        tot_mat_net = self.sum_children_values("totale_immob_materiali", BalanceLocation.SP_ATTIVO, self.YEAR_END_COL, exclude_fields=["fondo_ammto_immob_materiali"])
+        amm_immat = self.get_field_value("amm_immob_immat", BalanceLocation.CE, source_col)
+        amm_mat = self.get_field_value("amm_immob_mat", BalanceLocation.CE, source_col)
+
+        fdo_immat = self.get_field_value('fondo_ammto_immob_immateriali', BalanceLocation.SP_ATTIVO, source_col)
+        fdo_mat = self.get_field_value('fondo_ammto_immob_materiali', BalanceLocation.SP_ATTIVO, source_col)
+        tot_immat_net = self.sum_children_values("totale_immob_immateriali", BalanceLocation.SP_ATTIVO, source_col, exclude_fields=["fondo_ammto_immob_immateriali"])
+        tot_mat_net = self.sum_children_values("totale_immob_materiali", BalanceLocation.SP_ATTIVO, source_col, exclude_fields=["fondo_ammto_immob_materiali"])
 
         diff = tot_immat_net - fdo_immat
-        if diff == 0 or amm_immat > diff:
+        if diff < 0:
+            print(f"Il fondo di ammortamento delle immob. immateriali parte da un valore superiore a quello delle immobilizzazioni che deve ammortizzare. {fdo_immat}€ > {amm_immat}. Verranno impostati gli ammortamenti immateriali per il prossimo anno a 0")
+            self.set_field_value("amm_immob_immat", BalanceLocation.CE, 0, self.YEAR_START_COL)
+
+        elif diff == 0 or amm_immat > diff:
             # Il fondo ha raggiunto il valore delle immobilizzazioni da ammortare oppure lo supererà con il prossimo pagamento degli ammortamenti
             self.set_field_value("amm_immob_immat", BalanceLocation.CE, diff, self.YEAR_START_COL)
             print(f"EVENTO: Il valore degli ammortamenti per immob. immateriali è stato impostato a {diff} per completare il fondo. ")
-        elif diff < 0:
-            raise Exception(f"Il fondo di ammortamento delle immob. immateriali parte da un valore superiore a quello delle immobilizzazioni che deve ammortizzare. {fdo_immat}€")
 
         diff2 = tot_mat_net - fdo_mat
-        if diff2 == 0 or amm_mat > diff2:
+        if diff2 < 0:
+            print(f"Il fondo di ammortamento delle immob. materiali parte da un valore superiore a quello delle immobilizzazioni che deve ammortizzare. {fdo_mat}€ > {tot_mat_net}€")
+            self.set_field_value("amm_immob_mat", BalanceLocation.CE, 0, self.YEAR_START_COL)
+        elif diff2 == 0 or amm_mat > diff2:
             # Il fondo ha raggiunto il valore delle immobilizzazioni da ammortare oppure lo supererà con il prossimo pagamento degli ammortamenti
             self.set_field_value("amm_immob_mat", BalanceLocation.CE, diff2, self.YEAR_START_COL)
             print(
-                f"EVENTO: Il valore degli ammortamenti per immob. materiali è stato impostato a {diff} per completare il fondo nell'anno successivo. ")
-        elif diff2 < 0:
-            raise Exception(f"Il fondo di ammortamento delle immob. materiali parte da un valore superiore a quello delle immobilizzazioni che deve ammortizzare. {fdo_mat}€")
+                f"EVENTO: Il valore degli ammortamenti per immob. materiali è stato impostato a {diff2} per completare il fondo nell'anno successivo. ")
 
     def __tfr_fondo_sp__(self):
         # destinazione tfr a fondo
@@ -458,6 +467,7 @@ class BalanceSnaphot:
             # non vengono impostati flag perchè essendo una copia totale non necessita di ricalcolo
 
         # inizializzazione del conto economico
+        self.__check_ammort_next_year__(source_col=0)       # controllo se nel nuovo anno devo pagare degli ammortamenti
         self.__init_from_node__(self.ce_id_map["conto_economico"], self.conto_economico)
         # copia totale dello stato patrimoniale
         self.for_each_sp_field(cp, exclude_context_fields=True)
@@ -513,7 +523,7 @@ class BalanceSnaphot:
         try:
             """Restituisce il valore del campo alla colonna giusta. Il field_name deve essere passato senza la numerazione. """
             id_map = self.__get_id_map(where)
-            return id_map[field_name].value[month]
+            return id_map[field_name].value[month] or 0
         except Exception:
             raise FieldNotFoundException(field_name, where)
 
@@ -726,11 +736,11 @@ class BalanceSnaphot:
         res = 0
         for child in children:
             if not exclude_fields and not name_regex:
-                res += child.value[column]
+                res += child.value[column] or 0
             elif exclude_fields != [] and child.name not in exclude_fields and child.field_name not in exclude_fields:
-                res += child.value[column]
+                res += child.value[column] or 0
             elif name_regex is not None and re.compile(name_regex).match(child.name):
-                res += child.value[column]
+                res += child.value[column] or 0
 
         return res
 

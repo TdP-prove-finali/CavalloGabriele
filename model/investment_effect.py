@@ -38,7 +38,10 @@ class InvestmentEffect:
                  where: BalanceLocation,
                  value_constant: float | None = None,
                  value_func: Callable[[Any], float] | None = None,
-                 flags=None):
+                 flags=None,
+                 until: int | None = None,
+                 starting_on: int | None = None
+                 ):
 
         if flags is None:
             self.flags = []
@@ -53,12 +56,25 @@ class InvestmentEffect:
         self.value_constant = value_constant
         self.frequency = frequency
         self.exec_flags = flags
+        self.until = until
+        self.starting_on = starting_on
 
     def current_write_index(self, state):
         return 2 + (state.current_month % 12)
 
     def current_read_index(self, state):
         return 1
+
+    def __check_applies__(self, state: SimulationState) -> bool:
+        if state.current_month > (self.until or 0):
+            print(f"Effetto {self} bloccato perchè ha superato la sua durata. ")
+            return False
+
+        if self.starting_on is not None and state.current_month < self.starting_on:
+            print(f"Effetto {self} bloccato perchè deve partire al mese {self.starting_on}")
+            return False
+
+        return True
 
     def apply(self, state: SimulationState) -> BalanceSnaphot:
         """
@@ -71,6 +87,9 @@ class InvestmentEffect:
         data = state.working_snapshot.get_field_data(self.field_name, self.where)
         if data is None:
             raise Exception(f"Effetto {self.__str__()} non applicabile al campo perchè non esiste il campo. ")
+
+        if not self.__check_applies__(state):
+            return state.working_snapshot
 
         if self.type == EffectType.INCREASE:
             val = self.value_constant
@@ -148,6 +167,35 @@ class InvestmentEffect:
     def __eq__(self, other):
         return self.title == other.title
 
+class MoveImportInvEffect(InvestmentEffect):
+    """
+    Effetto che permette di spostare un importo X da un campo ad un altro (sottraendolo dal primo e aggiungendolo al secondo)
+    """
+    def __init__(self,
+                 source_field_name: str,
+                dest_field_name: str,
+                 title: str, inv_type: EffectType,
+                 frequency: EffectFrequency,
+                 where: BalanceLocation,
+                 value_constant: float | None = None,
+                 value_func: Callable[[Any], float] | None = None,
+                 flags=None,
+                 until: int | None = None,
+                 starting_on: int | None = None
+                 ):
+        super().__init__(title, inv_type, source_field_name, frequency, where, value_constant, value_func, flags, until, starting_on)
+        self.source_field_name = source_field_name
+        self.dest_field_name = dest_field_name
+
+    def apply(self, state: SimulationState) -> BalanceSnaphot:
+        if not self.__check_applies__(state):
+            return state.working_snapshot
+
+        state.working_snapshot.sum_field_value(self.source_field_name, self.where, self.value_constant * (-1), self.current_write_index(state))
+        state.working_snapshot.sum_field_value(self.dest_field_name, self.where, self.value_constant, self.current_write_index(state))
+
+        return state.working_snapshot
+
 class ProductivityIncreaseEffect(InvestmentEffect):
     seed: numpy.random.Generator | None = None
 
@@ -157,7 +205,7 @@ class ProductivityIncreaseEffect(InvestmentEffect):
             inv_type=EffectType.CONST,
             field_name="ricavi_vendite_e_prestazioni",
             frequency=EffectFrequency.MONTHLY,
-            where=BalanceLocation.CE,
+            where=BalanceLocation.CE
         )
         self.average = average
         self.variance = variance

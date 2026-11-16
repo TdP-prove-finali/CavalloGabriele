@@ -5,7 +5,7 @@ from PySide6.QtCore import QObject, Signal, Slot
 from dao.simulation.simulation_dao import SimulationDAO
 from dao.util import BalanceLocation
 from model.balance_snap import BalanceSnaphot
-from model.event.custom_events import BankruptcyEvent, SimulationStopEvent, DebitorInsolvencyEvent, \
+from model.event.custom_events import BankruptcyEvent, SimulationStopEvent, CreditorInsolvencyEvent, \
     MoveCentralizedTreasury
 from model.investment_effect import OrganicGrowthEffect, EffectFrequency, CostGrowthEffect, CreditCollectEffect, \
     InvestmentEffect, EffectExecFlags, DebitPayEffect
@@ -23,7 +23,7 @@ class SimulationWorker(QObject):
         self.sim_finish_event: SimulationStopEvent | None = None
         self.bankrupt_event: BankruptcyEvent | None = None
         self.timeout_event = None
-        self.insolvency_event: DebitorInsolvencyEvent | None = None
+        self.insolvency_event: CreditorInsolvencyEvent | None = None
 
     def simulation_init(self):
         """
@@ -203,7 +203,7 @@ class SimulationWorker(QObject):
         self.model.env = simpy.Environment()
         self.sim_finish_event = SimulationStopEvent(self.model.env)
         self.bankrupt_event = BankruptcyEvent(self.model.env, self.sim_finish_event)
-        self.insolvency_event = DebitorInsolvencyEvent(self.model.env, self.sim_finish_event)
+        self.insolvency_event = CreditorInsolvencyEvent(self.model.env, self.sim_finish_event)
         self.timeout_event = self.model.env.timeout((self.model.simulation_state.global_parameters.number_of_years * 12) - 1)
         self.model.env.process(effect_spawner(self.model.env))
         result = self.model.env.run(until=self.sim_finish_event | self.timeout_event)
@@ -220,7 +220,7 @@ class SimulationWorker(QObject):
             balance=self.model.simulation_state.final_result_snapshot,
             project=self.model.project,
             global_parameters=self.model.simulation_state.global_parameters,
-            reason_exit=r
+            reason_exit=r.__str__()
         )
         self.save_generated_data(output)
         self.finished.emit(output)
@@ -229,5 +229,6 @@ class SimulationWorker(QObject):
     def save_generated_data(self, output):
         try:
             SimulationDAO.save_simulation(output)
-        except:
+        except Exception as e:
             print("Errore durante il salvataggio")
+            print(e)
