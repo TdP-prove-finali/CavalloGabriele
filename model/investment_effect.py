@@ -2,6 +2,8 @@ import math
 from enum import Enum, IntEnum
 from math import exp, sqrt
 from typing import Callable, Any
+from scipy.stats import lomax
+import numpy.random
 
 from dao.util import BalanceLocation
 from model.balance_snap import BalanceSnaphot
@@ -146,8 +148,10 @@ class InvestmentEffect:
     def __eq__(self, other):
         return self.title == other.title
 
-class TimeToProductivityEffect(InvestmentEffect):
-    def __init__(self, average: float, variance: float):
+class ProductivityIncreaseEffect(InvestmentEffect):
+    seed: numpy.random.Generator | None = None
+
+    def __init__(self, average: float, variance: float, hp_lomax_scale: float, hp_lomax_shape: float):
         super().__init__(
             title="ttp-effect",
             inv_type=EffectType.CONST,
@@ -157,26 +161,29 @@ class TimeToProductivityEffect(InvestmentEffect):
         )
         self.average = average
         self.variance = variance
+        ProductivityIncreaseEffect.seed = np.random.default_rng(55)
+        self.ttp = ProductivityIncreaseEffect.seed.normal(self.average, math.sqrt(self.variance))
+        self.hp_lomax_scale = hp_lomax_scale
+        self.hp_lomax_shape = hp_lomax_shape
+        self.r = None
 
     def apply(self, state: SimulationState) -> BalanceSnaphot:
-        # TODO: Implement
-        pass
+        if self.r is None:
+            self.r = state.working_snapshot.get_field_value(self.field_name, self.where, BalanceSnaphot.HISTORIC_COL) / state.working_snapshot.get_field_value("dipendenti", BalanceLocation.CE, BalanceSnaphot.HISTORIC_COL)
 
-class HyperPerformerEffect(InvestmentEffect):
-    def __init__(self, scale: float, shape: float):
-        super().__init__(
-            title="hp-effect",
-            inv_type=EffectType.CONST,
-            field_name="ricavi_vendite_e_prestazioni",
-            frequency=EffectFrequency.MONTHLY,
-            where=BalanceLocation.CE,
-        )
-        self.scale = scale
-        self.shape = shape
+        t = state.current_month + 1
 
-    def apply(self, state: SimulationState) -> BalanceSnaphot:
-        # TODO: Implement
-        pass
+        if t < self.ttp:
+            alpha_t = math.pow(2, (t/self.ttp)) - 1
+            hp = 0
+        else:
+            alpha_t = 1
+            hp = lomax.rvs(c=self.hp_lomax_shape, scale=self.hp_lomax_scale)
+
+        val = (self.r * alpha_t) + hp
+        state.working_snapshot.sum_field_value(self.field_name, self.where, val, state.current_write_index())
+
+        return state.working_snapshot
 
 # TODO: Gestione delle immobilizzazioni in corso "B.I.6 Immobilizzazioni in corso e acconti
 # Valutare se copiarle semplicemente o se trasferirle come immobilizzazioni completate in SP Attivo
@@ -212,7 +219,7 @@ class OrganicGrowthEffect(InvestmentEffect):
             (self.average - self.variance / 2) * dt
             + sqrt(self.variance * dt) * Z_n
         )
-        state.working_snapshot.set_field_value(self.field_name, BalanceLocation.CE, X_tn1, month=self.current_write_index(state))
+        state.working_snapshot.sum_field_value(self.field_name, BalanceLocation.CE, X_tn1, column=self.current_write_index(state))
         return state.working_snapshot
 
 class CostGrowthEffect(InvestmentEffect):

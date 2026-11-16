@@ -2,7 +2,7 @@ from enum import IntEnum
 
 from model.investment_effect import (InvestmentEffect,
                                      EffectFrequency,
-                                     EffectType, TimeToProductivityEffect, HyperPerformerEffect)
+                                     EffectType, ProductivityIncreaseEffect)
 from model.node import BalanceLocation
 
 
@@ -27,6 +27,7 @@ class AbstractInvestmentItem:
         :return:
         """
         return 0.0
+
 # TODO: Correggere gli id degli item con una factory
 class EmployeeHireInvestment(AbstractInvestmentItem):
     def __init__(self,
@@ -48,14 +49,9 @@ class EmployeeHireInvestment(AbstractInvestmentItem):
         self.role = role
         self.onboarding_cost = onboarding_cost
         self.strumental_cost = strumental_cost
-        self.hp_lomax_scale = hp_lomax_scale
-        self.hp_lomax_shape = hp_lomax_shape
-        self.ttp_normal_average = ttp_normal_average
-        self.ttp_normal_variance = ttp_normal_variance
         self.stop_ratio = stop_ratio
         self.total_monthly_cost = total_monthly_cost
 
-        # TODO: Raffinare gli effetti
         effects.append(InvestmentEffect(
             title="stipendio-mensile",
             inv_type=EffectType.CONST,
@@ -78,24 +74,21 @@ class EmployeeHireInvestment(AbstractInvestmentItem):
             field_name="altri_costi",
             frequency=EffectFrequency.ONCE,
             where=BalanceLocation.CE,
-            value_constant=onboarding_cost),
+            value_constant=onboarding_cost + strumental_cost),
         )
         effects.append(InvestmentEffect(
             title="employee-number",
             inv_type=EffectType.CONST,
             field_name="dipendenti",
-            frequency=EffectFrequency.ANNUAL,     # Una volta cambiato il campo rimane lo stesso nel tempo
+            frequency=EffectFrequency.ANNUAL,
             value_constant=1,
             where=BalanceLocation.CE
         ))
-        # TODO: Costi strumentali
-        effects.append(TimeToProductivityEffect(
+        effects.append(ProductivityIncreaseEffect(
             average=ttp_normal_average,
-            variance=ttp_normal_variance
-        ))
-        effects.append(HyperPerformerEffect(
-            scale=hp_lomax_scale,
-            shape=hp_lomax_shape
+            variance=ttp_normal_variance,
+            hp_lomax_shape=hp_lomax_shape,
+            hp_lomax_scale=hp_lomax_scale
         ))
 
         super().__init__(title, id, self.type, effects)
