@@ -3,13 +3,11 @@ from copy import deepcopy
 from typing import Callable, Any
 import networkx as nx
 from networkx.classes import DiGraph
-from dao.util import step_up_field, extract_field_identif, SECTION_HEAD, BalanceLocation, sum_vectors, normalize_zero
+from dao.util import step_up_field, extract_field_identif, SECTION_HEAD, BalanceLocation, normalize_zero
 from model.FieldNotFoundException import FieldNotFoundException
 from model.node import Node, NodeType, Flag
-from model.raw_company_data import CompanyData
+from model.raw_company_data import CompanyData, PRIVATE_FIELDS
 from model.sim_params import GlobalParameters
-
-PRIVATE_FIELDS = ["data", "moneta", "periodo", "subsections", "ics"]
 
 def get_matching_node(numeration: str, graph: DiGraph, where: BalanceLocation) -> Node | None:
     """Restituisce il nodo che ha esattamente la stessa numerazione di quella indicata e che si trova esattamente nella stessa sezione

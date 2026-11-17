@@ -52,3 +52,4 @@ class BalanceDetailController(AbstractController[BalanceDetailDialog, MainModel,
         self.view.ui.contoEconomicoTView.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Interactive)
         header = ResizableVerticalHeader(self.view.ui.contoEconomicoTView)
         self.view.ui.contoEconomicoTView.setVerticalHeader(header)
+        header.show()

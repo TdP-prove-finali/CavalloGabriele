@@ -85,7 +85,7 @@ class TranslationDAO:
         return coll.count_documents({})
 
     @staticmethod
-    def get_translations_for_company(company_data: CompanyData) -> dict[str, str]:
+    def get_translations_for_company(company_data: CompanyData | dict) -> dict[str, str]:
         """
         Restituisce le traduzioni per tutti i campi di questa company, caricando dal database solo quelle utili
         :param company_data: Dati completi della company
@@ -106,15 +106,18 @@ class TranslationDAO:
                         if isinstance(item, dict):
                             collect_keys(item)
 
-        for field_info in fields(company_data):
-            if field_info.name in {"company_name", "fiscal_code"}:
-                continue
+        if isinstance(company_data, CompanyData):
+            for field_info in fields(company_data):
+                if field_info.name in {"company_name", "fiscal_code"}:
+                    continue
 
-            field_names.add(field_info.name)
+                field_names.add(field_info.name)
 
-            section_data = getattr(company_data, field_info.name)
+                section_data = getattr(company_data, field_info.name)
 
-            if isinstance(section_data, dict):
-                collect_keys(section_data)
+                if isinstance(section_data, dict):
+                    collect_keys(section_data)
+        elif isinstance(company_data, dict):
+            collect_keys(company_data)
 
         return TranslationDAO.get_translations(list(field_names))

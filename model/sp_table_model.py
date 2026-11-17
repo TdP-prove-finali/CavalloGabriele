@@ -29,9 +29,9 @@ class SPTableModel(QAbstractTableModel):
         d = None
         field_name = None
 
-        if row == 0 and role == Qt.ItemDataRole.DisplayRole:
+        if row == 0:
             field_name = "Attivo"
-            d = None
+            d = [""] * self.column_count
         elif row <= self._data.count_attivo_fields:
             field_name = self._data.get_attivo_key(row - 1)
             if role == Qt.ItemDataRole.DisplayRole:
@@ -39,7 +39,7 @@ class SPTableModel(QAbstractTableModel):
         elif row == self._data.count_attivo_fields:     # Totale attivo
             pass
         elif row == self._data.count_attivo_fields + 1:      # Inizio del passivo
-            pass
+            d = [""] * self.column_count
         elif self._data.count_attivo_fields + 1 < row <= self._data.count_attivo_fields + self._data.count_patrimon_fields + 1:
             field_name = self._data.get_patrimn_key(row - self._data.count_attivo_fields - 2)
             if role == Qt.ItemDataRole.DisplayRole:
@@ -51,7 +51,8 @@ class SPTableModel(QAbstractTableModel):
 
         if role == Qt.ItemDataRole.DisplayRole:
             return self.__prepare_data__(d)
-        elif field_name is not None and field_name.find("totale") > -1:
+        elif (field_name is not None and field_name.find("totale") > -1
+              and field_name.find("conti_dordine") == -1):
             return self.getSectionHeadData(role)
         elif role == Qt.ItemDataRole.BackgroundRole:
             return QColor(Qt.GlobalColor.darkGray)
@@ -71,12 +72,9 @@ class SPTableModel(QAbstractTableModel):
             return "n.d."
 
     def headerData(self, section, orientation, role):
-        # TODO: Header con le sotto-sezioni dello SP
-        # TODO: Utilizzare il TooltipRole per mostrare un tooltip delle sezioni più importanti
-        # Ad esempio con lista hard-coded di descrizioni complete sulle cose più dettagliate
         if orientation == Qt.Orientation.Horizontal:
             if role == Qt.ItemDataRole.DisplayRole:
-                return "Anno " + str(2026 - section - 1)
+                return self._data.context["data"][section]
             else:
                 return None
         elif orientation == Qt.Orientation.Vertical:
@@ -98,7 +96,9 @@ class SPTableModel(QAbstractTableModel):
             if role == Qt.ItemDataRole.DisplayRole:
                 return self.__get_translation_for__(field_name)
 
-            elif role != Qt.ItemDataRole.DisplayRole and field_name is not None and (field_name.find("totale") != -1 or section == 0):
+            elif (role != Qt.ItemDataRole.DisplayRole
+                  and field_name is not None and field_name.find("totale") != -1
+                  and field_name.find("conti_dordine") == -1) :
                 return self.getSectionHeadData(role)
 
         return None

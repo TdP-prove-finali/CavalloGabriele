@@ -51,7 +51,8 @@ class RawCompanyBalanceImporter:
             'imposte_differite_e_anticipate': BalanceLocation.CE,
             'imposte_differite__plus_frac___': BalanceLocation.CE,
             'imposte_anticipate__plus_frac___': BalanceLocation.CE,
-            'prov__oneri__da_adesione_al_regime_di_trasparenza_fiscale': BalanceLocation.CE
+            'prov__oneri__da_adesione_al_regime_di_trasparenza_fiscale': BalanceLocation.CE,
+            "refiled": BalanceLocation.CE
         }
 
     @classmethod

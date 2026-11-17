@@ -50,3 +50,5 @@ class GlobalNumberContext:
 
     def set_number(self, value):
         self.value = value
+
+PRIVATE_FIELDS = ["data", "moneta", "periodo", "subsections", "ics", "refiled"]

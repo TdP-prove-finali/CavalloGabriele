@@ -3,6 +3,9 @@ import math
 import re
 from enum import IntEnum
 
+from model.raw_company_data import PRIVATE_FIELDS
+
+
 class BalanceLocation(IntEnum):
     SP_ATTIVO = 0,
     SP_PASSIVO_DEBITI = 1,
@@ -133,7 +136,7 @@ def step_up_field(field_name: str, where: BalanceLocation | None = None)-> str:
     elif ntk is not None:
         return step_up_numbering(ntk, where)
 
-    if field_name in ["data", "moneta", "periodo", "ics"] or field_name in SECTION_HEAD:
+    if field_name in PRIVATE_FIELDS or field_name in SECTION_HEAD:
         return ""
 
     raise Exception(f"Numerazione non riconosciuta per il campo {field_name}")

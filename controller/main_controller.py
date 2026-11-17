@@ -99,7 +99,8 @@ class MainController(AbstractController[MainWindow, MainModel, None]):
         c = self.model.company_data
         tr = self.model.translations
         data_model = AbstractSectionTableModel(
-            c.profilo_finanziario, tr, max_column_count=2
+            c.profilo_finanziario, tr, max_column_count=2,
+            h_titles=c.conto_economico["data"]
         )
         self.view.ui.summaryTableView.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Interactive)
         header = ResizableVerticalHeader()
@@ -129,7 +130,14 @@ class MainController(AbstractController[MainWindow, MainModel, None]):
             lay.setContentsMargins(QMargins(0, 0, 0, 0))
             lay.addWidget(wid)
             wrapper.setLayout(lay)
-            wid.setModel(AbstractSectionTableModel(data=section, translations=self.model.translations, max_column_count=2, header_transformer=lambda trans: trans.strip().replace("-", "")))
+            wid.setModel(AbstractSectionTableModel(
+                data=section,
+                translations=self.model.translations,
+                max_column_count=2,
+                header_transformer=lambda trans: trans.strip().replace("-", ""),
+                h_titles=self.model.company_data.conto_economico["data"]
+            )
+            )
             wid.setVerticalHeader(ResizableVerticalHeader(wid))
             self.view.ui.indiciesTabWidget.addTab(wrapper, title)  # Tolgo tutte le tab
 

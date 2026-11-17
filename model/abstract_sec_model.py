@@ -12,7 +12,9 @@ class AbstractSectionTableModel(QAbstractTableModel):
                  translations: dict[str, str],
                  max_row_count = None,
                  max_column_count = None,
-                 header_transformer = None):
+                 header_transformer = None,
+                 h_titles: list[str] | None = None
+                 ):
         """
         Crea una nuova istanza del modello
         :param data: Dati da visualizzare sotto forma di sezione
@@ -32,6 +34,7 @@ class AbstractSectionTableModel(QAbstractTableModel):
 
         self._data = data
         self._translations = translations
+        self.h_titles = h_titles
 
         if max_column_count is None:
             self.column_count = len(data[list(data.keys())[0]])
@@ -75,7 +78,12 @@ class AbstractSectionTableModel(QAbstractTableModel):
         if role != Qt.ItemDataRole.DisplayRole:
             return None
         elif orientation == Qt.Orientation.Horizontal:
-            return "Anno " + str(2026 - section - 1)
+            if self.h_titles is not None:
+                d = self.h_titles
+            else:
+                d = self._data["data"]
+
+            return d[section]
         elif orientation == Qt.Orientation.Vertical:
             field_name = keys[section]
 
