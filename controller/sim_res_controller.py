@@ -1,3 +1,5 @@
+from dataclasses import asdict
+
 from PySide6.QtWidgets import QHeaderView
 
 from app.charts.credit_an import add_financial_evolution_chart_to_tab
@@ -59,6 +61,7 @@ class SimResultController(AbstractController[SimResultWindow, SimulationOutput, 
         self.view.ui.statoPatrimTView.setVerticalHeader(header)
         self.view.ui.statoPatrimTView.resizeColumnsToContents()
         header.setVisible(True)
+        self.loadIndicesTable()
 
     def loadEvolPatrimCharts(self):
         bal: BalanceSnaphot = self.model.balance
@@ -101,3 +104,22 @@ class SimResultController(AbstractController[SimResultWindow, SimulationOutput, 
             },
             title="Evoluzione dei debiti"
         )
+
+    def loadIndicesTable(self):
+        wid = self.view.ui.indicesTableView
+        d = asdict(self.model.indices)
+        d.pop("years")
+        wid.setModel(AbstractSectionTableModel(
+            data=d,
+            translations={
+                "roi": "ROI",
+                "roe": "ROE",
+                "equity_ratio": "Equity Ratio",
+                "asset_structure_ratio": "Indice di Rigidità degli Impieghi",
+                "current_ratio": "Current Ratio",
+                "ros": "ROS"
+            },
+            h_titles=self.model.indices.years
+        )
+        )
+        wid.setVerticalHeader(ResizableVerticalHeader(wid))

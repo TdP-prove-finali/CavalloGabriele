@@ -4,18 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d1f57556-a68b-4407-9511-95d58864d413" name="Changes" comment="Grafici risultati simulazione">
-      <change afterPath="$PROJECT_DIR$/model/indicies.py" afterDir="false" />
+    <list default="true" id="d1f57556-a68b-4407-9511-95d58864d413" name="Changes" comment="Calcolo indici e fix">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/ui_generated/ui_invest_sim_window.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/ui_generated/ui_invest_sim_window.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/controller/sim_res_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/controller/sim_res_controller.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controller/simulation_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/controller/simulation_controller.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dao/simulation/simulation_dao.py" beforeDir="false" afterPath="$PROJECT_DIR$/dao/simulation/simulation_dao.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dao/util.py" beforeDir="false" afterPath="$PROJECT_DIR$/dao/util.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/balance_snap.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/balance_snap.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/sim_output.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/sim_output.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_balance.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_balance.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/invest_sim_window.ui" beforeDir="false" afterPath="$PROJECT_DIR$/ui/invest_sim_window.ui" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/sim_result.ui" beforeDir="false" afterPath="$PROJECT_DIR$/ui/sim_result.ui" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -320,15 +312,7 @@
       <workItem from="1794753839634" duration="39000" />
       <workItem from="1794821043569" duration="19339000" />
       <workItem from="1794901725047" duration="11576000" />
-      <workItem from="1794926136619" duration="7370000" />
-    </task>
-    <task id="LOCAL-00066" summary="Progress bar esecuzione simulazione">
-      <option name="closed" value="true" />
-      <created>1793037599841</created>
-      <option name="number" value="00066" />
-      <option name="presentableId" value="LOCAL-00066" />
-      <option name="project" value="LOCAL" />
-      <updated>1793037599841</updated>
+      <workItem from="1794926136619" duration="8318000" />
     </task>
     <task id="LOCAL-00067" summary="UI ultime finestre">
       <option name="closed" value="true" />
@@ -714,7 +698,15 @@
       <option name="project" value="LOCAL" />
       <updated>1794915730526</updated>
     </task>
-    <option name="localTasksCounter" value="115" />
+    <task id="LOCAL-00115" summary="Calcolo indici e fix">
+      <option name="closed" value="true" />
+      <created>1794933953141</created>
+      <option name="number" value="00115" />
+      <option name="presentableId" value="LOCAL-00115" />
+      <option name="project" value="LOCAL" />
+      <updated>1794933953142</updated>
+    </task>
+    <option name="localTasksCounter" value="116" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -732,7 +724,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Implementa inizializzazione SP con valori corretti" />
     <MESSAGE value="Fix calcolo voci finali stato patrimoniale" />
     <MESSAGE value="Refactoring e progettazione nuova struttura simulazione" />
     <MESSAGE value="Implementa thread separato per import da Excel con statusbar" />
@@ -757,7 +748,8 @@
     <MESSAGE value="Finestra visualizzazione output simulazione e log simulatore" />
     <MESSAGE value="Fix problemi tabelle e collegamento dati output simulazione" />
     <MESSAGE value="Grafici risultati simulazione" />
-    <option name="LAST_COMMIT_MESSAGE" value="Grafici risultati simulazione" />
+    <MESSAGE value="Calcolo indici e fix" />
+    <option name="LAST_COMMIT_MESSAGE" value="Calcolo indici e fix" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -789,6 +781,6 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/CavalloGabriele$.coverage" NAME=" Coverage Results" MODIFIED="1794933554901" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
-    <SUITE FILE_PATH="coverage/CavalloGabriele$main.coverage" NAME="main Coverage Results" MODIFIED="1794933815945" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/CavalloGabriele$main.coverage" NAME="main Coverage Results" MODIFIED="1794934654461" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
