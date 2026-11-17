@@ -76,10 +76,21 @@ class CompanyImportDAO(QObject):
                 imp = RawCompanyBalanceImporter(sheet)
                 raw_data = imp.import_from_excel()
                 completed = CompanyPreprocessorDAO.process_company_data(raw_data)
+
+                self.progress.emit((80 / tot) * i + 20)
+                i += 1
+
+                # verifico che l'azienda non sia una di quelle che hanno dati nulli
+                if (completed.conto_economico["b_costi_della_produzione"][-1] is None or
+                        completed.conto_economico["b6_materie_prime_e_consumo"][-1] is None or
+                    completed.stato_patrimoniale["subsections"]["attivo"]["b_totale_immobilizzazioni_sepind_di_quelle_conc_in_loc_finanz"][-1] is None or
+                    completed.stato_patrimoniale["subsections"]["attivo"]["cii_totale_crediti"][-1] is None
+                ):
+                    print(f"Company {completed.company_name} esclusa perchè non ha dati sufficienti")
+                    continue
+
                 imported.append(completed)
                 CompanyDAO.save_company(completed)
-                self.progress.emit((80/tot) * i + 20)
-                i += 1
 
             self.__translations__ = RawCompanyBalanceImporter.get_translations()
             TranslationDAO.save_translations(self.translations)

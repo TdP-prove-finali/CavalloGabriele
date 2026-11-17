@@ -171,6 +171,7 @@ class StartupController(AbstractController[StartupWindow, Any, None]):
         self._view.ui.importStatusBar.setVisible(True)
         self._view.ui.importProgressLabel.setVisible(True)
         self._view.ui.importStatusBar.setValue(0)
+        self._view.ui.pushButton.setEnabled(False)
 
         thread = QThread()
         worker = CompanyImportDAO(path)
@@ -195,11 +196,13 @@ class StartupController(AbstractController[StartupWindow, Any, None]):
 
     @Slot()
     def on_finish(self, result: list[CompanyData]):
+        self.view.ui.importStatusBar.setValue(100)
         self.__load_dd_options__()
+        self._view.ui.pushButton.setEnabled(True)
         msgBox = QMessageBox(self._view)
         msgBox.setText(f"{len(result)} nuove aziende caricate correttamente. ")
         msgBox.setInformativeText(
-            "Il caricamento dei dati dal file ha avuto successo. ")
+            "Il caricamento dei dati dal file ha avuto successo. Alcune di esse potrebbero essere state escluse perchè non presentano dati sufficienti per svolgere simulazioni. ")
         msgBox.setIcon(QMessageBox.Icon.Information)
         msgBox.exec()
 

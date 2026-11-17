@@ -116,7 +116,7 @@ def test_loader_chunk():
 
     imp = CompanyImportDAO("../dataset/test/dataset-3.xlsx")
     imported = imp.start()
-    assert len(imported) == 3
+    assert len(imported) == 2       # Una (GENERTELLIFE S.P.A.) deve essere esclusa perchè non ha dati sufficienti
 
 def test_loader_chunk_10():
     RawCompanyBalanceImporter.clear_translations()
@@ -124,7 +124,7 @@ def test_loader_chunk_10():
 
     imp = CompanyImportDAO("../dataset/test/dataset-10.xlsx")
     imported = imp.start()
-    assert len(imported) == 10
+    assert len(imported) == 7   # 3 escluse per mancanza dati
 
 def test_loader_chunk_50():
     RawCompanyBalanceImporter.clear_translations()
@@ -132,7 +132,7 @@ def test_loader_chunk_50():
 
     imp = CompanyImportDAO("../dataset/test/dataset-test-50-v2.xlsx")
     imported = imp.start()
-    assert len(imported) == 50
+    assert len(imported) == 38      # esclusioni
     for com in imported:
         assert com.company_name is not None
         assert com.fiscal_code is not None
