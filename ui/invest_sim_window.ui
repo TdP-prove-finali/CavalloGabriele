@@ -832,7 +832,7 @@
          <item>
           <widget class="QLabel" name="label_18">
            <property name="toolTip">
-            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Anni di ammortamento per i debiti già presenti in bilancio di natura &amp;quot;entro&amp;quot; (esclusi quelli dovuti al progetto di investimento), a decorrere dal termine del primo anno simulato in cui avviene il saldo dei debiti &amp;quot;entro&amp;quot; con la liquidità presente. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Anni di ammortamento per i debiti già presenti in bilancio di natura &amp;quot;oltre&amp;quot; (esclusi quelli dovuti al progetto di investimento), a decorrere dal termine del primo anno simulato in cui avviene il saldo dei debiti &amp;quot;entro&amp;quot; con la liquidità presente. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
            </property>
            <property name="text">
             <string>Anni ammortamento debiti</string>

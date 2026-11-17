@@ -690,7 +690,7 @@ class Ui_MainWindow(object):
         self.label_6.setText(QCoreApplication.translate("MainWindow", u"Aliquota di imposta sul reddito", None))
         self.label_14.setText(QCoreApplication.translate("MainWindow", u"%", None))
 #if QT_CONFIG(tooltip)
-        self.label_18.setToolTip(QCoreApplication.translate("MainWindow", u"<html><head/><body><p>Anni di ammortamento per i debiti gi\u00e0 presenti in bilancio di natura &quot;entro&quot; (esclusi quelli dovuti al progetto di investimento), a decorrere dal termine del primo anno simulato in cui avviene il saldo dei debiti &quot;entro&quot; con la liquidit\u00e0 presente. </p></body></html>", None))
+        self.label_18.setToolTip(QCoreApplication.translate("MainWindow", u"<html><head/><body><p>Anni di ammortamento per i debiti gi\u00e0 presenti in bilancio di natura &quot;oltre&quot; (esclusi quelli dovuti al progetto di investimento), a decorrere dal termine del primo anno simulato in cui avviene il saldo dei debiti &quot;entro&quot; con la liquidit\u00e0 presente. </p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
         self.label_18.setText(QCoreApplication.translate("MainWindow", u"Anni ammortamento debiti", None))
 #if QT_CONFIG(tooltip)

@@ -14,7 +14,6 @@ from model.section import SPSection
 from model.sim_output import SimulationOutput
 from model.sp_table_model import SPTableModel
 
-
 class SimResultController(AbstractController[SimResultWindow, SimulationOutput, None]):
     """Controller per gestire la finestra di avvio dell'applicazione.
     """

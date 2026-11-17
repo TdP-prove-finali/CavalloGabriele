@@ -56,9 +56,8 @@ class SimulationDAO:
             # -------------------------------------------------
             if isinstance(value, (str, bool, int, float)):
                 if isinstance(value, float) and not math.isfinite(value):
-                    raise ValueError(
-                        f"Valore numerico non finito in {path}: {value}"
-                    )
+                    print(f"WARNING: Valore numerico non finito in {path}: {value}")
+                    return None
 
                 return value
 

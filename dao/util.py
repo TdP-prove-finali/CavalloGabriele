@@ -309,7 +309,7 @@ def format_number( value: int | float | str) -> str:
     except (ValueError, TypeError, OverflowError):
         return str(value)
 
-def sum_vectors(a, b)->list:
+def sum_vectors(a, b, diff=False)->list:
     """
     Somma i vettori componente per componente
     :param a:
@@ -319,6 +319,20 @@ def sum_vectors(a, b)->list:
     assert len(a) == len(b)
     r = [0] * len(a)
     for i in range(0, len(a)):
-        r[i] = a[i] + b[i]
+        if not diff:
+            r[i] = a[i] + b[i]
+        else:
+            r[i] = a[i] - b[i]
 
     return r
+
+def divide_vectors(a, b) -> list:
+    """Divide i vettori componente per componente ai / bi"""
+    res = []
+    assert len(a) == len(b)
+    for i in range(len(a)):
+        if b[i] == 0:
+            raise Exception("Divisione per 0")
+        res.append(a[i] / b[i])
+
+    return res

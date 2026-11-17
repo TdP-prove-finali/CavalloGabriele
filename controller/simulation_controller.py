@@ -51,6 +51,7 @@ class SimulationWorker(QObject):
 
             self.model.simulation_state.working_snapshot.create_column(
                 f"Year end")  # Colonna in cui calcolare i risultati di fine anno
+            self.model.simulation_state.working_snapshot.trasp_historic_res()
 
     def __is_year_end(self):
         return self.model.simulation_state.current_month != 0 and (self.model.simulation_state.current_month + 1) % 12 == 0
@@ -222,8 +223,10 @@ class SimulationWorker(QObject):
             global_parameters=self.model.simulation_state.global_parameters,
             reason_exit=r.__str__(),
             logs=self.model.simulation_state.relevant_logs,
-            id=self.model.simulation_state.global_parameters.sim_id
+            id=self.model.simulation_state.global_parameters.sim_id,
+            indices=self.model.simulation_state.final_result_snapshot.calc_indicies()
         )
+
         self.save_generated_data(output)
         self.finished.emit(output)
         return output   # utile se si chiama il worker senza creare un thread

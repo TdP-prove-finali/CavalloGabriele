@@ -2,6 +2,7 @@
 from dataclasses import dataclass
 
 from model.balance_snap import BalanceSnaphot
+from model.indicies import Indices
 from model.investment_item import InvestmentProject
 from model.sim_params import GlobalParameters
 
@@ -14,3 +15,4 @@ class SimulationOutput:
     reason_exit: str
     id: str
     logs: list[str]
+    indices: Indices

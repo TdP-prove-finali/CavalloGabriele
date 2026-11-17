@@ -2,9 +2,13 @@ import re
 from copy import deepcopy
 from typing import Callable, Any
 import networkx as nx
+import numpy
+import numpy as np
 from networkx.classes import DiGraph
-from dao.util import step_up_field, extract_field_identif, SECTION_HEAD, BalanceLocation, normalize_zero, sum_vectors
+from dao.util import step_up_field, extract_field_identif, SECTION_HEAD, BalanceLocation, normalize_zero, sum_vectors, \
+    divide_vectors
 from model.FieldNotFoundException import FieldNotFoundException
+from model.indicies import Indices
 from model.node import Node, NodeType, Flag
 from model.raw_company_data import CompanyData, PRIVATE_FIELDS
 from model.sim_params import GlobalParameters
@@ -365,6 +369,17 @@ class BalanceSnaphot:
         self.set_field_value(field_name, where, value=self.get_field_value(field_name, where, column) + tot,
                              month=column)
 
+    def trasp_historic_res(self):
+        """
+        Trasporta gli utili dell'ultimo anno storico in quelli portati a nuovo senza perderne il valore
+        :return:
+        """
+
+        # utili dell'ultimo anno storico (non simulato) che devono essere portati a nuovo
+        ut_ultimo_anno = self.get_field_value("utile_frac_perdita_di_esercizio", BalanceLocation.SP_PASSIVO_PATRIM, 0)
+        self.sum_field_value("utile_frac_perdita_di_esercizio", BalanceLocation.SP_PASSIVO_PATRIM, -1 * ut_ultimo_anno, 2)
+        self.sum_field_value('utile_frac_perdita_a_nuovo', BalanceLocation.SP_PASSIVO_PATRIM, ut_ultimo_anno, 2)
+
     def __destinazione_utili__(self):
         # utile e perdita di esercizio (si suppone che sia riportato tutto a nuovo)
         # di default viene sommato (con segno) e portato a nuovo subito, all'inizio dell'anno (ipotesi semplificativa)
@@ -372,7 +387,7 @@ class BalanceSnaphot:
         self.set_field_value("utile_frac_perdita_di_esercizio", BalanceLocation.SP_PASSIVO_PATRIM, 0, self.YEAR_END_COL)
         self.set_field_value('utile_frac_perdita_a_nuovo',
                              BalanceLocation.SP_PASSIVO_PATRIM,
-                             (self.get_field_value('utile_frac_perdita_a_nuovo', BalanceLocation.SP_PASSIVO_PATRIM, month=self.YEAR_START_COL))+ut,
+                             (self.get_field_value('utile_frac_perdita_a_nuovo', BalanceLocation.SP_PASSIVO_PATRIM, month=self.YEAR_END_COL))+ut,
                                 month=self.YEAR_END_COL)
 
     def __ammortamenti_sp__(self):
@@ -572,10 +587,84 @@ class BalanceSnaphot:
         id_map = self.__get_id_map(where)
         return id_map[field_name].value
 
-    def calc_indicies(self):
+    def calc_indicies(self) -> Indices:
         """Calcola gli indici di bilancio"""
-        # TODO: Implement
-        pass
+        return Indices(
+            years=self.get_field_data("data", BalanceLocation.CE),
+            equity_ratio=self.__equity_ratio_data(),
+            asset_structure_ratio=self.__asset_structure_ratio(),
+            current_ratio=self.__current_ratio(),
+            roe=self.__roe(),
+            roi=self.__roi(),
+            ros=self.__ros()
+        )
+
+    def __ros(self):
+        return np.divide(
+            np.array(self.get_field_data("risultato_operativo", BalanceLocation.CE)),
+            np.array(self.get_field_data("ricavi_vendite_e_prestazioni", BalanceLocation.CE))
+        ).tolist()
+
+    def sum_field_data(self, fields: list[str], where: BalanceLocation):
+        res = np.array([0] * self.available_columns)
+        for f in fields:
+            res += np.array(self.get_field_data(f, where))
+
+        return res
+
+    def __roi(self):
+        att_fisso_nett_operativo = self.sum_field_data(fields=[
+            "totale_immob_immateriali",
+            "totale_immob_materiali",
+            "totale_immob_finanziarie"
+        ], where=BalanceLocation.SP_ATTIVO)
+        attiv_operative = self.sum_field_data(
+            fields=[
+                "totale_rimanenze",
+                "cred_vs_clienti_entro",
+                "cred_vs_clienti_oltre",
+                "ratei_e_risconti"
+            ],
+            where=BalanceLocation.SP_ATTIVO
+        )
+        pass_operative = self.sum_field_data(
+            fields=[
+                "fornitori_entro",
+                "fornitori_oltre",
+                "acconti_entro",
+                "acconti_oltre",
+                "debiti_tributari_entro",
+                "debiti_tributari_oltre",
+                "istituti_previdenza_entro",
+                "istituti_previdenza_oltre",
+                "ratei_e_risconti"
+            ],
+            where=BalanceLocation.SP_PASSIVO_DEBITI
+        )
+
+        return np.divide(self.get_field_data("risultato_operativo", BalanceLocation.CE), (att_fisso_nett_operativo + (attiv_operative - pass_operative))).tolist()
+
+    def __roe(self):
+        utile_netto = np.array(self.get_field_data("_21_utile_frac_perdita_di_esercizio", BalanceLocation.CE))
+        patrim_nett = np.array(self.get_field_data("totale_patrimonio_netto", BalanceLocation.SP_PASSIVO_PATRIM))
+        return np.divide(utile_netto, patrim_nett).tolist()
+
+    def __passivo_corrente(self):
+        dbt_entro = np.array(self.get_debit_entro_data())
+        ratei_passivi = np.array(self.get_field_data("ratei_e_risconti", BalanceLocation.SP_PASSIVO_DEBITI))  # TODO: Verificare
+        return dbt_entro - ratei_passivi
+
+    def __current_ratio(self):
+        att_circ = np.array(self.get_field_data("attivo_circolante", BalanceLocation.SP_ATTIVO))
+        return numpy.divide(att_circ, self.__passivo_corrente()).tolist()
+
+    def __asset_structure_ratio(self):
+        return numpy.divide(np.array(self.get_field_data("totale_immobilizzazioni_sepind_di_quelle_conc_in_loc_finanz", BalanceLocation.SP_ATTIVO)),
+                            np.array(self.get_field_data("totale_attivo", BalanceLocation.SP_ATTIVO))).tolist()
+
+    def __equity_ratio_data(self) -> list[float]:
+        return numpy.divide(np.array(self.get_field_data("totale_patrimonio_netto", BalanceLocation.SP_PASSIVO_PATRIM)),
+                            np.array(self.get_field_data("totale_passivo", BalanceLocation.SP_PASSIVO_DEBITI))).tolist()
 
     def calc_ce_terminal_fields(self, column: int):
         """
