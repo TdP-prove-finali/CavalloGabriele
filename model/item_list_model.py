@@ -34,21 +34,21 @@ class ItemListModel(QtCore.QAbstractListModel):
         if role == Qt.ItemDataRole.DisplayRole:
             item = self.list_data[index.row()]
             if isinstance(item, EmployeeHireInvestment):
-                return f"{item.title}, {item.role}, {format_number(item.total_monthly_cost)}€"
+                return f"{item.title}, Ruolo: {item.role}, Stipendio: {format_number(item.total_monthly_cost)}€, Onboarding: {format_number(item.onboarding_cost)} ..."
             elif isinstance(item, FundingInvestment):
                 if item.funding_type == FundingType.BANK:
                     s = "Bancario"
                 else:
                     s = "Versamento capitale sociale"
-                return f"{item.title}, {format_number(item.total_import)}€, {s}"
+                return f"Finanziamento: {item.title}, importo totale {format_number(item.total_import)}€, {s}"
             elif isinstance(item, AssetInvestment):
                 if item.asset_type == AssetType.MATERIAL:
                     s = "Materiale"
                 else:
                     s = "Immateriale"
-                return f"{item.title}, {format_number(item.total_cost)}€, {s}"
+                return f"Acquisto cespiti: {item.title}, importo totale {format_number(item.total_cost)}€, {s}"
             elif isinstance(item, ProductivityImprovementInvestment):
-                return f"Efficientamento {item.title}, {format_number(item.total_cost)}€, {item.yearly_op_cost_red_perc} %"
+                return f"Efficientamento {item.title}, {format_number(item.total_cost)}€, riduzione annua: {item.yearly_op_cost_red * 100}%"
 
         elif role == Qt.ItemDataRole.DecorationRole:
             item = self.list_data[index.row()]

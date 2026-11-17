@@ -182,7 +182,11 @@ li.checked::marker { content: &quot;\2612&quot;; }
        </spacer>
       </item>
       <item>
-       <widget class="QDoubleSpinBox" name="scaleEditNum"/>
+       <widget class="QDoubleSpinBox" name="scaleEditNum">
+        <property name="minimum">
+         <double>0.100000000000000</double>
+        </property>
+       </widget>
       </item>
      </layout>
     </item>
@@ -209,7 +213,11 @@ li.checked::marker { content: &quot;\2612&quot;; }
        </spacer>
       </item>
       <item>
-       <widget class="QDoubleSpinBox" name="shapeEditNum"/>
+       <widget class="QDoubleSpinBox" name="shapeEditNum">
+        <property name="minimum">
+         <double>0.100000000000000</double>
+        </property>
+       </widget>
       </item>
      </layout>
     </item>
@@ -277,6 +285,9 @@ li.checked::marker { content: &quot;\2612&quot;; }
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
+        <property name="minimum">
+         <double>0.100000000000000</double>
+        </property>
        </widget>
       </item>
      </layout>
@@ -317,13 +328,16 @@ li.checked::marker { content: &quot;\2612&quot;; }
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
+        <property name="minimum">
+         <double>0.100000000000000</double>
+        </property>
        </widget>
       </item>
      </layout>
     </item>
    </layout>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>30</x>
@@ -388,7 +402,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
          <string/>
         </property>
         <property name="text">
-         <string/>
+         <string>100</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignmentFlag::AlignCenter</set>
@@ -544,48 +558,9 @@ li.checked::marker { content: &quot;\2612&quot;; }
        </widget>
       </item>
       <item>
-       <widget class="QComboBox" name="roleComboBox">
-        <property name="editable">
-         <bool>true</bool>
-        </property>
-       </widget>
+       <widget class="QLineEdit" name="roleComboBox"/>
       </item>
      </layout>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QWidget" name="">
-   <property name="geometry">
-    <rect>
-     <x>40</x>
-     <y>510</y>
-     <width>105</width>
-     <height>23</height>
-    </rect>
-   </property>
-   <layout class="QHBoxLayout" name="horizontalLayout_7">
-    <item>
-     <widget class="QLabel" name="label_16">
-      <property name="toolTip">
-       <string>Rapporto massimo tra la produttività media e quella effettiva del dipendente, per non superare l'effettiva capacità produttiva dell'azienda</string>
-      </property>
-      <property name="text">
-       <string>Stop ratio</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QSpinBox" name="stopRatioEditNum">
-      <property name="minimum">
-       <number>1</number>
-      </property>
-      <property name="maximum">
-       <number>84</number>
-      </property>
-      <property name="singleStep">
-       <number>1</number>
-      </property>
-     </widget>
     </item>
    </layout>
   </widget>

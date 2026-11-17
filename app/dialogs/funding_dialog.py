@@ -30,6 +30,20 @@ class FundingDialog(QDialog):
             msgBox.exec()
             return
 
+        if parse(c_l) <= 0:
+            msgBox = QMessageBox()
+            msgBox.setText("L'importo del finanziamento deve essere > 0")
+            msgBox.setIcon(QMessageBox.Icon.Critical)
+            msgBox.exec()
+            return
+
+        if parse(s) < 0:
+            msgBox = QMessageBox()
+            msgBox.setText("Il tasso di interesse non può essere negativo")
+            msgBox.setIcon(QMessageBox.Icon.Critical)
+            msgBox.exec()
+            return
+
         tp = None
         if r == 0:
             tp = FundingType.BANK

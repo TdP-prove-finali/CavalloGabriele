@@ -5,8 +5,7 @@ import networkx as nx
 import numpy
 import numpy as np
 from networkx.classes import DiGraph
-from dao.util import step_up_field, extract_field_identif, SECTION_HEAD, BalanceLocation, normalize_zero, sum_vectors, \
-    divide_vectors
+from dao.util import step_up_field, extract_field_identif, SECTION_HEAD, BalanceLocation, normalize_zero, sum_vectors
 from model.FieldNotFoundException import FieldNotFoundException
 from model.indicies import Indices
 from model.node import Node, NodeType, Flag
@@ -268,7 +267,7 @@ class BalanceSnaphot:
                 graph.add_edge(section_node, node)
 
     def verify_integrity(self) -> bool:
-        """Verifica l'integrità del bilancio e la quadratura"""
+        """Verifica l'integrità del bilancio nel numero di colonne"""
         def verify_row(_, values, node, __):
             assert len(values) == self.available_columns
 
@@ -281,10 +280,20 @@ class BalanceSnaphot:
             return False
 
     def get_node_by_name(self, name: str, where: BalanceLocation) -> Node:
+        """
+        Restituisce il nodo con quel nome.
+        Attenzione: per i nomi non univoci verificare con il field_name
+        :param name:
+        :param where:
+        :return:
+        """
         id_map = self.__get_id_map(where)
         return id_map[name]
 
     def create_column(self, title):
+        """Crea una nuova colonna nei dati (tipicamente per un nuovo mese della simulazione) e inizializza tutti i campi a 0, assicurando
+                che tutti i vettori dei valori dei campi di tutti i documenti contengano lo stesso numero di elementi orizzontali"""
+
         def value_factory(key, value, node, _):
             if key == "data":
                 value.append(title)
@@ -299,8 +308,6 @@ class BalanceSnaphot:
             else:
                 print("WARNING: Impossibile capire il tipo da aggiungere per il campo " + key)
                 value.append(0)
-        """Crea una nuova colonna nei dati (tipicamente per un nuovo mese della simulazione) e inizializza tutti i campi a 0, assicurando
-        che tutti i vettori dei valori dei campi di tutti i documenti contengano lo stesso numero di elementi orizzontali"""
 
         self.for_each_ce_field(value_factory)
         self.for_each_sp_field(value_factory)
@@ -321,6 +328,8 @@ class BalanceSnaphot:
         elif isinstance(node.value[read_column], (int, float)):
             # Di default tutti i None vengono trasformati in 0 per la simulazione
             node.value[write_column] = node.value[read_column] or 0
+        elif isinstance(node.value[read_column], str):
+            node.value[write_column] = node.value[read_column]
 
         node.set_flag(Flag.UPDATED)     # Solo dopo la modifica imposto il campo come updated, così l'algoritmo di calcolo lo utilizzerà per il calcolo delle voci aggregate
 

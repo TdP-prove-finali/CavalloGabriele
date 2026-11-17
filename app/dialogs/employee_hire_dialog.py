@@ -23,12 +23,11 @@ class EmployeeHireDialog(QDialog):
         c_l = self.ui.monthlyCostEdit.text()
         s = self.ui.strumentCostEdit.text()
         o = self.ui.onboardingCostEdit.text()
-        r = self.ui.roleComboBox.currentText()
+        r = self.ui.roleComboBox.text()
         l_s = self.ui.scaleEditNum.text()
         l_f = self.ui.shapeEditNum.text()
         n_a = self.ui.averageEditNum.text()
         n_v = self.ui.varianceEditNum.text()
-        sr = self.ui.stopRatioEditNum.text()
         print(r)
 
         if check_empty(t) or check_empty(c_l) or check_empty(o) or check_empty(r) or check_empty(l_s) or check_empty(l_f)\
@@ -47,6 +46,14 @@ class EmployeeHireDialog(QDialog):
             msgBox.exec()
             return
 
+        if parse(c_l) < 0 or parse(o) < 0 or parse(s) < 0:
+            msgBox = QMessageBox()
+            msgBox.setText("I costi inseriti non possono essere negativi. ")
+            msgBox.setInformativeText("Tutti i parametri devono essere positivi (eventualmente nulli se non obbligatori)")
+            msgBox.setIcon(QMessageBox.Icon.Warning)
+            msgBox.exec()
+            return
+
         self.__item__ = EmployeeHireInvestment(
             title=t,
             total_monthly_cost=parse(c_l),
@@ -56,7 +63,6 @@ class EmployeeHireDialog(QDialog):
             hp_lomax_shape=parse(l_f),
             ttp_normal_average=parse(n_a),
             ttp_normal_variance=parse(n_v),
-            stop_ratio=parse(sr),
             role=r
         )
         super().accept()

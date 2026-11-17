@@ -4,10 +4,24 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d1f57556-a68b-4407-9511-95d58864d413" name="Changes" comment="Calcolo indici e fix">
+    <list default="true" id="d1f57556-a68b-4407-9511-95d58864d413" name="Changes" comment="Ui pagina sim">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controller/sim_res_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/controller/sim_res_controller.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/sim_result.ui" beforeDir="false" afterPath="$PROJECT_DIR$/ui/sim_result.ui" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/dialogs/asset_dialog.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/dialogs/asset_dialog.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/dialogs/employee_hire_dialog.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/dialogs/employee_hire_dialog.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/dialogs/funding_dialog.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/dialogs/funding_dialog.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/dialogs/op_improvement_dialog.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/dialogs/op_improvement_dialog.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/ui_generated/ui_employee_hire.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/ui_generated/ui_employee_hire.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/ui_generated/ui_invest_sim_window.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/ui_generated/ui_invest_sim_window.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/ui_generated/ui_main_window.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/ui_generated/ui_main_window.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controller/simulation_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/controller/simulation_controller.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/balance_snap.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/balance_snap.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/event/custom_events.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/event/custom_events.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/investment_item.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/investment_item.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/item_list_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/item_list_model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_balance.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_balance.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/employee_hire.ui" beforeDir="false" afterPath="$PROJECT_DIR$/ui/employee_hire.ui" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/invest_sim_window.ui" beforeDir="false" afterPath="$PROJECT_DIR$/ui/invest_sim_window.ui" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/main_window.ui" beforeDir="false" afterPath="$PROJECT_DIR$/ui/main_window.ui" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -250,8 +264,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python tests.Python tests for test_balance.test_simulation_single_year" />
         <item itemvalue="Python tests.Python tests in test_balance.py" />
+        <item itemvalue="Python tests.Python tests for test_balance.test_simulation_single_year" />
         <item itemvalue="Python tests.Python tests for test_balance.test_sim_mutuo" />
         <item itemvalue="Python tests.Python tests for test_balance.test_sim_cespiti" />
         <item itemvalue="Python tests.Python tests for test_balance.test_simulation_multiple_year" />
@@ -312,23 +326,7 @@
       <workItem from="1794753839634" duration="39000" />
       <workItem from="1794821043569" duration="19339000" />
       <workItem from="1794901725047" duration="11576000" />
-      <workItem from="1794926136619" duration="8318000" />
-    </task>
-    <task id="LOCAL-00067" summary="UI ultime finestre">
-      <option name="closed" value="true" />
-      <created>1793038570206</created>
-      <option name="number" value="00067" />
-      <option name="presentableId" value="LOCAL-00067" />
-      <option name="project" value="LOCAL" />
-      <updated>1793038570206</updated>
-    </task>
-    <task id="LOCAL-00068" summary="UI ultime finestre">
-      <option name="closed" value="true" />
-      <created>1793038580760</created>
-      <option name="number" value="00068" />
-      <option name="presentableId" value="LOCAL-00068" />
-      <option name="project" value="LOCAL" />
-      <updated>1793038580760</updated>
+      <workItem from="1794926136619" duration="12494000" />
     </task>
     <task id="LOCAL-00069" summary="Termina implementazione dialoghi creazione componenti progetto">
       <option name="closed" value="true" />
@@ -706,7 +704,23 @@
       <option name="project" value="LOCAL" />
       <updated>1794933953142</updated>
     </task>
-    <option name="localTasksCounter" value="116" />
+    <task id="LOCAL-00116" summary="Tab indici simulazione">
+      <option name="closed" value="true" />
+      <created>1794934791141</created>
+      <option name="number" value="00116" />
+      <option name="presentableId" value="LOCAL-00116" />
+      <option name="project" value="LOCAL" />
+      <updated>1794934791141</updated>
+    </task>
+    <task id="LOCAL-00117" summary="Ui pagina sim">
+      <option name="closed" value="true" />
+      <created>1794934806464</created>
+      <option name="number" value="00117" />
+      <option name="presentableId" value="LOCAL-00117" />
+      <option name="project" value="LOCAL" />
+      <updated>1794934806464</updated>
+    </task>
+    <option name="localTasksCounter" value="118" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -724,8 +738,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Fix calcolo voci finali stato patrimoniale" />
-    <MESSAGE value="Refactoring e progettazione nuova struttura simulazione" />
     <MESSAGE value="Implementa thread separato per import da Excel con statusbar" />
     <MESSAGE value="Minor changes" />
     <MESSAGE value="Nuova struttura motore simulazione. Simulazione conto economico completo e corretto" />
@@ -749,25 +761,17 @@
     <MESSAGE value="Fix problemi tabelle e collegamento dati output simulazione" />
     <MESSAGE value="Grafici risultati simulazione" />
     <MESSAGE value="Calcolo indici e fix" />
-    <option name="LAST_COMMIT_MESSAGE" value="Calcolo indici e fix" />
+    <MESSAGE value="Tab indici simulazione" />
+    <MESSAGE value="Ui pagina sim" />
+    <option name="LAST_COMMIT_MESSAGE" value="Ui pagina sim" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/model/balance_snap.py</url>
-          <line>385</line>
-          <option name="timeStamp" value="174" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/controller/simulation_controller.py</url>
-          <line>164</line>
+          <line>165</line>
           <option name="timeStamp" value="175" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/model/balance_snap.py</url>
-          <line>378</line>
-          <option name="timeStamp" value="176" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
@@ -780,7 +784,7 @@
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/CavalloGabriele$.coverage" NAME=" Coverage Results" MODIFIED="1794933554901" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
-    <SUITE FILE_PATH="coverage/CavalloGabriele$main.coverage" NAME="main Coverage Results" MODIFIED="1794934654461" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/CavalloGabriele$.coverage" NAME=" Coverage Results" MODIFIED="1794947894077" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
+    <SUITE FILE_PATH="coverage/CavalloGabriele$main.coverage" NAME="main Coverage Results" MODIFIED="1794949168557" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

@@ -135,22 +135,6 @@
              </property>
             </spacer>
            </item>
-           <item>
-            <widget class="QPushButton" name="openWebsiteButton">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="text">
-              <string>Sito web</string>
-             </property>
-             <property name="default">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
           </layout>
          </item>
          <item>
@@ -278,7 +262,7 @@
                  <x>0</x>
                  <y>0</y>
                  <width>385</width>
-                 <height>246</height>
+                 <height>249</height>
                 </rect>
                </property>
                <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -882,7 +866,7 @@
      <x>0</x>
      <y>0</y>
      <width>1621</width>
-     <height>30</height>
+     <height>33</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

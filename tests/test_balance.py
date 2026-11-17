@@ -552,7 +552,6 @@ def test_simulation_single_year():
                     3,
                     6,
                     0.24,
-                    0.5,
                     "Ruolo"
                 )
             ]
@@ -865,7 +864,6 @@ def test_simulation_multiple_year():
                     6,
                     6,
                     0.24,
-                    0.5,
                     "Ruolo"
                 )
             ]

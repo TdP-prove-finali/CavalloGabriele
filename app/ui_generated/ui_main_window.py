@@ -99,16 +99,6 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_8.addItem(self.horizontalSpacer_5)
 
-        self.openWebsiteButton = QPushButton(self.overviewSecWidget)
-        self.openWebsiteButton.setObjectName(u"openWebsiteButton")
-        sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Fixed)
-        sizePolicy1.setHorizontalStretch(0)
-        sizePolicy1.setVerticalStretch(0)
-        sizePolicy1.setHeightForWidth(self.openWebsiteButton.sizePolicy().hasHeightForWidth())
-        self.openWebsiteButton.setSizePolicy(sizePolicy1)
-
-        self.horizontalLayout_8.addWidget(self.openWebsiteButton)
-
 
         self.overviewSection.addLayout(self.horizontalLayout_8)
 
@@ -142,11 +132,11 @@ class Ui_MainWindow(object):
 
         self.groupBox = QGroupBox(self.overviewSecWidget)
         self.groupBox.setObjectName(u"groupBox")
-        sizePolicy2 = QSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Minimum)
-        sizePolicy2.setHorizontalStretch(0)
-        sizePolicy2.setVerticalStretch(0)
-        sizePolicy2.setHeightForWidth(self.groupBox.sizePolicy().hasHeightForWidth())
-        self.groupBox.setSizePolicy(sizePolicy2)
+        sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Minimum)
+        sizePolicy1.setHorizontalStretch(0)
+        sizePolicy1.setVerticalStretch(0)
+        sizePolicy1.setHeightForWidth(self.groupBox.sizePolicy().hasHeightForWidth())
+        self.groupBox.setSizePolicy(sizePolicy1)
         self.groupBox.setMinimumSize(QSize(200, 200))
         self.groupBox.setMaximumSize(QSize(600, 400))
         self.groupBox.setFont(font1)
@@ -159,7 +149,7 @@ class Ui_MainWindow(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollAreaWidgetContents = QWidget()
         self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
-        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 385, 246))
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 385, 249))
         self.horizontalLayout_3 = QHBoxLayout(self.scrollAreaWidgetContents)
         self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
         self.descriptionLabel = QLabel(self.scrollAreaWidgetContents)
@@ -235,8 +225,11 @@ class Ui_MainWindow(object):
 
         self.legalAddressLabel = QLabel(self.overviewSecWidget)
         self.legalAddressLabel.setObjectName(u"legalAddressLabel")
-        sizePolicy1.setHeightForWidth(self.legalAddressLabel.sizePolicy().hasHeightForWidth())
-        self.legalAddressLabel.setSizePolicy(sizePolicy1)
+        sizePolicy2 = QSizePolicy(QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Fixed)
+        sizePolicy2.setHorizontalStretch(0)
+        sizePolicy2.setVerticalStretch(0)
+        sizePolicy2.setHeightForWidth(self.legalAddressLabel.sizePolicy().hasHeightForWidth())
+        self.legalAddressLabel.setSizePolicy(sizePolicy2)
         self.legalAddressLabel.setMaximumSize(QSize(300, 16777215))
         self.legalAddressLabel.setWordWrap(True)
 
@@ -261,8 +254,8 @@ class Ui_MainWindow(object):
 
         self.operatingMarketLabel = QLabel(self.overviewSecWidget)
         self.operatingMarketLabel.setObjectName(u"operatingMarketLabel")
-        sizePolicy1.setHeightForWidth(self.operatingMarketLabel.sizePolicy().hasHeightForWidth())
-        self.operatingMarketLabel.setSizePolicy(sizePolicy1)
+        sizePolicy2.setHeightForWidth(self.operatingMarketLabel.sizePolicy().hasHeightForWidth())
+        self.operatingMarketLabel.setSizePolicy(sizePolicy2)
         self.operatingMarketLabel.setMaximumSize(QSize(300, 16777215))
         self.operatingMarketLabel.setWordWrap(True)
 
@@ -308,8 +301,8 @@ class Ui_MainWindow(object):
 
         self.groupBox_2 = QGroupBox(self.overviewSecWidget)
         self.groupBox_2.setObjectName(u"groupBox_2")
-        sizePolicy2.setHeightForWidth(self.groupBox_2.sizePolicy().hasHeightForWidth())
-        self.groupBox_2.setSizePolicy(sizePolicy2)
+        sizePolicy1.setHeightForWidth(self.groupBox_2.sizePolicy().hasHeightForWidth())
+        self.groupBox_2.setSizePolicy(sizePolicy1)
         self.groupBox_2.setMinimumSize(QSize(250, 200))
         self.groupBox_2.setMaximumSize(QSize(16777215, 16777215))
         font3 = QFont()
@@ -351,8 +344,8 @@ class Ui_MainWindow(object):
 
         self.balanceSection = QGroupBox(self.centralwidget)
         self.balanceSection.setObjectName(u"balanceSection")
-        sizePolicy2.setHeightForWidth(self.balanceSection.sizePolicy().hasHeightForWidth())
-        self.balanceSection.setSizePolicy(sizePolicy2)
+        sizePolicy1.setHeightForWidth(self.balanceSection.sizePolicy().hasHeightForWidth())
+        self.balanceSection.setSizePolicy(sizePolicy1)
         self.balanceSection.setMinimumSize(QSize(400, 400))
         self.balanceSection.setFont(font3)
         self.horizontalLayout_10 = QHBoxLayout(self.balanceSection)
@@ -397,8 +390,8 @@ class Ui_MainWindow(object):
 
         self.indiciesSection = QGroupBox(self.centralwidget)
         self.indiciesSection.setObjectName(u"indiciesSection")
-        sizePolicy2.setHeightForWidth(self.indiciesSection.sizePolicy().hasHeightForWidth())
-        self.indiciesSection.setSizePolicy(sizePolicy2)
+        sizePolicy1.setHeightForWidth(self.indiciesSection.sizePolicy().hasHeightForWidth())
+        self.indiciesSection.setSizePolicy(sizePolicy1)
         self.indiciesSection.setMinimumSize(QSize(300, 200))
         self.indiciesSection.setFont(font3)
         self.horizontalLayout_16 = QHBoxLayout(self.indiciesSection)
@@ -448,7 +441,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 1621, 30))
+        self.menubar.setGeometry(QRect(0, 0, 1621, 33))
         self.menuFile = QMenu(self.menubar)
         self.menuFile.setObjectName(u"menuFile")
         self.menuProgetto_di_investimento = QMenu(self.menubar)
@@ -468,7 +461,6 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
 
-        self.openWebsiteButton.setDefault(True)
         self.balanceTabWidget.setCurrentIndex(1)
         self.indiciesTabWidget.setCurrentIndex(0)
         self.chartTabWidget.setCurrentIndex(1)
@@ -490,7 +482,6 @@ class Ui_MainWindow(object):
         self.label.setText(QCoreApplication.translate("MainWindow", u"Codice fiscale", None))
         self.fiscalCodeLabel.setText(QCoreApplication.translate("MainWindow", u"8948598439", None))
         self.fiscalCodeLabel.setProperty(u"cssClass", QCoreApplication.translate("MainWindow", u"number-label", None))
-        self.openWebsiteButton.setText(QCoreApplication.translate("MainWindow", u"Sito web", None))
         self.label_2.setText(QCoreApplication.translate("MainWindow", u"Codice CCIAA", None))
         self.cciaaNumberLabel.setText(QCoreApplication.translate("MainWindow", u"8948598439", None))
         self.cciaaNumberLabel.setProperty(u"cssClass", QCoreApplication.translate("MainWindow", u"number-label", None))

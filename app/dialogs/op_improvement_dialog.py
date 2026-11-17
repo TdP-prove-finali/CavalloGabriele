@@ -35,7 +35,8 @@ class OperativeImprovementDialog(QDialog):
             title=t,
             total_cost=parse(c_l),
             yearly_op_red=self.operative_costs * p,
-            duration=parse(self.ui.durationEdit.text())
+            duration=parse(self.ui.durationEdit.text()),
+            yearly_red_perc=p
         )
         super().accept()
 

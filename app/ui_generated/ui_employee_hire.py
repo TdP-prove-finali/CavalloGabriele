@@ -15,10 +15,10 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QAbstractButton, QApplication, QComboBox, QDialog,
-    QDialogButtonBox, QDoubleSpinBox, QGroupBox, QHBoxLayout,
-    QLabel, QLineEdit, QSizePolicy, QSpacerItem,
-    QSpinBox, QTextBrowser, QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QAbstractButton, QApplication, QDialog, QDialogButtonBox,
+    QDoubleSpinBox, QGroupBox, QHBoxLayout, QLabel,
+    QLineEdit, QSizePolicy, QSpacerItem, QTextBrowser,
+    QVBoxLayout, QWidget)
 
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
@@ -85,6 +85,7 @@ class Ui_Dialog(object):
 
         self.scaleEditNum = QDoubleSpinBox(self.groupBox_2)
         self.scaleEditNum.setObjectName(u"scaleEditNum")
+        self.scaleEditNum.setMinimum(0.100000000000000)
 
         self.horizontalLayout_10.addWidget(self.scaleEditNum)
 
@@ -104,6 +105,7 @@ class Ui_Dialog(object):
 
         self.shapeEditNum = QDoubleSpinBox(self.groupBox_2)
         self.shapeEditNum.setObjectName(u"shapeEditNum")
+        self.shapeEditNum.setMinimum(0.100000000000000)
 
         self.horizontalLayout_11.addWidget(self.shapeEditNum)
 
@@ -145,6 +147,7 @@ class Ui_Dialog(object):
         sizePolicy1.setVerticalStretch(0)
         sizePolicy1.setHeightForWidth(self.averageEditNum.sizePolicy().hasHeightForWidth())
         self.averageEditNum.setSizePolicy(sizePolicy1)
+        self.averageEditNum.setMinimum(0.100000000000000)
 
         self.horizontalLayout_9.addWidget(self.averageEditNum)
 
@@ -168,26 +171,27 @@ class Ui_Dialog(object):
         self.varianceEditNum.setObjectName(u"varianceEditNum")
         sizePolicy1.setHeightForWidth(self.varianceEditNum.sizePolicy().hasHeightForWidth())
         self.varianceEditNum.setSizePolicy(sizePolicy1)
+        self.varianceEditNum.setMinimum(0.100000000000000)
 
         self.horizontalLayout_8.addWidget(self.varianceEditNum)
 
 
         self.verticalLayout_2.addLayout(self.horizontalLayout_8)
 
-        self.widget = QWidget(Dialog)
-        self.widget.setObjectName(u"widget")
-        self.widget.setGeometry(QRect(30, 80, 271, 166))
-        self.verticalLayout = QVBoxLayout(self.widget)
+        self.layoutWidget = QWidget(Dialog)
+        self.layoutWidget.setObjectName(u"layoutWidget")
+        self.layoutWidget.setGeometry(QRect(30, 80, 271, 166))
+        self.verticalLayout = QVBoxLayout(self.layoutWidget)
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout_4 = QHBoxLayout()
         self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
-        self.label = QLabel(self.widget)
+        self.label = QLabel(self.layoutWidget)
         self.label.setObjectName(u"label")
 
         self.horizontalLayout_4.addWidget(self.label)
 
-        self.operationTitleEdit = QLineEdit(self.widget)
+        self.operationTitleEdit = QLineEdit(self.layoutWidget)
         self.operationTitleEdit.setObjectName(u"operationTitleEdit")
 
         self.horizontalLayout_4.addWidget(self.operationTitleEdit)
@@ -197,7 +201,7 @@ class Ui_Dialog(object):
 
         self.horizontalLayout_3 = QHBoxLayout()
         self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
-        self.label_2 = QLabel(self.widget)
+        self.label_2 = QLabel(self.layoutWidget)
         self.label_2.setObjectName(u"label_2")
 
         self.horizontalLayout_3.addWidget(self.label_2)
@@ -206,14 +210,14 @@ class Ui_Dialog(object):
 
         self.horizontalLayout_3.addItem(self.horizontalSpacer)
 
-        self.monthlyCostEdit = QLineEdit(self.widget)
+        self.monthlyCostEdit = QLineEdit(self.layoutWidget)
         self.monthlyCostEdit.setObjectName(u"monthlyCostEdit")
         self.monthlyCostEdit.setMaximumSize(QSize(150, 16777215))
         self.monthlyCostEdit.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.horizontalLayout_3.addWidget(self.monthlyCostEdit)
 
-        self.label_3 = QLabel(self.widget)
+        self.label_3 = QLabel(self.layoutWidget)
         self.label_3.setObjectName(u"label_3")
 
         self.horizontalLayout_3.addWidget(self.label_3)
@@ -223,7 +227,7 @@ class Ui_Dialog(object):
 
         self.horizontalLayout_6 = QHBoxLayout()
         self.horizontalLayout_6.setObjectName(u"horizontalLayout_6")
-        self.label_17 = QLabel(self.widget)
+        self.label_17 = QLabel(self.layoutWidget)
         self.label_17.setObjectName(u"label_17")
         sizePolicy2 = QSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Preferred)
         sizePolicy2.setHorizontalStretch(0)
@@ -237,7 +241,7 @@ class Ui_Dialog(object):
 
         self.horizontalLayout_6.addItem(self.horizontalSpacer_2)
 
-        self.strumentCostEdit = QLineEdit(self.widget)
+        self.strumentCostEdit = QLineEdit(self.layoutWidget)
         self.strumentCostEdit.setObjectName(u"strumentCostEdit")
         sizePolicy1.setHeightForWidth(self.strumentCostEdit.sizePolicy().hasHeightForWidth())
         self.strumentCostEdit.setSizePolicy(sizePolicy1)
@@ -246,7 +250,7 @@ class Ui_Dialog(object):
 
         self.horizontalLayout_6.addWidget(self.strumentCostEdit)
 
-        self.label_18 = QLabel(self.widget)
+        self.label_18 = QLabel(self.layoutWidget)
         self.label_18.setObjectName(u"label_18")
         sizePolicy2.setHeightForWidth(self.label_18.sizePolicy().hasHeightForWidth())
         self.label_18.setSizePolicy(sizePolicy2)
@@ -258,7 +262,7 @@ class Ui_Dialog(object):
 
         self.horizontalLayout_2 = QHBoxLayout()
         self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
-        self.label_4 = QLabel(self.widget)
+        self.label_4 = QLabel(self.layoutWidget)
         self.label_4.setObjectName(u"label_4")
 
         self.horizontalLayout_2.addWidget(self.label_4)
@@ -267,7 +271,7 @@ class Ui_Dialog(object):
 
         self.horizontalLayout_2.addItem(self.horizontalSpacer_3)
 
-        self.onboardingCostEdit = QLineEdit(self.widget)
+        self.onboardingCostEdit = QLineEdit(self.layoutWidget)
         self.onboardingCostEdit.setObjectName(u"onboardingCostEdit")
         sizePolicy1.setHeightForWidth(self.onboardingCostEdit.sizePolicy().hasHeightForWidth())
         self.onboardingCostEdit.setSizePolicy(sizePolicy1)
@@ -276,7 +280,7 @@ class Ui_Dialog(object):
 
         self.horizontalLayout_2.addWidget(self.onboardingCostEdit)
 
-        self.label_5 = QLabel(self.widget)
+        self.label_5 = QLabel(self.layoutWidget)
         self.label_5.setObjectName(u"label_5")
 
         self.horizontalLayout_2.addWidget(self.label_5)
@@ -286,40 +290,20 @@ class Ui_Dialog(object):
 
         self.horizontalLayout_5 = QHBoxLayout()
         self.horizontalLayout_5.setObjectName(u"horizontalLayout_5")
-        self.label_6 = QLabel(self.widget)
+        self.label_6 = QLabel(self.layoutWidget)
         self.label_6.setObjectName(u"label_6")
         sizePolicy2.setHeightForWidth(self.label_6.sizePolicy().hasHeightForWidth())
         self.label_6.setSizePolicy(sizePolicy2)
 
         self.horizontalLayout_5.addWidget(self.label_6)
 
-        self.roleComboBox = QComboBox(self.widget)
+        self.roleComboBox = QLineEdit(self.layoutWidget)
         self.roleComboBox.setObjectName(u"roleComboBox")
-        self.roleComboBox.setEditable(True)
 
         self.horizontalLayout_5.addWidget(self.roleComboBox)
 
 
         self.verticalLayout.addLayout(self.horizontalLayout_5)
-
-        self.widget1 = QWidget(Dialog)
-        self.widget1.setObjectName(u"widget1")
-        self.widget1.setGeometry(QRect(40, 510, 105, 23))
-        self.horizontalLayout_7 = QHBoxLayout(self.widget1)
-        self.horizontalLayout_7.setObjectName(u"horizontalLayout_7")
-        self.horizontalLayout_7.setContentsMargins(0, 0, 0, 0)
-        self.label_16 = QLabel(self.widget1)
-        self.label_16.setObjectName(u"label_16")
-
-        self.horizontalLayout_7.addWidget(self.label_16)
-
-        self.stopRatioEditNum = QSpinBox(self.widget1)
-        self.stopRatioEditNum.setObjectName(u"stopRatioEditNum")
-        self.stopRatioEditNum.setMinimum(1)
-        self.stopRatioEditNum.setMaximum(84)
-        self.stopRatioEditNum.setSingleStep(1)
-
-        self.horizontalLayout_7.addWidget(self.stopRatioEditNum)
 
 
         self.retranslateUi(Dialog)
@@ -365,7 +349,7 @@ class Ui_Dialog(object):
 #endif // QT_CONFIG(tooltip)
         self.label_2.setText(QCoreApplication.translate("Dialog", u"Costo mensile lordo*", None))
         self.monthlyCostEdit.setInputMask("")
-        self.monthlyCostEdit.setText("")
+        self.monthlyCostEdit.setText(QCoreApplication.translate("Dialog", u"100", None))
         self.label_3.setText(QCoreApplication.translate("Dialog", u"\u20ac", None))
 #if QT_CONFIG(tooltip)
         self.label_17.setToolTip(QCoreApplication.translate("Dialog", u"Costo una tantum speso dall'azienda per formare inizialmente il dipendente nuovo", None))
@@ -380,9 +364,5 @@ class Ui_Dialog(object):
         self.onboardingCostEdit.setText(QCoreApplication.translate("Dialog", u"100", None))
         self.label_5.setText(QCoreApplication.translate("Dialog", u"\u20ac", None))
         self.label_6.setText(QCoreApplication.translate("Dialog", u"Ruolo*", None))
-#if QT_CONFIG(tooltip)
-        self.label_16.setToolTip(QCoreApplication.translate("Dialog", u"Rapporto massimo tra la produttivit\u00e0 media e quella effettiva del dipendente, per non superare l'effettiva capacit\u00e0 produttiva dell'azienda", None))
-#endif // QT_CONFIG(tooltip)
-        self.label_16.setText(QCoreApplication.translate("Dialog", u"Stop ratio", None))
     # retranslateUi
 

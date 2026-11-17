@@ -350,7 +350,7 @@ class Ui_MainWindow(object):
         self.organigGRVarEdit = QDoubleSpinBox(self.groupBox_2)
         self.organigGRVarEdit.setObjectName(u"organigGRVarEdit")
         self.organigGRVarEdit.setMinimum(0.100000000000000)
-        self.organigGRVarEdit.setValue(0.400000000000000)
+        self.organigGRVarEdit.setValue(3.000000000000000)
 
         self.horizontalLayout_9.addWidget(self.organigGRVarEdit)
 
@@ -376,6 +376,7 @@ class Ui_MainWindow(object):
         self.cpercEdit = QDoubleSpinBox(self.groupBox_2)
         self.cpercEdit.setObjectName(u"cpercEdit")
         self.cpercEdit.setMinimum(0.100000000000000)
+        self.cpercEdit.setValue(60.000000000000000)
 
         self.horizontalLayout_10.addWidget(self.cpercEdit)
 
@@ -488,31 +489,6 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_14 = QHBoxLayout()
         self.horizontalLayout_14.setObjectName(u"horizontalLayout_14")
-        self.label_16 = QLabel(self.groupBox_2)
-        self.label_16.setObjectName(u"label_16")
-        sizePolicy1.setHeightForWidth(self.label_16.sizePolicy().hasHeightForWidth())
-        self.label_16.setSizePolicy(sizePolicy1)
-
-        self.horizontalLayout_14.addWidget(self.label_16)
-
-        self.maxFidoCCEdit = QLineEdit(self.groupBox_2)
-        self.maxFidoCCEdit.setObjectName(u"maxFidoCCEdit")
-        sizePolicy2.setHeightForWidth(self.maxFidoCCEdit.sizePolicy().hasHeightForWidth())
-        self.maxFidoCCEdit.setSizePolicy(sizePolicy2)
-
-        self.horizontalLayout_14.addWidget(self.maxFidoCCEdit)
-
-        self.label_17 = QLabel(self.groupBox_2)
-        self.label_17.setObjectName(u"label_17")
-        sizePolicy1.setHeightForWidth(self.label_17.sizePolicy().hasHeightForWidth())
-        self.label_17.setSizePolicy(sizePolicy1)
-
-        self.horizontalLayout_14.addWidget(self.label_17)
-
-        self.horizontalSpacer_13 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-
-        self.horizontalLayout_14.addItem(self.horizontalSpacer_13)
-
 
         self.verticalLayout_5.addLayout(self.horizontalLayout_14)
 
@@ -553,7 +529,7 @@ class Ui_MainWindow(object):
         self.costGrowthVariance = QDoubleSpinBox(self.groupBox_2)
         self.costGrowthVariance.setObjectName(u"costGrowthVariance")
         self.costGrowthVariance.setMinimum(0.100000000000000)
-        self.costGrowthVariance.setValue(0.100000000000000)
+        self.costGrowthVariance.setValue(2.000000000000000)
 
         self.horizontalLayout_15.addWidget(self.costGrowthVariance)
 
@@ -618,7 +594,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 1436, 30))
+        self.menubar.setGeometry(QRect(0, 0, 1436, 33))
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QStatusBar(MainWindow)
         self.statusbar.setObjectName(u"statusbar")
@@ -693,12 +669,6 @@ class Ui_MainWindow(object):
         self.label_18.setToolTip(QCoreApplication.translate("MainWindow", u"<html><head/><body><p>Anni di ammortamento per i debiti gi\u00e0 presenti in bilancio di natura &quot;oltre&quot; (esclusi quelli dovuti al progetto di investimento), a decorrere dal termine del primo anno simulato in cui avviene il saldo dei debiti &quot;entro&quot; con la liquidit\u00e0 presente. </p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
         self.label_18.setText(QCoreApplication.translate("MainWindow", u"Anni ammortamento debiti", None))
-#if QT_CONFIG(tooltip)
-        self.label_16.setToolTip(QCoreApplication.translate("MainWindow", u"<html><head/><body><p>Quantit\u00e0 massima di \u20ac che la banca \u00e8 disposta a fornire come fido in conto corrente. Impatta il fallimento dell'impresa e viene utilizzato quando la cassa diventa negativa. Qualora durante la simulazione la cassa dovesse diventare negativa e superare la quantit\u00e0 di fido disponibile l'azienda verr\u00e0 dichiarata come fallita prima del termine della simulazione. </p><p>Nota: se impostato a 0 la simulazione non accetter\u00e0 valori di cassa (liquidit\u00e0) negativi</p></body></html>", None))
-#endif // QT_CONFIG(tooltip)
-        self.label_16.setText(QCoreApplication.translate("MainWindow", u"Soglia massima fido in c.c", None))
-        self.maxFidoCCEdit.setText(QCoreApplication.translate("MainWindow", u"40000", None))
-        self.label_17.setText(QCoreApplication.translate("MainWindow", u"\u20ac", None))
 #if QT_CONFIG(tooltip)
         self.label_20.setToolTip(QCoreApplication.translate("MainWindow", u"<html><head/><body><p>Crescita media annuale dei costi operativi per l'azienda</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)

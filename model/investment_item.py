@@ -37,7 +37,6 @@ class EmployeeHireInvestment(AbstractInvestmentItem):
                  hp_lomax_shape: float,
                  ttp_normal_average: float,
                  ttp_normal_variance:float,
-                 stop_ratio: float,
                  role: str):
 
         effects = list()
@@ -46,7 +45,6 @@ class EmployeeHireInvestment(AbstractInvestmentItem):
         self.role = role
         self.onboarding_cost = onboarding_cost
         self.strumental_cost = strumental_cost
-        self.stop_ratio = stop_ratio
         self.total_monthly_cost = total_monthly_cost
 
         effects.append(InvestmentEffect(
@@ -164,20 +162,22 @@ class ProductivityImprovementInvestment(AbstractInvestmentItem):
                  title: str,
                  total_cost: float,
                  yearly_op_red: float,
+                 yearly_red_perc: float,
                  duration: int
                  ):
         self.type = "op-improvement-investment"
         self.duration = duration
+        self.yearly_op_red_perc = yearly_red_perc
         if total_cost < 0:
             raise ValueError("Il costo del cespite non può essere negativo")
 
-        self.yearly_op_cost_red_perc = yearly_op_red
+        self.yearly_op_cost_red = yearly_op_red
         self.total_cost = total_cost
         effects = [
             InvestmentEffect(
                 title="cost-reduction",
                 field_name="servizi",
-                value_constant=self.yearly_op_cost_red_perc * (-1),
+                value_constant=self.yearly_op_cost_red * (-1),
                 frequency=EffectFrequency.ANNUAL,
                 where=BalanceLocation.CE,
                 inv_type=EffectType.CONST,

@@ -625,7 +625,7 @@
             <double>0.100000000000000</double>
            </property>
            <property name="value">
-            <double>0.400000000000000</double>
+            <double>3.000000000000000</double>
            </property>
           </widget>
          </item>
@@ -667,6 +667,9 @@
           <widget class="QDoubleSpinBox" name="cpercEdit">
            <property name="minimum">
             <double>0.100000000000000</double>
+           </property>
+           <property name="value">
+            <double>60.000000000000000</double>
            </property>
           </widget>
          </item>
@@ -849,63 +852,7 @@
         </layout>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_14">
-         <item>
-          <widget class="QLabel" name="label_16">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="toolTip">
-            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Quantità massima di € che la banca è disposta a fornire come fido in conto corrente. Impatta il fallimento dell'impresa e viene utilizzato quando la cassa diventa negativa. Qualora durante la simulazione la cassa dovesse diventare negativa e superare la quantità di fido disponibile l'azienda verrà dichiarata come fallita prima del termine della simulazione. &lt;/p&gt;&lt;p&gt;Nota: se impostato a 0 la simulazione non accetterà valori di cassa (liquidità) negativi&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-           </property>
-           <property name="text">
-            <string>Soglia massima fido in c.c</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLineEdit" name="maxFidoCCEdit">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text">
-            <string>40000</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="label_17">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text">
-            <string>€</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <spacer name="horizontalSpacer_13">
-           <property name="orientation">
-            <enum>Qt::Orientation::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-        </layout>
+        <layout class="QHBoxLayout" name="horizontalLayout_14"/>
        </item>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_15">
@@ -965,7 +912,7 @@
             <double>0.100000000000000</double>
            </property>
            <property name="value">
-            <double>0.100000000000000</double>
+            <double>2.000000000000000</double>
            </property>
           </widget>
          </item>
@@ -1094,7 +1041,7 @@
      <x>0</x>
      <y>0</y>
      <width>1436</width>
-     <height>30</height>
+     <height>33</height>
     </rect>
    </property>
   </widget>

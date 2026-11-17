@@ -31,6 +31,13 @@ class AssetDialog(QDialog):
             msgBox.exec()
             return
 
+        if parse(c_l) <= 0 or parse(o) < 0:
+            msgBox = QMessageBox()
+            msgBox.setText("Il costo del cespite e il costo di manutenzione devono essere positivi")
+            msgBox.setIcon(QMessageBox.Icon.Critical)
+            msgBox.exec()
+            return
+
         self.__item__ = AssetInvestment(
             title=t,
             total_cost=parse(c_l),

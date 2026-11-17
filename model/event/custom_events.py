@@ -2,6 +2,7 @@ import simpy
 
 from dao.util import BalanceLocation
 from model.balance_snap import BalanceSnaphot
+from model.sim_state import SimulationState
 
 
 class SimulationStopEvent(simpy.events.Event):

@@ -141,6 +141,7 @@ class SimulationWorker(QObject):
         diff = t_debt_entro - liq
         if diff > 0:
             mv = MoveCentralizedTreasury(self.model.env, diff, self.__current_year__(), self.model.simulation_state.working_snapshot)
+            self.model.simulation_state.log(mv)
             mv.require_move()
             return mv
 
