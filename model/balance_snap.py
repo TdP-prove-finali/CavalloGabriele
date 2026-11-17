@@ -3,7 +3,7 @@ from copy import deepcopy
 from typing import Callable, Any
 import networkx as nx
 from networkx.classes import DiGraph
-from dao.util import step_up_field, extract_field_identif, SECTION_HEAD, BalanceLocation, normalize_zero
+from dao.util import step_up_field, extract_field_identif, SECTION_HEAD, BalanceLocation, normalize_zero, sum_vectors
 from model.FieldNotFoundException import FieldNotFoundException
 from model.node import Node, NodeType, Flag
 from model.raw_company_data import CompanyData, PRIVATE_FIELDS
@@ -516,6 +516,48 @@ class BalanceSnaphot:
             self.__mark_up_predecessors__(node, self.stato_patrimoniale)
         else:
             self.__mark_up_predecessors__(node, self.conto_economico)
+
+    def get_debit_entro_data(self):
+        v = []
+        for i in range(0, self.available_columns):
+            v.append(self.get_total_debit_entro(i))
+
+        assert len(v) == self.available_columns
+        return v
+
+    def get_debit_oltre_data(self):
+        v = []
+        for i in range(0, self.available_columns):
+            v.append(self.get_total_debit_oltre(i))
+
+        assert len(v) == self.available_columns
+        return v
+
+    def aggregate_fields(self, field_names: list[str], where: list[BalanceLocation]):
+        assert len(field_names) == len(where)
+        assert len(field_names) >= 2
+
+        v = self.get_field_data(field_names[0], where[0])
+        for i in range(1, len(field_names)):
+            v = sum_vectors(v, self.get_field_data(field_names[i], where[i]))
+
+        return v
+
+    def get_cred_entro_data(self):
+        v = []
+        for i in range(0, self.available_columns):
+            v.append(self.get_total_credit_entro(i))
+
+        assert len(v) == self.available_columns
+        return v
+
+    def get_cred_oltre_data(self):
+        v = []
+        for i in range(0, self.available_columns):
+            v.append(self.get_total_credit_oltre(i))
+
+        assert len(v) == self.available_columns
+        return v
 
     def get_field_value(self, field_name, where: BalanceLocation, month):
         try:

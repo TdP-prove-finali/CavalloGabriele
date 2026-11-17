@@ -4,20 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d1f57556-a68b-4407-9511-95d58864d413" name="Changes" comment="Finestra visualizzazione output simulazione e log simulatore">
+    <list default="true" id="d1f57556-a68b-4407-9511-95d58864d413" name="Changes" comment="Fix problemi tabelle e collegamento dati output simulazione">
+      <change afterPath="$PROJECT_DIR$/app/charts/credit_an.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/charts/patrim_evol.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/widget/resizable_vert_header.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/widget/resizable_vert_header.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controller/balance_detail_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/controller/balance_detail_controller.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controller/main_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/controller/main_controller.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/controller/sim_res_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/controller/sim_res_controller.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dao/data_import/balance_dao.py" beforeDir="false" afterPath="$PROJECT_DIR$/dao/data_import/balance_dao.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dao/translations/translation_dao.py" beforeDir="false" afterPath="$PROJECT_DIR$/dao/translations/translation_dao.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dao/util.py" beforeDir="false" afterPath="$PROJECT_DIR$/dao/util.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/abstract_sec_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/abstract_sec_model.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/model/balance_snap.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/balance_snap.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/raw_company_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/raw_company_data.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/sp_table_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/sp_table_model.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/sim_result.ui" beforeDir="false" afterPath="$PROJECT_DIR$/ui/sim_result.ui" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -321,15 +313,7 @@
       <workItem from="1794584152465" duration="56848000" />
       <workItem from="1794753839634" duration="39000" />
       <workItem from="1794821043569" duration="19339000" />
-      <workItem from="1794901725047" duration="4958000" />
-    </task>
-    <task id="LOCAL-00064" summary="Struttura classi simulazione">
-      <option name="closed" value="true" />
-      <created>1793033347913</created>
-      <option name="number" value="00064" />
-      <option name="presentableId" value="LOCAL-00064" />
-      <option name="project" value="LOCAL" />
-      <updated>1793033347913</updated>
+      <workItem from="1794901725047" duration="11458000" />
     </task>
     <task id="LOCAL-00065" summary="Scheletro esecuzione simulazione su thread a parte">
       <option name="closed" value="true" />
@@ -715,7 +699,15 @@
       <option name="project" value="LOCAL" />
       <updated>1794866608465</updated>
     </task>
-    <option name="localTasksCounter" value="113" />
+    <task id="LOCAL-00113" summary="Fix problemi tabelle e collegamento dati output simulazione">
+      <option name="closed" value="true" />
+      <created>1794907023081</created>
+      <option name="number" value="00113" />
+      <option name="presentableId" value="LOCAL-00113" />
+      <option name="project" value="LOCAL" />
+      <updated>1794907023081</updated>
+    </task>
+    <option name="localTasksCounter" value="114" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -733,7 +725,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Fix generali" />
     <MESSAGE value="Inizializzazione CE simulaizone con calcolo valori derivati e formule corrette" />
     <MESSAGE value="Implementa inizializzazione SP con valori corretti" />
     <MESSAGE value="Fix calcolo voci finali stato patrimoniale" />
@@ -758,7 +749,8 @@
     <MESSAGE value="Fix id componenti" />
     <MESSAGE value="Termine implem. effetti componenti investimento progetto" />
     <MESSAGE value="Finestra visualizzazione output simulazione e log simulatore" />
-    <option name="LAST_COMMIT_MESSAGE" value="Finestra visualizzazione output simulazione e log simulatore" />
+    <MESSAGE value="Fix problemi tabelle e collegamento dati output simulazione" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix problemi tabelle e collegamento dati output simulazione" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -772,11 +764,6 @@
           <url>file://$PROJECT_DIR$/model/investment_effect.py</url>
           <line>198</line>
           <option name="timeStamp" value="167" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/controller/simulation_controller.py</url>
-          <line>163</line>
-          <option name="timeStamp" value="168" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/controller/balance_detail_controller.py</url>
@@ -795,6 +782,6 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/CavalloGabriele$.coverage" NAME=" Coverage Results" MODIFIED="1794860132856" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
-    <SUITE FILE_PATH="coverage/CavalloGabriele$main.coverage" NAME="main Coverage Results" MODIFIED="1794906751660" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/CavalloGabriele$main.coverage" NAME="main Coverage Results" MODIFIED="1794915037118" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

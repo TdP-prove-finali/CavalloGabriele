@@ -1,12 +1,15 @@
 from PySide6.QtWidgets import QHeaderView
 
+from app.charts.credit_an import add_financial_evolution_chart_to_tab
 from app.charts.financial_ce import create_financial_chart, add_financial_chart_to_tab
+from app.charts.patrim_evol import add_patrimonial_charts_to_tab
 from app.widget.resizable_vert_header import ResizableVerticalHeader
 from app.windows.simresultwindow import SimResultWindow
 from controller.abstract import AbstractController
 from dao.translations.translation_dao import TranslationDAO
 from dao.util import BalanceLocation
 from model.abstract_sec_model import AbstractSectionTableModel
+from model.balance_snap import BalanceSnaphot
 from model.section import SPSection
 from model.sim_output import SimulationOutput
 from model.sp_table_model import SPTableModel
@@ -35,6 +38,7 @@ class SimResultController(AbstractController[SimResultWindow, SimulationOutput, 
             tab=self.view.ui.evoluz_ricav_tab
         )
         self.loadCETView()
+        self.loadEvolPatrimCharts()
 
     def loadCETView(self):
         sp, ce = self.model.balance.serialize()
@@ -56,3 +60,45 @@ class SimResultController(AbstractController[SimResultWindow, SimulationOutput, 
         self.view.ui.statoPatrimTView.setVerticalHeader(header)
         self.view.ui.statoPatrimTView.resizeColumnsToContents()
         header.setVisible(True)
+
+    def loadEvolPatrimCharts(self):
+        bal: BalanceSnaphot = self.model.balance
+
+        add_patrimonial_charts_to_tab(
+            tab=self.view.ui.struttura_sp_tab,
+            attivo={
+                "immobilizzazioni": bal.get_field_data("totale_immobilizzazioni_sepind_di_quelle_conc_in_loc_finanz", BalanceLocation.SP_ATTIVO),
+                "rimanenze": bal.get_field_data("totale_rimanenze", BalanceLocation.SP_ATTIVO),
+                "crediti": bal.get_field_data("totale_crediti", BalanceLocation.SP_ATTIVO),
+                "attivita_finanziarie": bal.get_field_data("totale_attivita_finanziarie", BalanceLocation.SP_ATTIVO),
+                "disponibilita_liquide": bal.get_field_data("tot_dispon_liquide", BalanceLocation.SP_ATTIVO),
+            },
+            passivo={
+                "patrimonio_netto": bal.get_field_data("totale_fondi_rischi", BalanceLocation.SP_PASSIVO_PATRIM),
+                "fondi_rischi_tfr": bal.aggregate_fields(["totale_fondi_rischi", "trattamento_di_fine_rapporto"], [BalanceLocation.SP_PASSIVO_PATRIM, BalanceLocation.SP_PASSIVO_PATRIM]),
+                "altre_passivita": bal.get_field_data("ratei_e_risconti", BalanceLocation.SP_PASSIVO_DEBITI),
+                "debiti_breve_termine": bal.get_debit_entro_data(),
+                "debiti_lungo_termine": bal.get_debit_oltre_data()
+            },
+            years=bal.get_field_data("data", BalanceLocation.CE)
+        )
+
+        add_financial_evolution_chart_to_tab(
+            tab=self.view.ui.creditTab,
+            years=self.model.balance.get_field_data("data", BalanceLocation.CE),
+            series_data={
+                "Crediti entro": bal.get_cred_entro_data(),
+                "Credito oltre": bal.get_cred_oltre_data()
+            },
+            title="Evoluzione dei crediti"
+        )
+
+        add_financial_evolution_chart_to_tab(
+            tab=self.view.ui.debitTab,
+            years=self.model.balance.get_field_data("data", BalanceLocation.CE),
+            series_data={
+                "Debiti a breve termine": bal.get_debit_entro_data(),
+                "Debiti a lungo termine": bal.get_debit_oltre_data()
+            },
+            title="Evoluzione dei debiti"
+        )
