@@ -101,10 +101,10 @@ class Ui_Dialog(object):
 
         self.horizontalLayout_3.addWidget(self.totalCostEdit)
 
-        self.label_3 = QLabel(self.layoutWidget)
-        self.label_3.setObjectName(u"label_3")
+        self.cash_label = QLabel(self.layoutWidget)
+        self.cash_label.setObjectName(u"cash_label")
 
-        self.horizontalLayout_3.addWidget(self.label_3)
+        self.horizontalLayout_3.addWidget(self.cash_label)
 
 
         self.verticalLayout.addLayout(self.horizontalLayout_3)
@@ -165,10 +165,10 @@ class Ui_Dialog(object):
 
         self.horizontalLayout_2.addWidget(self.maintenanceCostEdit)
 
-        self.label_5 = QLabel(self.layoutWidget)
-        self.label_5.setObjectName(u"label_5")
+        self.cash_label_1 = QLabel(self.layoutWidget)
+        self.cash_label_1.setObjectName(u"cash_label_1")
 
-        self.horizontalLayout_2.addWidget(self.label_5)
+        self.horizontalLayout_2.addWidget(self.cash_label_1)
 
 
         self.verticalLayout.addLayout(self.horizontalLayout_2)
@@ -230,7 +230,7 @@ class Ui_Dialog(object):
         self.label_2.setText(QCoreApplication.translate("Dialog", u"Costo complessivo*", None))
         self.totalCostEdit.setInputMask("")
         self.totalCostEdit.setText("")
-        self.label_3.setText(QCoreApplication.translate("Dialog", u"\u20ac", None))
+        self.cash_label.setText(QCoreApplication.translate("Dialog", u"\u20ac", None))
 #if QT_CONFIG(tooltip)
         self.label_17.setToolTip(QCoreApplication.translate("Dialog", u"Costo una tantum speso dall'azienda per formare inizialmente il dipendente nuovo", None))
 #endif // QT_CONFIG(tooltip)
@@ -241,7 +241,7 @@ class Ui_Dialog(object):
 #endif // QT_CONFIG(tooltip)
         self.label_4.setText(QCoreApplication.translate("Dialog", u"Costo di manutenzione", None))
         self.maintenanceCostEdit.setText(QCoreApplication.translate("Dialog", u"100", None))
-        self.label_5.setText(QCoreApplication.translate("Dialog", u"\u20ac", None))
+        self.cash_label_1.setText(QCoreApplication.translate("Dialog", u"\u20ac", None))
         self.label_6.setText(QCoreApplication.translate("Dialog", u"Tipo*", None))
         self.assetTypeCombo.setItemText(0, QCoreApplication.translate("Dialog", u"Materiale", None))
         self.assetTypeCombo.setItemText(1, QCoreApplication.translate("Dialog", u"Immateriale", None))

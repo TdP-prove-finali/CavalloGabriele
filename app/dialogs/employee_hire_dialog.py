@@ -5,9 +5,11 @@ from PySide6.QtWidgets import QDialog, QMessageBox
 from app.ui_generated.ui_employee_hire import Ui_Dialog
 from dao.util import check_empty, check_invalid_factor, parse
 from model.investment_item import EmployeeHireInvestment
+from model.raw_company_data import CashMeasureUnit
+
 
 class EmployeeHireDialog(QDialog):
-    def __init__(self):
+    def __init__(self, mu: CashMeasureUnit):
         super().__init__()
         self.ui = Ui_Dialog()
         self.ui.setupUi(self)
@@ -16,9 +18,13 @@ class EmployeeHireDialog(QDialog):
         self.ui.monthlyCostEdit.setValidator(QRegularExpressionValidator(regex, self.ui.monthlyCostEdit))
         self.ui.strumentCostEdit.setValidator(QRegularExpressionValidator(regex, self.ui.strumentCostEdit))
         self.ui.onboardingCostEdit.setValidator(QRegularExpressionValidator(regex, self.ui.onboardingCostEdit))
+        self.mu = mu
+
+        self.ui.cash_label.setText(self.mu.__str__())
+        self.ui.cash_label_1.setText(self.mu.__str__())
+        self.ui.cash_label_2.setText(self.mu.__str__())
 
     def accept(self, /):
-        print("Accept")
         t = self.ui.operationTitleEdit.text()
         c_l = self.ui.monthlyCostEdit.text()
         s = self.ui.strumentCostEdit.text()
@@ -28,7 +34,6 @@ class EmployeeHireDialog(QDialog):
         l_f = self.ui.shapeEditNum.text()
         n_a = self.ui.averageEditNum.text()
         n_v = self.ui.varianceEditNum.text()
-        print(r)
 
         if check_empty(t) or check_empty(c_l) or check_empty(o) or check_empty(r) or check_empty(l_s) or check_empty(l_f)\
                 or check_empty(n_a) or check_empty(n_v):

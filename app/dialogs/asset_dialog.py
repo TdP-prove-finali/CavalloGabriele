@@ -5,10 +5,11 @@ from PySide6.QtWidgets import QDialog, QMessageBox
 from app.ui_generated.ui_asset_invest import Ui_Dialog
 from dao.util import check_empty, parse
 from model.investment_item import AssetInvestment
+from model.raw_company_data import CashMeasureUnit
 
 
 class AssetDialog(QDialog):
-    def __init__(self):
+    def __init__(self, mu: CashMeasureUnit):
         super().__init__()
         self.ui = Ui_Dialog()
         self.ui.setupUi(self)
@@ -16,6 +17,9 @@ class AssetDialog(QDialog):
         regex = QRegularExpression(r"-?\d+(?:[.,]\d+)?")
         self.ui.totalCostEdit.setValidator(QRegularExpressionValidator(regex, self.ui.totalCostEdit))
         self.ui.maintenanceCostEdit.setValidator(QRegularExpressionValidator(regex, self.ui.maintenanceCostEdit))
+        self.mu = mu
+        self.ui.cash_label.setText(self.mu.__str__())
+        self.ui.cash_label_1.setText(self.mu.__str__())
 
     def accept(self, /):
         t = self.ui.operationTitleEdit.text()

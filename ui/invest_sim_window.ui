@@ -512,6 +512,36 @@
            </property>
           </widget>
          </item>
+         <item>
+          <spacer name="horizontalSpacer_12">
+           <property name="orientation">
+            <enum>Qt::Orientation::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_16">
+           <property name="text">
+            <string>Dati in</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="cashMeasureUnitLabel">
+           <property name="text">
+            <string>migli</string>
+           </property>
+           <property name="cssClass" stdset="0">
+            <string>number-label</string>
+           </property>
+          </widget>
+         </item>
         </layout>
        </item>
        <item>
@@ -579,7 +609,7 @@
             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Crescita spontanea annuale del fatturato senza operazioni legate al progetto di investimento. Rappresentata tramite un modello Browniano di cui è possibile specificare valore medio e varianza. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
            </property>
            <property name="text">
-            <string>Crescita organica media</string>
+            <string>Crescita organica annuale media</string>
            </property>
           </widget>
          </item>
@@ -659,7 +689,7 @@
             <string>Percentuale di crediti &quot;oltre&quot; che vengono trasferiti ogni anno a quelli &quot;entro&quot;</string>
            </property>
            <property name="text">
-            <string>Percentuale trasf. crediti</string>
+            <string>Percentuale trasf. annua crediti</string>
            </property>
           </widget>
          </item>
@@ -699,7 +729,7 @@
             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Distribuzione della capacità di riscossione crediti dell'impresa (distribuzione beta con parametri alfa e beta)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
            </property>
            <property name="text">
-            <string>Capacità riscossione (alfa)</string>
+            <string>Capacità riscossione annua (alfa)</string>
            </property>
           </widget>
          </item>
@@ -845,7 +875,7 @@
          <item>
           <widget class="QSpinBox" name="yearsDebtAmmortEdit">
            <property name="minimum">
-            <number>1</number>
+            <number>2</number>
            </property>
           </widget>
          </item>
@@ -868,7 +898,7 @@
             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Crescita media annuale dei costi operativi per l'azienda&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
            </property>
            <property name="text">
-            <string>Crescita media costi operativi</string>
+            <string>Crescita media annua costi operativi</string>
            </property>
           </widget>
          </item>
@@ -886,16 +916,16 @@
           </widget>
          </item>
          <item>
-          <widget class="Line" name="line">
-           <property name="orientation">
-            <enum>Qt::Orientation::Vertical</enum>
+          <widget class="QLabel" name="label_21">
+           <property name="text">
+            <string>%</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QLabel" name="label_21">
-           <property name="text">
-            <string>%</string>
+          <widget class="Line" name="line">
+           <property name="orientation">
+            <enum>Qt::Orientation::Vertical</enum>
            </property>
           </widget>
          </item>

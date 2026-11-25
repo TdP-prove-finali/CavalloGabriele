@@ -194,7 +194,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
        </widget>
       </item>
       <item>
-       <widget class="QLabel" name="label_3">
+       <widget class="QLabel" name="cash_label">
         <property name="text">
          <string>€</string>
         </property>
@@ -258,7 +258,11 @@ li.checked::marker { content: &quot;\2612&quot;; }
        </spacer>
       </item>
       <item>
-       <widget class="QDoubleSpinBox" name="yearlyEffectEdit"/>
+       <widget class="QDoubleSpinBox" name="yearlyEffectEdit">
+        <property name="minimum">
+         <double>0.100000000000000</double>
+        </property>
+       </widget>
       </item>
       <item>
        <widget class="QLabel" name="label_18">

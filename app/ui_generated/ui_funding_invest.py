@@ -101,10 +101,10 @@ class Ui_Dialog(object):
 
         self.horizontalLayout_3.addWidget(self.totalImportEdit)
 
-        self.label_3 = QLabel(self.layoutWidget)
-        self.label_3.setObjectName(u"label_3")
+        self.cash_label = QLabel(self.layoutWidget)
+        self.cash_label.setObjectName(u"cash_label")
 
-        self.horizontalLayout_3.addWidget(self.label_3)
+        self.horizontalLayout_3.addWidget(self.cash_label)
 
 
         self.verticalLayout.addLayout(self.horizontalLayout_3)
@@ -223,7 +223,7 @@ class Ui_Dialog(object):
         self.label_2.setText(QCoreApplication.translate("Dialog", u"Importo totale*", None))
         self.totalImportEdit.setInputMask("")
         self.totalImportEdit.setText("")
-        self.label_3.setText(QCoreApplication.translate("Dialog", u"\u20ac", None))
+        self.cash_label.setText(QCoreApplication.translate("Dialog", u"\u20ac", None))
 #if QT_CONFIG(tooltip)
         self.label_17.setToolTip(QCoreApplication.translate("Dialog", u"Costo una tantum speso dall'azienda per formare inizialmente il dipendente nuovo", None))
 #endif // QT_CONFIG(tooltip)

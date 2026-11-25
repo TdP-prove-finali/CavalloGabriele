@@ -1,5 +1,7 @@
 import copy
 from dataclasses import dataclass, field
+from enum import IntEnum
+from functools import cached_property
 from typing import Any
 from model.section import Section
 
@@ -13,6 +15,27 @@ class RawCompanyData:
 class CompanyBrief:
     company_name: str
     fiscal_code: str
+
+class CashMeasureUnit(IntEnum):
+    EURO = 0,
+    MIGL_EURO = 1
+
+    def __str__(self):
+        if self == CashMeasureUnit.EURO:
+            return " €"
+        else:
+            return " Migl. €"
+
+def parse_cash_measure_unit(value: str) -> CashMeasureUnit:
+    """
+    Effettua il parse dell'unità di misura utilizzata per il denaro
+    :param value:
+    :return:
+    """
+    if value == "migl EUR":
+        return CashMeasureUnit.MIGL_EURO
+    else:
+        return CashMeasureUnit.EURO
 
 @dataclass
 class CompanyData:
@@ -35,6 +58,10 @@ class CompanyData:
     @property
     def available_years(self) -> int:
         return self.informazioni_commerciali_e_legali["numero_di_anni_disponibili"]
+
+    @cached_property
+    def cash_measure_unit(self):
+        return parse_cash_measure_unit(self.profilo_finanziario["moneta"][0])
 
     def copy(self):
         new_instance = self.__class__.__new__(self.__class__)

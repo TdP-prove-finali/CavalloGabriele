@@ -5,10 +5,11 @@ from PySide6.QtWidgets import QDialog, QMessageBox
 from app.ui_generated.ui_operativ_effic_dialog import Ui_Dialog
 from dao.util import check_empty, parse
 from model.investment_item import FundingInvestment, FundingType, ProductivityImprovementInvestment
+from model.raw_company_data import CashMeasureUnit
 
 
 class OperativeImprovementDialog(QDialog):
-    def __init__(self, operative_costs: float):
+    def __init__(self, operative_costs: float, mu: CashMeasureUnit):
         super().__init__()
         self.ui = Ui_Dialog()
         self.ui.setupUi(self)
@@ -16,6 +17,8 @@ class OperativeImprovementDialog(QDialog):
         regex = QRegularExpression(r"-?\d+(?:[.,]\d+)?")
         self.ui.totalImportEdit.setValidator(QRegularExpressionValidator(regex, self.ui.totalImportEdit))
         self.operative_costs = operative_costs
+        self.mu = mu
+        self.ui.cash_label.setText(self.mu.__str__())
 
     def accept(self, /):
         t = self.ui.operationTitleEdit.text()

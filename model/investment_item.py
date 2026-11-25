@@ -226,7 +226,6 @@ class FundingInvestment(AbstractInvestmentItem):
         self.capital_quote_y = round(self.total_import / self.duration)
         effects = []
         if type == FundingType.BANK:
-            # TODO: Correggere, questo non dura per sempre
             # inizialmente registro l'importo totale del debito e poi l'effetto di spostamento (eseguito successivamente) ne sposterà una parte in quelli entro
             effects.append(InvestmentEffect(
                 field_name="banche_oltre_lesercizio",
@@ -259,7 +258,6 @@ class FundingInvestment(AbstractInvestmentItem):
                     inv_type=EffectType.CONST
                 )
             )
-            # TODO: Aggiungere effetto di trasferimento della quota capitale dai debiti oltre a quelli entro (eseguito necessariamente a fine anno)
             # In questo modo, ogni anno, il totale da rimborsare viene diminuito della quota capitale
         elif type == FundingType.STOCK:
             effects.append(

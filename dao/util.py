@@ -3,7 +3,7 @@ import math
 import re
 from enum import IntEnum
 
-from model.raw_company_data import PRIVATE_FIELDS
+from model.raw_company_data import PRIVATE_FIELDS, CashMeasureUnit
 
 
 class BalanceLocation(IntEnum):

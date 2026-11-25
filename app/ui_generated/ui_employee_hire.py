@@ -217,10 +217,10 @@ class Ui_Dialog(object):
 
         self.horizontalLayout_3.addWidget(self.monthlyCostEdit)
 
-        self.label_3 = QLabel(self.layoutWidget)
-        self.label_3.setObjectName(u"label_3")
+        self.cash_label = QLabel(self.layoutWidget)
+        self.cash_label.setObjectName(u"cash_label")
 
-        self.horizontalLayout_3.addWidget(self.label_3)
+        self.horizontalLayout_3.addWidget(self.cash_label)
 
 
         self.verticalLayout.addLayout(self.horizontalLayout_3)
@@ -250,12 +250,12 @@ class Ui_Dialog(object):
 
         self.horizontalLayout_6.addWidget(self.strumentCostEdit)
 
-        self.label_18 = QLabel(self.layoutWidget)
-        self.label_18.setObjectName(u"label_18")
-        sizePolicy2.setHeightForWidth(self.label_18.sizePolicy().hasHeightForWidth())
-        self.label_18.setSizePolicy(sizePolicy2)
+        self.cash_label_1 = QLabel(self.layoutWidget)
+        self.cash_label_1.setObjectName(u"cash_label_1")
+        sizePolicy2.setHeightForWidth(self.cash_label_1.sizePolicy().hasHeightForWidth())
+        self.cash_label_1.setSizePolicy(sizePolicy2)
 
-        self.horizontalLayout_6.addWidget(self.label_18)
+        self.horizontalLayout_6.addWidget(self.cash_label_1)
 
 
         self.verticalLayout.addLayout(self.horizontalLayout_6)
@@ -280,10 +280,10 @@ class Ui_Dialog(object):
 
         self.horizontalLayout_2.addWidget(self.onboardingCostEdit)
 
-        self.label_5 = QLabel(self.layoutWidget)
-        self.label_5.setObjectName(u"label_5")
+        self.cash_label_2 = QLabel(self.layoutWidget)
+        self.cash_label_2.setObjectName(u"cash_label_2")
 
-        self.horizontalLayout_2.addWidget(self.label_5)
+        self.horizontalLayout_2.addWidget(self.cash_label_2)
 
 
         self.verticalLayout.addLayout(self.horizontalLayout_2)
@@ -350,19 +350,20 @@ class Ui_Dialog(object):
         self.label_2.setText(QCoreApplication.translate("Dialog", u"Costo mensile lordo*", None))
         self.monthlyCostEdit.setInputMask("")
         self.monthlyCostEdit.setText(QCoreApplication.translate("Dialog", u"100", None))
-        self.label_3.setText(QCoreApplication.translate("Dialog", u"\u20ac", None))
+        self.cash_label.setText(QCoreApplication.translate("Dialog", u"\u20ac", None))
+        self.cash_label.setProperty(u"cssClass", QCoreApplication.translate("Dialog", u"number-label", None))
 #if QT_CONFIG(tooltip)
         self.label_17.setToolTip(QCoreApplication.translate("Dialog", u"Costo una tantum speso dall'azienda per formare inizialmente il dipendente nuovo", None))
 #endif // QT_CONFIG(tooltip)
         self.label_17.setText(QCoreApplication.translate("Dialog", u"Attrezzature", None))
         self.strumentCostEdit.setText(QCoreApplication.translate("Dialog", u"100", None))
-        self.label_18.setText(QCoreApplication.translate("Dialog", u"\u20ac", None))
+        self.cash_label_1.setText(QCoreApplication.translate("Dialog", u"\u20ac", None))
 #if QT_CONFIG(tooltip)
         self.label_4.setToolTip(QCoreApplication.translate("Dialog", u"Costo una tantum speso dall'azienda per formare inizialmente il dipendente nuovo", None))
 #endif // QT_CONFIG(tooltip)
         self.label_4.setText(QCoreApplication.translate("Dialog", u"Costo di onboarding*", None))
         self.onboardingCostEdit.setText(QCoreApplication.translate("Dialog", u"100", None))
-        self.label_5.setText(QCoreApplication.translate("Dialog", u"\u20ac", None))
+        self.cash_label_2.setText(QCoreApplication.translate("Dialog", u"\u20ac", None))
         self.label_6.setText(QCoreApplication.translate("Dialog", u"Ruolo*", None))
     # retranslateUi
 

@@ -660,7 +660,7 @@ class BalanceSnaphot:
 
     def __passivo_corrente(self):
         dbt_entro = np.array(self.get_debit_entro_data())
-        ratei_passivi = np.array(self.get_field_data("ratei_e_risconti", BalanceLocation.SP_PASSIVO_DEBITI))  # TODO: Verificare
+        ratei_passivi = np.array(self.get_field_data("ratei_e_risconti", BalanceLocation.SP_PASSIVO_DEBITI))
         return dbt_entro - ratei_passivi
 
     def __current_ratio(self):

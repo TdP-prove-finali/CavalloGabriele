@@ -5,16 +5,19 @@ from PySide6.QtWidgets import QDialog, QMessageBox
 from app.ui_generated.ui_funding_invest import Ui_Dialog
 from dao.util import check_empty, parse
 from model.investment_item import FundingInvestment, FundingType
+from model.raw_company_data import CashMeasureUnit
 
 
 class FundingDialog(QDialog):
-    def __init__(self):
+    def __init__(self, mu: CashMeasureUnit):
         super().__init__()
         self.ui = Ui_Dialog()
         self.ui.setupUi(self)
         self.__item__: FundingInvestment | None = None
         regex = QRegularExpression(r"-?\d+(?:[.,]\d+)?")
         self.ui.totalImportEdit.setValidator(QRegularExpressionValidator(regex, self.ui.totalImportEdit))
+        self.mu = mu
+        self.ui.cash_label.setText(self.mu.__str__())
 
     def accept(self, /):
         t = self.ui.operationTitleEdit.text()

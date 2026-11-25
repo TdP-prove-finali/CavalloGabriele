@@ -50,22 +50,24 @@ class InvestProjectController(AbstractController[InvestSimWindow, InvestmentProj
         action2.triggered.connect(self.handleCreateCespiti)
         action3.triggered.connect(self.handleCreateFinancial)
         action4.triggered.connect(self.handleCreateEffic)
+        mu = self.parent_model.company_data.cash_measure_unit
 
         v = self.parent_model.company_data.stato_patrimoniale["subsections"]["attivo"]["civ_tot_dispon_liquide"][0]
         if v is None:
-            self.view.ui.liquidAvailabilityLabel.setText("n.d. €")
+            self.view.ui.liquidAvailabilityLabel.setText("n.d. " + self.parent_model.company_data.cash_measure_unit.__str__())
         else:
             if "migl" in self.parent_model.company_data.stato_patrimoniale["moneta"][0]:
                 v = v * 1000
-            self.view.ui.liquidAvailabilityLabel.setText(format_number(v) + " €")
+            self.view.ui.liquidAvailabilityLabel.setText(format_number(v) + self.parent_model.company_data.cash_measure_unit.__str__())
 
         self.__update_stats()
         self.view.ui.newComponentBtn.setMenu(menu)
+        self.view.ui.cashMeasureUnitLabel.setText(mu.__str__())
         super().init()
 
     @Slot()
     def handleCreateEmployee(self):
-        dialog = EmployeeHireDialog()
+        dialog = EmployeeHireDialog(self.parent_model.company_data.cash_measure_unit)
         self.set_internal_pointer("dialog", dialog)
         result = dialog.exec()
 
@@ -82,13 +84,13 @@ class InvestProjectController(AbstractController[InvestSimWindow, InvestmentProj
         e = InvestmentProject.total_expenditure(self.model.components)
         f = InvestmentProject.total_funding_request(self.model.components)
 
-        self.view.ui.totalEsbLabel.setText(format_number(e) + "€")
-        self.view.ui.totalFundingLabel.setText(format_number(f) + "€")
+        self.view.ui.totalEsbLabel.setText(format_number(e) + self.parent_model.company_data.cash_measure_unit.__str__())
+        self.view.ui.totalFundingLabel.setText(format_number(f) + self.parent_model.company_data.cash_measure_unit.__str__())
 
 
     @Slot()
     def handleCreateCespiti(self):
-        dialog = AssetDialog()
+        dialog = AssetDialog(self.parent_model.company_data.cash_measure_unit)
         self.set_internal_pointer("dialog", dialog)
         result = dialog.exec()
 
@@ -97,7 +99,7 @@ class InvestProjectController(AbstractController[InvestSimWindow, InvestmentProj
 
     @Slot()
     def handleCreateFinancial(self):
-        dialog = FundingDialog()
+        dialog = FundingDialog(self.parent_model.company_data.cash_measure_unit)
         self.set_internal_pointer("dialog", dialog)
         result = dialog.exec()
 
@@ -107,7 +109,8 @@ class InvestProjectController(AbstractController[InvestSimWindow, InvestmentProj
     @Slot()
     def handleCreateEffic(self):
         dialog = OperativeImprovementDialog(
-            self.parent_model.company_data.conto_economico["b7_servizi"][-1]
+            self.parent_model.company_data.conto_economico["b7_servizi"][-1],
+            self.parent_model.company_data.cash_measure_unit
         )
         self.set_internal_pointer("dialog", dialog)
         result = dialog.exec()

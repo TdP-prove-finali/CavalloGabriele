@@ -279,6 +279,20 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_2.addWidget(self.lastAvYearsLabel)
 
+        self.horizontalSpacer_12 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.horizontalLayout_2.addItem(self.horizontalSpacer_12)
+
+        self.label_16 = QLabel(self.groupBox_2)
+        self.label_16.setObjectName(u"label_16")
+
+        self.horizontalLayout_2.addWidget(self.label_16)
+
+        self.cashMeasureUnitLabel = QLabel(self.groupBox_2)
+        self.cashMeasureUnitLabel.setObjectName(u"cashMeasureUnitLabel")
+
+        self.horizontalLayout_2.addWidget(self.cashMeasureUnitLabel)
+
 
         self.verticalLayout_5.addLayout(self.horizontalLayout_2)
 
@@ -480,7 +494,7 @@ class Ui_MainWindow(object):
 
         self.yearsDebtAmmortEdit = QSpinBox(self.groupBox_2)
         self.yearsDebtAmmortEdit.setObjectName(u"yearsDebtAmmortEdit")
-        self.yearsDebtAmmortEdit.setMinimum(1)
+        self.yearsDebtAmmortEdit.setMinimum(2)
 
         self.horizontalLayout_13.addWidget(self.yearsDebtAmmortEdit)
 
@@ -509,17 +523,17 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_15.addWidget(self.costGrowthAverage)
 
+        self.label_21 = QLabel(self.groupBox_2)
+        self.label_21.setObjectName(u"label_21")
+
+        self.horizontalLayout_15.addWidget(self.label_21)
+
         self.line = QFrame(self.groupBox_2)
         self.line.setObjectName(u"line")
         self.line.setFrameShape(QFrame.Shape.VLine)
         self.line.setFrameShadow(QFrame.Shadow.Sunken)
 
         self.horizontalLayout_15.addWidget(self.line)
-
-        self.label_21 = QLabel(self.groupBox_2)
-        self.label_21.setObjectName(u"label_21")
-
-        self.horizontalLayout_15.addWidget(self.label_21)
 
         self.label_22 = QLabel(self.groupBox_2)
         self.label_22.setObjectName(u"label_22")
@@ -637,6 +651,9 @@ class Ui_MainWindow(object):
         self.label_9.setText(QCoreApplication.translate("MainWindow", u"Anni passati disponibili", None))
         self.lastAvYearsLabel.setText(QCoreApplication.translate("MainWindow", u"5", None))
         self.lastAvYearsLabel.setProperty(u"cssClass", QCoreApplication.translate("MainWindow", u"number-label", None))
+        self.label_16.setText(QCoreApplication.translate("MainWindow", u"Dati in", None))
+        self.cashMeasureUnitLabel.setText(QCoreApplication.translate("MainWindow", u"migli", None))
+        self.cashMeasureUnitLabel.setProperty(u"cssClass", QCoreApplication.translate("MainWindow", u"number-label", None))
 #if QT_CONFIG(tooltip)
         self.label_5.setToolTip(QCoreApplication.translate("MainWindow", u"Numero di anni su cui strutturare la simulazione", None))
 #endif // QT_CONFIG(tooltip)
@@ -644,19 +661,19 @@ class Ui_MainWindow(object):
 #if QT_CONFIG(tooltip)
         self.label_7.setToolTip(QCoreApplication.translate("MainWindow", u"<html><head/><body><p>Crescita spontanea annuale del fatturato senza operazioni legate al progetto di investimento. Rappresentata tramite un modello Browniano di cui \u00e8 possibile specificare valore medio e varianza. </p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
-        self.label_7.setText(QCoreApplication.translate("MainWindow", u"Crescita organica media", None))
+        self.label_7.setText(QCoreApplication.translate("MainWindow", u"Crescita organica annuale media", None))
         self.label_8.setText(QCoreApplication.translate("MainWindow", u"%", None))
         self.label_11.setText(QCoreApplication.translate("MainWindow", u"Varianza", None))
         self.label_12.setText(QCoreApplication.translate("MainWindow", u"%", None))
 #if QT_CONFIG(tooltip)
         self.label_28.setToolTip(QCoreApplication.translate("MainWindow", u"Percentuale di crediti \"oltre\" che vengono trasferiti ogni anno a quelli \"entro\"", None))
 #endif // QT_CONFIG(tooltip)
-        self.label_28.setText(QCoreApplication.translate("MainWindow", u"Percentuale trasf. crediti", None))
+        self.label_28.setText(QCoreApplication.translate("MainWindow", u"Percentuale trasf. annua crediti", None))
         self.label_29.setText(QCoreApplication.translate("MainWindow", u"%", None))
 #if QT_CONFIG(tooltip)
         self.label_24.setToolTip(QCoreApplication.translate("MainWindow", u"<html><head/><body><p>Distribuzione della capacit\u00e0 di riscossione crediti dell'impresa (distribuzione beta con parametri alfa e beta)</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
-        self.label_24.setText(QCoreApplication.translate("MainWindow", u"Capacit\u00e0 riscossione (alfa)", None))
+        self.label_24.setText(QCoreApplication.translate("MainWindow", u"Capacit\u00e0 riscossione annua (alfa)", None))
         self.label_25.setText(QCoreApplication.translate("MainWindow", u"%", None))
         self.label_26.setText(QCoreApplication.translate("MainWindow", u"Beta", None))
         self.label_27.setText(QCoreApplication.translate("MainWindow", u"%", None))
@@ -672,7 +689,7 @@ class Ui_MainWindow(object):
 #if QT_CONFIG(tooltip)
         self.label_20.setToolTip(QCoreApplication.translate("MainWindow", u"<html><head/><body><p>Crescita media annuale dei costi operativi per l'azienda</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
-        self.label_20.setText(QCoreApplication.translate("MainWindow", u"Crescita media costi operativi", None))
+        self.label_20.setText(QCoreApplication.translate("MainWindow", u"Crescita media annua costi operativi", None))
         self.label_21.setText(QCoreApplication.translate("MainWindow", u"%", None))
         self.label_22.setText(QCoreApplication.translate("MainWindow", u"Varianza", None))
         self.label_23.setText(QCoreApplication.translate("MainWindow", u"%", None))
