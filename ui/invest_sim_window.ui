@@ -606,7 +606,7 @@
             </font>
            </property>
            <property name="toolTip">
-            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Crescita spontanea annuale del fatturato senza operazioni legate al progetto di investimento. Rappresentata tramite un modello Browniano di cui è possibile specificare valore medio e varianza. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Crescita spontanea annuale del fatturato senza operazioni legate al progetto di investimento. Rappresentata tramite un modello Browniano. La media indica il tasso di crescita medio atteso, la varianza è intesa sul tasso di crescita medio. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
            </property>
            <property name="text">
             <string>Crescita organica annuale media</string>
@@ -1071,7 +1071,7 @@
      <x>0</x>
      <y>0</y>
      <width>1436</width>
-     <height>33</height>
+     <height>30</height>
     </rect>
    </property>
   </widget>

@@ -6,7 +6,8 @@ import networkx as nx
 import numpy
 import numpy as np
 from networkx.classes import DiGraph
-from dao.util import step_up_field, extract_field_identif, SECTION_HEAD, BalanceLocation, normalize_zero, sum_vectors
+from dao.util import step_up_field, extract_field_identif, SECTION_HEAD, BalanceLocation, normalize_zero, sum_vectors, \
+    divide_vectors
 from model.FieldNotFoundException import FieldNotFoundException
 from model.indicies import Indices
 from model.node import Node, NodeType, Flag
@@ -610,10 +611,10 @@ class BalanceSnaphot:
         )
 
     def __ros(self):
-        return np.divide(
+        return divide_vectors(
             np.array(self.get_field_data("risultato_operativo", BalanceLocation.CE)),
             np.array(self.get_field_data("ricavi_vendite_e_prestazioni", BalanceLocation.CE))
-        ).tolist()
+        )
 
     def sum_field_data(self, fields: list[str], where: BalanceLocation):
         res = np.array([0] * self.available_columns, dtype=np.float64)
@@ -652,12 +653,12 @@ class BalanceSnaphot:
             where=BalanceLocation.SP_PASSIVO_DEBITI
         )
 
-        return np.divide(self.get_field_data("risultato_operativo", BalanceLocation.CE), (att_fisso_nett_operativo + (attiv_operative - pass_operative))).tolist()
+        return divide_vectors(self.get_field_data("risultato_operativo", BalanceLocation.CE), (att_fisso_nett_operativo + (attiv_operative - pass_operative)))
 
     def __roe(self):
         utile_netto = np.array(self.get_field_data("_21_utile_frac_perdita_di_esercizio", BalanceLocation.CE))
         patrim_nett = np.array(self.get_field_data("totale_patrimonio_netto", BalanceLocation.SP_PASSIVO_PATRIM))
-        return np.divide(utile_netto, patrim_nett).tolist()
+        return divide_vectors(utile_netto, patrim_nett)
 
     def __passivo_corrente(self):
         dbt_entro = np.array(self.get_debit_entro_data())
@@ -666,15 +667,15 @@ class BalanceSnaphot:
 
     def __current_ratio(self):
         att_circ = np.array(self.get_field_data("attivo_circolante", BalanceLocation.SP_ATTIVO))
-        return numpy.divide(att_circ, self.__passivo_corrente()).tolist()
+        return divide_vectors(att_circ, self.__passivo_corrente())
 
     def __asset_structure_ratio(self):
-        return numpy.divide(np.array(self.get_field_data("totale_immobilizzazioni_sepind_di_quelle_conc_in_loc_finanz", BalanceLocation.SP_ATTIVO)),
-                            np.array(self.get_field_data("totale_attivo", BalanceLocation.SP_ATTIVO))).tolist()
+        return divide_vectors(np.array(self.get_field_data("totale_immobilizzazioni_sepind_di_quelle_conc_in_loc_finanz", BalanceLocation.SP_ATTIVO)),
+                            np.array(self.get_field_data("totale_attivo", BalanceLocation.SP_ATTIVO)))
 
     def __equity_ratio_data(self) -> list[float]:
-        return numpy.divide(np.array(self.get_field_data("totale_patrimonio_netto", BalanceLocation.SP_PASSIVO_PATRIM)),
-                            np.array(self.get_field_data("totale_passivo", BalanceLocation.SP_PASSIVO_DEBITI))).tolist()
+        return divide_vectors(np.array(self.get_field_data("totale_patrimonio_netto", BalanceLocation.SP_PASSIVO_PATRIM)),
+                            np.array(self.get_field_data("totale_passivo", BalanceLocation.SP_PASSIVO_DEBITI)))
 
     def calc_ce_terminal_fields(self, column: int):
         """

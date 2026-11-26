@@ -74,12 +74,12 @@ class InvestmentEffect:
         return 1
 
     def __check_applies__(self, state: SimulationState) -> bool:
-        if state.current_month > (self.until or 0):
-            print(f"Effetto {self} bloccato perchè ha superato la sua durata. ")
+        if self.until is not None and state.current_month > self.until:
+            state.log(f"Effetto {self} bloccato perchè ha superato la sua durata. ")
             return False
 
         if self.starting_on is not None and state.current_month < self.starting_on:
-            print(f"Effetto {self} bloccato perchè deve partire al mese {self.starting_on}")
+            state.log(f"Effetto {self} bloccato perchè deve partire al mese {self.starting_on}")
             return False
 
         return True
@@ -245,41 +245,37 @@ class ProductivityIncreaseEffect(InvestmentEffect):
 
         return state.working_snapshot
 
-# TODO: Gestione delle immobilizzazioni in corso "B.I.6 Immobilizzazioni in corso e acconti
-# Valutare se copiarle semplicemente o se trasferirle come immobilizzazioni completate in SP Attivo
-
 class OrganicGrowthEffect(InvestmentEffect):
     seed = None
     field_target = "ricavi_vendite_e_prestazioni"
 
     def __init__(self, avg, var, title):
-        self.average = avg / 12
-        self.variance = var / 12
+        self.average = math.log1p(avg)
+        self.variance = math.log1p(var / (1 + avg) ** 2)
         super().__init__(title, EffectType.INCREASE,"ricavi_vendite_e_prestazioni",
                          EffectFrequency.MONTHLY,
                          BalanceLocation.CE)
         OrganicGrowthEffect.seed = np.random.default_rng(seed=42)
+        self.previous_value = 0     # contiene l'ultimo valore mensile generato
 
     def apply(self, state) -> BalanceSnaphot:
         current_month = state.current_month
-        prev_value = 0
-        if current_month == 0 or (current_month % 12) == 0:   # Primo mese dell'anno, prendo come valore iniziale lo storico
+        if current_month == 0:   # Primo mese del primo anno, prendo come valore iniziale lo storico
             # Il valore della colonna year start è annuale, quindi viene diviso per 12 per renderlo mensile
-            prev_value = state.working_snapshot.get_field_value(self.field_name,BalanceLocation.CE, 0) / 12
-            if prev_value is None:
+            self.previous_value = state.working_snapshot.get_field_value(self.field_name,BalanceLocation.CE, 0) / 12
+            if self.previous_value is None:
                 raise Exception("Attenzione: non è disponibile un'informazione di fatturato storico")
-        else:
-            # leggo il marginale precedente che è già diviso per 12
-            prev_value = state.working_snapshot.get_field_value(self.field_name,BalanceLocation.CE, state.current_write_index() - 1)
 
         rng = OrganicGrowthEffect.seed
         Z_n = rng.normal(loc=0, scale=1)
         dt = 1 / 12
-        X_tn1 = prev_value * exp(
+        X_tn1 = self.previous_value * exp(
             (self.average - self.variance / 2) * dt
             + sqrt(self.variance * dt) * Z_n
         )
         state.working_snapshot.sum_field_value(self.field_name, BalanceLocation.CE, X_tn1, column=self.current_write_index(state))
+        self.previous_value = X_tn1
+
         return state.working_snapshot
 
 class CostGrowthEffect(InvestmentEffect):

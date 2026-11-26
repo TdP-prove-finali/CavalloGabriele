@@ -3,6 +3,8 @@ import math
 import re
 from enum import IntEnum
 
+import numpy
+
 from model.raw_company_data import PRIVATE_FIELDS, CashMeasureUnit
 
 
@@ -328,11 +330,9 @@ def sum_vectors(a, b, diff=False)->list:
 
 def divide_vectors(a, b) -> list:
     """Divide i vettori componente per componente ai / bi"""
-    res = []
     assert len(a) == len(b)
-    for i in range(len(a)):
-        if b[i] == 0:
-            raise Exception("Divisione per 0")
-        res.append(a[i] / b[i])
-
-    return res
+    try:
+        res = numpy.divide(a, b).tolist()
+        return res
+    except ZeroDivisionError:
+        return [0] * len(a)

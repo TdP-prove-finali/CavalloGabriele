@@ -23,6 +23,8 @@ class EmployeeHireDialog(QDialog):
         self.ui.cash_label.setText(self.mu.__str__())
         self.ui.cash_label_1.setText(self.mu.__str__())
         self.ui.cash_label_2.setText(self.mu.__str__())
+        self.ui.cash_label_3.setText(self.mu.__str__())
+        self.ui.cash_label_4.setText(self.mu.__str__())
 
     def accept(self, /):
         t = self.ui.operationTitleEdit.text()

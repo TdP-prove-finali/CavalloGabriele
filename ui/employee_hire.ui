@@ -184,7 +184,14 @@ li.checked::marker { content: &quot;\2612&quot;; }
       <item>
        <widget class="QDoubleSpinBox" name="scaleEditNum">
         <property name="minimum">
-         <double>0.100000000000000</double>
+         <double>1.000000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="cash_label_4">
+        <property name="text">
+         <string>€</string>
         </property>
        </widget>
       </item>
@@ -215,7 +222,14 @@ li.checked::marker { content: &quot;\2612&quot;; }
       <item>
        <widget class="QDoubleSpinBox" name="shapeEditNum">
         <property name="minimum">
-         <double>0.100000000000000</double>
+         <double>3.000000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="cash_label_3">
+        <property name="text">
+         <string>€</string>
         </property>
        </widget>
       </item>
@@ -286,7 +300,17 @@ li.checked::marker { content: &quot;\2612&quot;; }
          </sizepolicy>
         </property>
         <property name="minimum">
-         <double>0.100000000000000</double>
+         <double>1.000000000000000</double>
+        </property>
+        <property name="maximum">
+         <double>12.000000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>mesi</string>
         </property>
        </widget>
       </item>
@@ -330,6 +354,13 @@ li.checked::marker { content: &quot;\2612&quot;; }
         </property>
         <property name="minimum">
          <double>0.100000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_5">
+        <property name="text">
+         <string>mesi</string>
         </property>
        </widget>
       </item>

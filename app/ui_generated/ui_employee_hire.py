@@ -85,9 +85,14 @@ class Ui_Dialog(object):
 
         self.scaleEditNum = QDoubleSpinBox(self.groupBox_2)
         self.scaleEditNum.setObjectName(u"scaleEditNum")
-        self.scaleEditNum.setMinimum(0.100000000000000)
+        self.scaleEditNum.setMinimum(1.000000000000000)
 
         self.horizontalLayout_10.addWidget(self.scaleEditNum)
+
+        self.cash_label_4 = QLabel(self.groupBox_2)
+        self.cash_label_4.setObjectName(u"cash_label_4")
+
+        self.horizontalLayout_10.addWidget(self.cash_label_4)
 
 
         self.verticalLayout_3.addLayout(self.horizontalLayout_10)
@@ -105,9 +110,14 @@ class Ui_Dialog(object):
 
         self.shapeEditNum = QDoubleSpinBox(self.groupBox_2)
         self.shapeEditNum.setObjectName(u"shapeEditNum")
-        self.shapeEditNum.setMinimum(0.100000000000000)
+        self.shapeEditNum.setMinimum(3.000000000000000)
 
         self.horizontalLayout_11.addWidget(self.shapeEditNum)
+
+        self.cash_label_3 = QLabel(self.groupBox_2)
+        self.cash_label_3.setObjectName(u"cash_label_3")
+
+        self.horizontalLayout_11.addWidget(self.cash_label_3)
 
 
         self.verticalLayout_3.addLayout(self.horizontalLayout_11)
@@ -147,9 +157,15 @@ class Ui_Dialog(object):
         sizePolicy1.setVerticalStretch(0)
         sizePolicy1.setHeightForWidth(self.averageEditNum.sizePolicy().hasHeightForWidth())
         self.averageEditNum.setSizePolicy(sizePolicy1)
-        self.averageEditNum.setMinimum(0.100000000000000)
+        self.averageEditNum.setMinimum(1.000000000000000)
+        self.averageEditNum.setMaximum(12.000000000000000)
 
         self.horizontalLayout_9.addWidget(self.averageEditNum)
+
+        self.label_3 = QLabel(self.groupBox_3)
+        self.label_3.setObjectName(u"label_3")
+
+        self.horizontalLayout_9.addWidget(self.label_3)
 
 
         self.verticalLayout_2.addLayout(self.horizontalLayout_9)
@@ -174,6 +190,11 @@ class Ui_Dialog(object):
         self.varianceEditNum.setMinimum(0.100000000000000)
 
         self.horizontalLayout_8.addWidget(self.varianceEditNum)
+
+        self.label_5 = QLabel(self.groupBox_3)
+        self.label_5.setObjectName(u"label_5")
+
+        self.horizontalLayout_8.addWidget(self.label_5)
 
 
         self.verticalLayout_2.addLayout(self.horizontalLayout_8)
@@ -337,11 +358,15 @@ class Ui_Dialog(object):
         self.groupBox_2.setTitle(QCoreApplication.translate("Dialog", u"Hyper-performers", None))
         self.label_10.setText(QCoreApplication.translate("Dialog", u"Parametri della distribuzione Lomax HP", None))
         self.label_11.setText(QCoreApplication.translate("Dialog", u"Scala", None))
+        self.cash_label_4.setText(QCoreApplication.translate("Dialog", u"\u20ac", None))
         self.label_12.setText(QCoreApplication.translate("Dialog", u"Forma", None))
+        self.cash_label_3.setText(QCoreApplication.translate("Dialog", u"\u20ac", None))
         self.groupBox_3.setTitle(QCoreApplication.translate("Dialog", u"Time-to-productivity", None))
         self.label_13.setText(QCoreApplication.translate("Dialog", u"Parametri della distribuzione del TTP (Normale)", None))
         self.label_14.setText(QCoreApplication.translate("Dialog", u"Media", None))
+        self.label_3.setText(QCoreApplication.translate("Dialog", u"mesi", None))
         self.label_15.setText(QCoreApplication.translate("Dialog", u"Varianza", None))
+        self.label_5.setText(QCoreApplication.translate("Dialog", u"mesi", None))
         self.label.setText(QCoreApplication.translate("Dialog", u"Titolo operazione*", None))
         self.operationTitleEdit.setPlaceholderText(QCoreApplication.translate("Dialog", u"Assunzione grafico", None))
 #if QT_CONFIG(tooltip)

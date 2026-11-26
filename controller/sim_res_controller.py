@@ -76,7 +76,7 @@ class SimResultController(AbstractController[SimResultWindow, SimulationOutput, 
                 "disponibilita_liquide": bal.get_field_data("tot_dispon_liquide", BalanceLocation.SP_ATTIVO),
             },
             passivo={
-                "patrimonio_netto": bal.get_field_data("totale_fondi_rischi", BalanceLocation.SP_PASSIVO_PATRIM),
+                "patrimonio_netto": bal.get_field_data("totale_patrimonio_netto", BalanceLocation.SP_PASSIVO_PATRIM),
                 "fondi_rischi_tfr": bal.aggregate_fields(["totale_fondi_rischi", "trattamento_di_fine_rapporto"], [BalanceLocation.SP_PASSIVO_PATRIM, BalanceLocation.SP_PASSIVO_PATRIM]),
                 "altre_passivita": bal.get_field_data("ratei_e_risconti", BalanceLocation.SP_PASSIVO_DEBITI),
                 "debiti_breve_termine": bal.get_debit_entro_data(),
