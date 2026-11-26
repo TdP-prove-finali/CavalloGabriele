@@ -528,7 +528,7 @@ class BalanceSnaphot:
         :param field_name alla colonna month nella sezione giusta del bilancio"""
         id_map = self.__get_id_map(location)
         node = id_map[field_name]
-        id_map[field_name].value[month] = round(value)
+        id_map[field_name].value[month] = value
         if set_flags == []:
             id_map[field_name].set_flag(Flag.UPDATED)
         else:
@@ -615,7 +615,7 @@ class BalanceSnaphot:
         ).tolist()
 
     def sum_field_data(self, fields: list[str], where: BalanceLocation):
-        res = np.array([0] * self.available_columns)
+        res = np.array([0] * self.available_columns, dtype=np.float64)
         for f in fields:
             res += np.array(self.get_field_data(f, where))
 

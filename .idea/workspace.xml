@@ -4,36 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d1f57556-a68b-4407-9511-95d58864d413" name="Changes" comment="Fix company senza dati per simulare">
+    <list default="true" id="d1f57556-a68b-4407-9511-95d58864d413" name="Changes" comment="Fix unità misura denaro in UI">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/dialogs/asset_dialog.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/dialogs/asset_dialog.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/dialogs/employee_hire_dialog.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/dialogs/employee_hire_dialog.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/dialogs/funding_dialog.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/dialogs/funding_dialog.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/dialogs/op_improvement_dialog.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/dialogs/op_improvement_dialog.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/ui_generated/ui_asset_invest.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/ui_generated/ui_asset_invest.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/ui_generated/ui_employee_hire.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/ui_generated/ui_employee_hire.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/ui_generated/ui_funding_invest.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/ui_generated/ui_funding_invest.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/ui_generated/ui_invest_sim_window.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/ui_generated/ui_invest_sim_window.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/ui_generated/ui_operativ_effic_dialog.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/ui_generated/ui_operativ_effic_dialog.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/controller/invest_proj_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/controller/invest_proj_controller.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dao/util.py" beforeDir="false" afterPath="$PROJECT_DIR$/dao/util.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dataset/prod/dataset-prod-chunk10.xlsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dataset/prod/dataset-prod-chunk4.xlsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dataset/prod/dataset-prod-chunk5.xlsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dataset/prod/dataset-prod-chunk6.xlsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dataset/prod/dataset-prod-chunk7.xlsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dataset/prod/dataset-prod-chunk8.xlsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dataset/prod/dataset-prod-chunk9.xlsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dataset/prod/dataset-prod-index.xlsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/example-company.js" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/model/balance_snap.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/balance_snap.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/investment_effect.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/investment_effect.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/model/investment_item.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/investment_item.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/raw_company_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/raw_company_data.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/asset_invest.ui" beforeDir="false" afterPath="$PROJECT_DIR$/ui/asset_invest.ui" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/employee_hire.ui" beforeDir="false" afterPath="$PROJECT_DIR$/ui/employee_hire.ui" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/funding_invest.ui" beforeDir="false" afterPath="$PROJECT_DIR$/ui/funding_invest.ui" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/invest_sim_window.ui" beforeDir="false" afterPath="$PROJECT_DIR$/ui/invest_sim_window.ui" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ui/operativ_effic_dialog.ui" beforeDir="false" afterPath="$PROJECT_DIR$/ui/operativ_effic_dialog.ui" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -340,15 +316,7 @@
       <workItem from="1794901725047" duration="11576000" />
       <workItem from="1794926136619" duration="14711000" />
       <workItem from="1795080810157" duration="656000" />
-      <workItem from="1795602213535" duration="2642000" />
-    </task>
-    <task id="LOCAL-00071" summary="Implementa crescita organica del fatturato in simulazione">
-      <option name="closed" value="true" />
-      <created>1793626413880</created>
-      <option name="number" value="00071" />
-      <option name="presentableId" value="LOCAL-00071" />
-      <option name="project" value="LOCAL" />
-      <updated>1793626413881</updated>
+      <workItem from="1795602213535" duration="7195000" />
     </task>
     <task id="LOCAL-00072" summary="Simulazione base dipendenti">
       <option name="closed" value="true" />
@@ -734,7 +702,15 @@
       <option name="project" value="LOCAL" />
       <updated>1794951255723</updated>
     </task>
-    <option name="localTasksCounter" value="120" />
+    <task id="LOCAL-00120" summary="Fix unità misura denaro in UI">
+      <option name="closed" value="true" />
+      <created>1795605032412</created>
+      <option name="number" value="00120" />
+      <option name="presentableId" value="LOCAL-00120" />
+      <option name="project" value="LOCAL" />
+      <updated>1795605032412</updated>
+    </task>
+    <option name="localTasksCounter" value="121" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -752,7 +728,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Nuova struttura motore simulazione. Simulazione conto economico completo e corretto" />
     <MESSAGE value="Migliora struttura di calcolo e corregge quadratura Stato Patrimoniale" />
     <MESSAGE value="Corregge simulazione su più anni e implementa limite crescita fondi ammortamento" />
     <MESSAGE value="Accantonamenti in fondi vari" />
@@ -777,7 +752,8 @@
     <MESSAGE value="Ui pagina sim" />
     <MESSAGE value="Migliora controlli input e fix generali" />
     <MESSAGE value="Fix company senza dati per simulare" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix company senza dati per simulare" />
+    <MESSAGE value="Fix unità misura denaro in UI" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix unità misura denaro in UI" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -799,6 +775,6 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/CavalloGabriele$.coverage" NAME=" Coverage Results" MODIFIED="1794950445950" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
-    <SUITE FILE_PATH="coverage/CavalloGabriele$main.coverage" NAME="main Coverage Results" MODIFIED="1795604950982" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/CavalloGabriele$main.coverage" NAME="main Coverage Results" MODIFIED="1795697477771" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

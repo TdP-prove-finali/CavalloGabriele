@@ -87,7 +87,6 @@ class InvestProjectController(AbstractController[InvestSimWindow, InvestmentProj
         self.view.ui.totalEsbLabel.setText(format_number(e) + self.parent_model.company_data.cash_measure_unit.__str__())
         self.view.ui.totalFundingLabel.setText(format_number(f) + self.parent_model.company_data.cash_measure_unit.__str__())
 
-
     @Slot()
     def handleCreateCespiti(self):
         dialog = AssetDialog(self.parent_model.company_data.cash_measure_unit)

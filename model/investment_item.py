@@ -41,7 +41,7 @@ class EmployeeHireInvestment(AbstractInvestmentItem):
 
         effects = list()
         self.type = "employee-hire"
-        self.tfr_quote = round((total_monthly_cost * 12) / 13.5)
+        self.tfr_quote = (total_monthly_cost * 12) / 13.5
         self.role = role
         self.onboarding_cost = onboarding_cost
         self.strumental_cost = strumental_cost
@@ -116,7 +116,7 @@ class AssetInvestment(AbstractInvestmentItem):
 
         self.duration_years = duration_years
         self.maintenance_cost = maintenance_cost
-        self.amortization_quote = round(self.total_cost / self.duration_years)
+        self.amortization_quote = self.total_cost / self.duration_years
         effects = [
         ]
         if self.asset_type == AssetType.MATERIAL:
@@ -188,7 +188,7 @@ class ProductivityImprovementInvestment(AbstractInvestmentItem):
                 field_name="amm_immob_immat",
                 inv_type=EffectType.CONST,
                 frequency=EffectFrequency.ANNUAL,
-                value_constant=round(self.total_cost / self.duration),
+                value_constant=self.total_cost / self.duration,
                 where=BalanceLocation.CE,
                 until=self.duration * 12
             ),
@@ -223,7 +223,7 @@ class FundingInvestment(AbstractInvestmentItem):
         self.funding_type = type
         self.interest_rate = interest_rate
         self.duration = duration
-        self.capital_quote_y = round(self.total_import / self.duration)
+        self.capital_quote_y = self.total_import / self.duration
         effects = []
         if type == FundingType.BANK:
             # inizialmente registro l'importo totale del debito e poi l'effetto di spostamento (eseguito successivamente) ne sposterà una parte in quelli entro
@@ -240,7 +240,7 @@ class FundingInvestment(AbstractInvestmentItem):
                     field_name="totale_oneri_finanziari",
                     where=BalanceLocation.CE,
                     frequency=EffectFrequency.ANNUAL,
-                    value_constant=round(self.interest_rate * self.total_import),
+                    value_constant=self.interest_rate * self.total_import,
                     title="interessi-passivi",
                     inv_type=EffectType.CONST,
                     until=self.duration * 12

@@ -107,10 +107,10 @@ class InvestmentEffect:
             state.working_snapshot.set_field_value(
                 field_name=self.field_name,
                 location=self.where,
-                value=round(state.working_snapshot.get_field_value(
+                value=state.working_snapshot.get_field_value(
                     field_name=self.field_name,
                     where=self.where,
-                    month=self.current_read_index(state)) + val),
+                    month=self.current_read_index(state)) + val,
                 month=self.current_write_index(state)
             )
         elif self.type == EffectType.DECREASE:
@@ -122,10 +122,10 @@ class InvestmentEffect:
             state.working_snapshot.set_field_value(
                 field_name=self.field_name,
                 location=self.where,
-                value=round(state.working_snapshot.get_field_value(
+                value=state.working_snapshot.get_field_value(
                     field_name=self.field_name,
                     where=self.where,
-                    month=self.current_read_index(state)) - val),
+                    month=self.current_read_index(state)) - val,
                 month=self.current_write_index(state)
             )
         elif self.type == EffectType.CONST:
@@ -143,14 +143,14 @@ class InvestmentEffect:
                 state.working_snapshot.set_field_value(
                     field_name=self.field_name,
                     location=self.where,
-                    value=round(val),
+                    value=val,
                     month=self.current_write_index(state)
                 )
             elif type(prev_value) is int or type(prev_value) is float:      # Se il campo contiene già un valore, significa che un altro effetto ci ha già lavorato. Sovrascrivendolo perderei quell'effetto, quindi viene sommato
                 state.working_snapshot.set_field_value(
                     field_name=self.field_name,
                     location=self.where,
-                    value=round(val + prev_value),
+                    value=val + prev_value,
                     month=self.current_write_index(state)
                 )
         elif self.type == EffectType.VAL_FUNCT:
@@ -165,7 +165,7 @@ class InvestmentEffect:
             state.working_snapshot.set_field_value(
                 field_name=self.field_name,
                 location=self.where,
-                value=round(newVal),
+                value=newVal,
                 month=self.current_write_index(state)
             )
 
@@ -202,7 +202,7 @@ class MoveImportInvEffect(InvestmentEffect):
         if self.value_constant is None:
             raise Exception("Value costant deve essere definito")
 
-        self.value_constant = round(self.value_constant)
+        self.value_constant = self.value_constant
         state.working_snapshot.sum_field_value(self.source_field_name, self.where, self.value_constant * (-1), self.current_write_index(state))
         state.working_snapshot.sum_field_value(self.dest_field_name, self.where, self.value_constant, self.current_write_index(state))
 
@@ -240,7 +240,7 @@ class ProductivityIncreaseEffect(InvestmentEffect):
             alpha_t = 1
             hp = lomax.rvs(c=self.hp_lomax_shape, scale=self.hp_lomax_scale)
 
-        val = round((self.r * alpha_t) + hp)
+        val = (self.r * alpha_t) + hp
         state.working_snapshot.sum_field_value(self.field_name, self.where, val, self.current_write_index(state))
 
         return state.working_snapshot
@@ -279,7 +279,7 @@ class OrganicGrowthEffect(InvestmentEffect):
             (self.average - self.variance / 2) * dt
             + sqrt(self.variance * dt) * Z_n
         )
-        state.working_snapshot.sum_field_value(self.field_name, BalanceLocation.CE, round(X_tn1), column=self.current_write_index(state))
+        state.working_snapshot.sum_field_value(self.field_name, BalanceLocation.CE, X_tn1, column=self.current_write_index(state))
         return state.working_snapshot
 
 class CostGrowthEffect(InvestmentEffect):
@@ -321,7 +321,7 @@ class CostGrowthEffect(InvestmentEffect):
         state.working_snapshot.set_field_value(
             self.field_name,
             BalanceLocation.CE,
-            round(prev_value * growth_factor),
+            prev_value * growth_factor,
             month=self.current_write_index(state)
         )
 
@@ -349,14 +349,14 @@ class CreditCollectEffect(InvestmentEffect):
         children = state.working_snapshot.get_children("totale_crediti", BalanceLocation.SP_ATTIVO, name_regex=r".*entro.*")
         for c in children:
             h = c.value[BalanceSnaphot.YEAR_START_COL]
-            inc = round(h * perc)      # Valore effettivamente incassato a fine anno
+            inc = h * perc      # Valore effettivamente incassato a fine anno
             # devo mettere un marginale che, sommato al valore storico diminuisca i crediti dell'importo incassato
             c.value[self.current_write_index(state)] = -1 * inc
 
         oltre = state.working_snapshot.get_children("totale_crediti", BalanceLocation.SP_ATTIVO, name_regex=r".*oltre.*")
         for o in oltre:
             h = o.value[BalanceSnaphot.YEAR_START_COL]
-            trasf = round(h * self.cperc)
+            trasf = h * self.cperc
 
             if trasf == 0:
                 continue
@@ -396,7 +396,7 @@ class DebitPayEffect(InvestmentEffect):
         children = state.working_snapshot.get_children("totale_debiti", BalanceLocation.SP_PASSIVO_DEBITI,
                                                        name_regex=r".*entro.*")
         for c in children:
-            h = round(c.value[BalanceSnaphot.YEAR_START_COL])
+            h = c.value[BalanceSnaphot.YEAR_START_COL]
 
             # devo mettere un marginale che, sommato al valore storico diminuisca i debiti a entro e li porti a 0
             c.value[self.current_write_index(state)] = -1 * h
@@ -406,7 +406,7 @@ class DebitPayEffect(InvestmentEffect):
         for o in oltre:
             if self.ammort_quote.get(o.name) is None:
                 h = o.value[BalanceSnaphot.YEAR_START_COL]
-                quote = round(h / self.years_ammort)
+                quote = h / self.years_ammort
                 self.ammort_quote[o.name] = quote
             else:
                 quote = self.ammort_quote.get(o.name)
@@ -415,6 +415,7 @@ class DebitPayEffect(InvestmentEffect):
                 continue
 
             # devono essere sommati per non perdere gli incassi altrimenti i conti non tornano
+            # TODO: Qui limitare il pagamento se risulta superiore ai debiti residui da pagare per evitare problemi di arrotondamento
             o.value[self.current_write_index(state)] -= quote
             n = None
             try:
