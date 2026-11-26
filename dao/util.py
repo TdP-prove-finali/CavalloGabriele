@@ -336,3 +336,10 @@ def divide_vectors(a, b) -> list:
         return res
     except ZeroDivisionError:
         return [0] * len(a)
+
+def round_value(a):
+    if abs(a) <= 1:
+        return 0        # intervalli da 0 con sensibilità di 1 sono arrotondati a 0
+
+    r = round(a)
+    return r

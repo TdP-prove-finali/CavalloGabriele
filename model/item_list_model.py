@@ -50,7 +50,7 @@ class ItemListModel(QtCore.QAbstractListModel):
                     s = "Immateriale"
                 return f"Acquisto cespiti: {item.title}, importo totale {format_number(item.total_cost)}{self.mu.__str__()}, {s}"
             elif isinstance(item, ProductivityImprovementInvestment):
-                return f"Efficientamento {item.title}, {format_number(item.total_cost)}{self.mu.__str__()}, riduzione annua: {item.yearly_op_cost_red * 100}%"
+                return f"Efficientamento {item.title}, {format_number(item.total_cost)}{self.mu.__str__()}, riduzione annua: {item.yearly_op_red_perc * 100}%"
 
         elif role == Qt.ItemDataRole.DecorationRole:
             item = self.list_data[index.row()]
