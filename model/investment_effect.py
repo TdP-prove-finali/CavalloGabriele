@@ -415,7 +415,6 @@ class DebitPayEffect(InvestmentEffect):
                 continue
 
             # devono essere sommati per non perdere gli incassi altrimenti i conti non tornano
-            # TODO: Qui limitare il pagamento se risulta superiore ai debiti residui da pagare per evitare problemi di arrotondamento
             o.value[self.current_write_index(state)] -= quote
             n = None
             try:

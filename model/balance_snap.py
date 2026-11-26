@@ -1,3 +1,4 @@
+import datetime
 import re
 from copy import deepcopy
 from typing import Callable, Any
@@ -996,7 +997,7 @@ class BalanceSnaphot:
         self.for_each_ce_field(cp, exclude_context_fields=True)
         self.for_each_sp_field(cp, exclude_context_fields=True)
 
-    def copy_column_from_snapshot(self, snapshot, source_column: int, dest_column: int, column_title: str | None = None):
+    def copy_column_from_snapshot(self, snapshot, source_column: int, dest_column: int, column_title: str | None = None, apply_round = True):
         """
         Copia il contenuto di una colonna da un altro snapshot
         :param snapshot: Snap da cui prendere i dati
@@ -1004,6 +1005,7 @@ class BalanceSnaphot:
         :param dest_column: Colonna dello snapshot corrente su cui scrivere i dati
         (non vengono effettuati calcoli)
         :param column_title Titolo opzionale per la colonna
+        :param apply_round Indica se arrotondare tutti i valori per semplificare la visualizzazione
         :return:
         """
         assert dest_column < self.available_columns
@@ -1018,7 +1020,11 @@ class BalanceSnaphot:
                     if corr_node.field_name != key:
                         raise Exception(f"Errore durante la copia. Non è stato possibile trovare la corrispondenza tra il campo {key} e un nodo del grafo. {node}")
 
-                node.value[dest_column] = v
+                if not apply_round or isinstance(v, (str, datetime.datetime)):
+                    node.value[dest_column] = v
+                else:
+                    node.value[dest_column] = round(v)
+
             except FieldNotFoundException:
                 print(f"WARNING: Il campo {key} non è stato trovato nello snapshot da cui copiare. Verrà utilizzato il valore di default 0")
                 node.value[dest_column] = 0
