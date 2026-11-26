@@ -5,7 +5,6 @@ from model.investment_effect import (InvestmentEffect,
                                      EffectType, ProductivityIncreaseEffect, MoveImportInvEffect, IdFactory)
 from model.node import BalanceLocation
 
-# TODO: Gestire l'unità di misura del denaro in modo comodo (se i dati sono in migliaia mettere /1000 altrimenti i conti non tornano
 class AbstractInvestmentItem:
     def __init__(self, title: str, type: str, effects: list[InvestmentEffect]):
         self.title = title

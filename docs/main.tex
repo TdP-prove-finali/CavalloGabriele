@@ -13,6 +13,8 @@
 \usepackage{amsmath}
 \usepackage{graphicx}
 \usepackage[colorlinks=true, allcolors=blue]{hyperref}
+\usepackage{graphicx}
+\usepackage{float}
 
 \title{Business Scenario Lab - Tesi triennale - BOZZA}
 \author{Gabriele Cavallo, 323600, Politecnico di Torino}
@@ -38,14 +40,19 @@ Il motivo di questa scelta è dovuta alla struttura del bilancio, che è variabi
 Utilizzando un database non relazionale è stato possibile gestire questa dinamicità, così come la diversa risoluzione dei dati contenuti (a seconda dell'impresa sono presenti annualità diverse). 
 Il database utilizzato è MongoDB.  
 
-\subsubsection{Struttura dati delle aziende}
-L'entità fondamentale su cui è costruito il programma è la CompanyData, che rappresenta i dati a disposizione su un'azienda. Per strutturarla, si è partiti dalla struttura dell'export di AIDA, che è diviso in macro-sezioni ognuna con un titolo ("anagrafica", "informazioni commerciali e legali", etc...)
-Anche la struttura del documento creato su MongoDB segue la stessa idea, ad ogni company corrisponde un insieme di sezioni titolate, ognuna delle quali contiene all'interno tutti i dati afferenti quella sezione.   
-Ognuna di queste sezioni, gestita dalla classe Section ha un titolo ed è memorizzata come un dizionario in cui le chiavi sono i nomi dei campi e i valori sono delle liste contenenti tutti i dati storici ordinati di quel campo.  
-L'ordine è fondamentale, sia orizzontalmente (ordine temporale) che verticalmente (ordine delle voci nei documenti) per ricostruire il bilancio dopo averlo caricato e permettere di visualizzarlo.  
+\subsection{Struttura dati delle aziende}
+Nel simulatore le entità fondamentali sono due: \textit{CompanyData}, che rappresenta i dati a disposizione su un'azienda in forma serializzata e \textit{BalanceSnapshot}, che permette di elaborare le informazioni di bilancio. 
 
+La prima, \textit{CompanyData}, viene utilizzata per persistere le informazioni delle aziende e i risultati delle simulazioni sul database. 
+La seconda, \textit{BalanceSnapshot}, viene utilizzata dal motore di simulazione per effettuare tutti i \textbf{calcoli sul bilancio}. 
+Queste due classi presentano una \textbf{struttura molto diversa} perchè raggiungono due obiettivi separati. 
 
-Per garantire anche l'ordine verticale, ad ogni voce di ogni documento viene associato un nome tecnico generato dinamicamente (non scritto nell'applicazione) secondo un criterio di trasformazione che parte dalla descrizione testuale della voce. Questo viene chiamato field\_name ed è un identificatore python valido, generato tramite un'apposita funzione. La caratteristica del field\_name è quella di permettere di ricostruire la posizione del campo nel documento, mantenendo i riferimenti di lettera e numero se presenti. 
+Per quanto riguarda \textit{CompanyData} le informazioni sono divise in \textbf{sezioni titolate}, composte ognuna da una serie di \textbf{campi chiave ---> Vettore valori} oppure da delle sotto-sezioni raccolte nella chiave "subsections". Questa struttura riprende quella dell'export dei dati e viene anche utilizzata per costruire il documento MongoDB da salvare. 
+
+L'ordine dei campi è fondamentale nel bilancio, sia orizzontalmente (ordine temporale) che verticalmente (ordine delle voci nei documenti) per poterlo ricostruire dopo averlo caricato e permettere di visualizzarlo.  
+Per garantire anche l'ordine verticale, ad ogni voce di ogni documento viene associato un nome tecnico generato dinamicamente (non scritto nell'applicazione) secondo un \textbf{criterio di trasformazione} che parte dalla descrizione testuale della voce. Questo viene chiamato \textit{field\_name} ed è un identificatore python valido, generato tramite un'apposita funzione implementata ad hoc. La caratteristica del \textit{field\_name} è quella di permettere di \textbf{ricostruire la posizione del campo nel documento}, mantenendo i riferimenti di lettera e numero se presenti. 
+
+La seconda entità fondamentale è \textit{BalanceSnapshot}, classe che permette \textbf{l'elaborazione del bilancio} durante la simulazione. Essa memorizza le informazioni dei campi sotto forma di due \textbf{alberi NetworkX} (uno per il conto economico e uno per lo stato patrimoniale) e implementa una serie di \textbf{algoritmi ricorsivi} per ri-calcolare tutti gli aggregati del bilancio dopo una modifica ad un campo. 
 
 \begin{figure}
     \centering
@@ -54,6 +61,14 @@ Per garantire anche l'ordine verticale, ad ogni voce di ogni documento viene ass
     \label{fig:placeholder}
 \end{figure}
 
+\subsection{Il bilancio come albero}
+Per l'esecuzione della simulazione e il calcolo delle voci aggregate del bilancio, i dati vengono rappresentati come un grafo, gestito dalla classe \textit{BalanceSnapshot}. 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{balance-diagram.drawio.png}
+    \caption{Classi per la gestione del bilancio}
+    \label{fig:placeholder}
+\end{figure}
 
 \section{Tipi di investimento supportati}
 L'applicazione supporta una selezione di "tipi di investimento" che raccolgono le caratteristiche delle operazioni più importanti che si possono pianificare. Ognuno di essi ha una serie di parametri di configurazione impostati dall'utente in un apposito dialogo e racchiude al suo interno una serie di effetti atomici applicati alle singole voci di bilancio. Oltre ad investimenti veri e propri, come l'assunzione di un dipendente o l'acquisto di cespiti, vengono anche fornite le principali metodologie di finanziamento di tali operazioni, in modo tale da rendere la simulazione effettivamente realistica. 
@@ -114,22 +129,6 @@ Questa variabile casuale segue una distribuzione che raccoglie la maggior parte 
 Come descritto al punto \ref{item:learning-curve}, un nuovo dipendente presenta una curva di apprendimento. Per strutturarla è stata sfruttata la metrica (largamente utilizzata nei reparti HR) del $TTP$ (Time To Productivity) che indica il tempo in mesi dall'assunzione necessario a far sì che il nuovo dipendente raggiunga la produttività massima in percentuale. 
 La produttività percentuale del dipendente, indicata con $\alpha(t)$ è una funzione che dipende dalla variabile $t$, indice del mese in cui la si vuole valutare. 
 
-$\alpha(t)$ ha delle caratteristiche matematiche \textbf{generali}: 
-\begin{enumerate}
-    \item \[
-    \alpha(TTP) = 100\%
-    \] Ossia la produttività del neo-dipendente deve raggiungere il massimo quando si è in corrispondenza del TTP
-    \item In generale deve essere definita su tutto l'intervallo $$[0, TTP]$$,
-    su cui deve essere continua e derivabile in ogni punto. 
-    \item \[
-    \alpha(0) = 0
-    \] La funzione deve passare per l'origine
-    \item In generale \[\alpha(t)\] deve essere monotona crescente nell'intervallo $$[0, TTP]$$, ossia \[
-\frac{d\alpha(t)}{dt} >= 0
-\qquad \forall t \in [0, TTP]
-\]
-\end{enumerate}
-
 All'interno di questo software la curva di apprendimento è stata definita dalla seguente legge: 
 Sia \[
 TTP \in \mathbb{R}, \qquad 0 < TTP < 12
@@ -153,6 +152,15 @@ Una rappresentazione grafica è la seguente:
     \caption{Andamento della curva di apprendimento}
     \label{fig:placeholder}
 \end{figure}
+
+\subsection{Acquisto cespiti}
+TODO
+
+\subsection{Efficientamento operativo}
+TODO
+
+\subsection{Finanziamento}
+TODO
 
 \section{Parametri globali della simulazione}
 Per l'esecuzione della simulazione possono essere impostati dei parametri globali, tra cui:
@@ -236,21 +244,30 @@ Al termine dell'anno, l'effetto \textit{DebitPay} si occupa di trasferire la giu
 Il pagamento dei debiti comporta tipicamente anche un \textbf{esborso dovuto agli interessi finanziari passivi}, di cui il simulatore riassume gli effetti copiando, durante l'inizializzazione, l'importo degli oneri finanziari del Conto Economico (C.17. Totale oneri finanziari). Tale importo viene azzerato in automatico per il nuovo anno se tutti i debiti sono stati estinti (totale debiti entro + oltre = 0). 
 Questa è un'ipotesi semplificativa che trascura la natura del debito specifico, non avendo a livello di bilancio le informazioni necessarie. I rapporti intragruppo vengono trattati come debiti bancari, allo stesso modo di tutti gli altri debiti. 
 
-\subsection{Aliquota di imposta sul reddito}
-TODO
-
 \section{Motore di simulazione}
 Il programma funziona grazie ad un motore di simulazione che è stato implementato ad hoc, sulla base del framework SimPy, che fornisce la struttura base di gestione dei processi e degli eventi. Di seguito viene descritta la struttura del motore e, successivamente, il dettaglio di tutte le tipologie possibili di componenti di investimento insieme.
 \subsection{Funzionamento generale}
-GG
+TODO
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{effect-diagram.drawio.png}
+    \caption{Classi per la gestione del progetto di investimento e relativi effetti}
+    \label{fig:placeholder}
+\end{figure}
+
 \subsection{Inizializzazione della simulazione}
 Ad ogni anno la simulazione viene inizializzata con un nuovo bilancio, che viene costruito secondo criteri diversi a seconda del documento. 
 \subsubsection{Inizializzazione del Conto Economico}
-Il conto economico, che conterrà le informazioni di risultato ottenute durante il nuovo esercizio simulato, viene inizializzato azzerando i ricavi e tutti i proventi derivati dalla gestione straordinaria dell'impresa. 
-La voce "A.5 Altri ricavi" viene considerata come contenente ricavi straordinari e inizializzata a 0 durante la simulazione. 
-La voce "A.4 Incrementi di immobilizzazioni" viene utilizzata per capitalizzare i lavori interni che hanno prodotto dei beni durevoli il cui valori si manifesta su più esercizi. Si ipotizza che questi effetti continuino su tutti gli anni della simulazione, per tanto sono copiati di anno in anno. 
-Per quanto riguarda i costi, vengono copiati quelli sostenuti nell'esercizio precedente. La maggior parte di essi viene considerata come costi fissi (soprattutto personale e stipendi). 
-Solo per i costi di materie prime e consumo viene applicata una curva di aumento legata alla crescita organica dell'impresa, dettagliata successivamente. 
+Il conto economico, che conterrà le informazioni di risultato ottenute durante il nuovo esercizio simulato, viene inizializzato azzerando i ricavi e tutti i proventi derivati dalla gestione straordinaria dell'impresa. Di seguito un dettaglio e la motivazione delle scelte:
+
+La voce \textbf{"A.5 Altri ricavi"} viene considerata come contenente ricavi straordinari e inizializzata a 0 durante la simulazione. 
+
+La voce \textbf{"A.4 Incrementi di immobilizzazioni"} viene utilizzata per capitalizzare i lavori interni, che hanno prodotto dei beni durevoli il cui valore si manifesta su più esercizi. Si ipotizza che questi effetti continuino su tutti gli anni della simulazione, per tanto sono copiati di anno in anno. 
+
+Per quanto riguarda i \textbf{costi}, vengono copiati quelli sostenuti nell'esercizio precedente. La maggior parte di essi viene considerata come costi fissi (soprattutto personale e stipendi). 
+Solo per i costi di materie prime e consumo viene applicata una curva di aumento legata alla crescita organica dell'impresa, dettagliata successivamente. Alcune altre voci di costo possono essere modificate attraverso l'utilizzo di specifici effetti configurati ad hoc. 
+
+La voce \textbf{"Imposte relative a esercizi precedenti"} secondo la normativa civilistica italiana contiene conguagli, sanzioni, maggiori imposte tutti imputabili ad esercizi precedenti. All'avvio della simulazione viene inizializzato a 0 anche se conteva un valore storico. L'esecuzione dell'effetto \textit{debit-pay}, se la liquidità lo permette, si occuperà di saldare eventuali imposte ancora presenti ad inizio anno. 
 
 Gli \textbf{ammortamenti e gli accantonamenti} sono considerati costanti tra un esercizio e l'altro, pertanto vengono copiati dal bilancio storico e ereditati di anno in anno, causando una crescita costante dei rispettivi fondi. Viene però imposto un limite alla crescita di questi fondi, fino a quando il loro totale non supera per la prima volta il valore delle immobilizzazioni a cui fanno riferimento. 
 Una volta superato questo limite, gli ammortamenti verranno azzerati in CE e non saranno più applicati. 
@@ -275,10 +292,31 @@ I crediti vengono copiati perchè rappresentano le quantità di denaro ancora da
 Anche i valori di liquidità sono copiati perchè rappresentano la quantità di denaro immediatamente disponibile per l'impresa all'inizio del nuovo anno simulato. 
 
 \end{itemize}
-\subsection{Esecuzione della simulazione}
-Exec
+\subsection{Esecuzione della simulazione, stato, eventi}
+Lo stato della simulazione viene gestito attraverso la classe \textit{SimulationState}
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{sim-state.drawio.png}
+    \caption{Stato della simulazione}
+    \label{fig:placeholder}
+\end{figure}
+
 \subsection{Operazioni contabili di fine anno}
 Gli accantonamenti per rischi del Conto Economico vengono destinati al fondo "B.4 Altri fondi" dello stato patrimoniale passivo, sezione "Patrimonio netto". 
+
+\subsection{Termine simulazione e bancarotta}
+Il simulatore ha l'obiettivo di riprodurre in modo verosimile l'andamento di un'azienda sotto un progetto di investimento definito nelle sue componenti. Una dinamica possibile è che, durante la simulazione, per via dei parametri impostati, si generi una crisi di liquidità tale da portare la cassa (calcolata per differenza dopo l'applicazione di tutti gli effetti) ad un valore negativo. 
+In generale, oltre alla liquidità immediatamente disponibile, una società può anche richiamare eventuali soldi presenti nella gestione accentrata della tesoreria del gruppo societario di cui fa parte, presenti nella voce "C.III.7 Attività finanziarie per la gestione accentrata della tesoreria". 
+
+Al termine di ogni anno, dopo l'applicazione di tutti gli effetti patrimoniali (esclusi quelli sulla gestione del debito) viene effettuato un controllo sulla liquidità totale utilizzabile dall'impresa per coprire i debiti, costituita dalla \textit{"liquidità a fine anno + C.III.7 Attività finanziarie per la gestione accentrata della tesoreria"}
+Se tale somma risulta negativa, indica la presenza di una crisi di liquidità, a cui far fronte con una modifica del progetto di investimento o l'utilizzo di una linea di credito bancario/altri strumenti. 
+Il simulatore lo segnala terminando la simulazione per "bancarotta a causa di crisi di liquidità"
+
+ In una situazione reale, questo non determinerebbe necessariamente il fallimento dell'impresa ma la dinamica di gestione sarebbe stra-ordinaria e richiede una valutazione caso per caso. 
+
+Una seconda situazione che può portare al fallimento giuridico di un'impresa è quella in cui, nonostante la presenza di una somma positiva, l'azienda non sia più in grado di far fronte ai debiti accumulati (in particolare quelli da saldare entro il termine dell'esercizio). Questo causerebbe sicuramente un avvio di una procedura giudiziale da parte dei creditori che potenzialmente potrebbe portare al fallimento dell'impresa. 
+
+Il simulatore segnala anche questa dinamica interrompendo la simulazione a causa di "insolvenza debiti a breve termine". 
 
 \subsection{Diagramma delle classi}
 GG

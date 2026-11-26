@@ -4,9 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d1f57556-a68b-4407-9511-95d58864d413" name="Changes" comment="Fix crescita organica e bug minori">
-      <change beforePath="$PROJECT_DIR$/dao/util.py" beforeDir="false" afterPath="$PROJECT_DIR$/dao/util.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/item_list_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/item_list_model.py" afterDir="false" />
+    <list default="true" id="d1f57556-a68b-4407-9511-95d58864d413" name="Changes" comment="Fix arrotondamenti">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/investment_item.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/investment_item.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -14,7 +14,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="207" />
+    <option name="cachedIndexableFilesCount" value="208" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -313,15 +313,8 @@
       <workItem from="1794901725047" duration="11576000" />
       <workItem from="1794926136619" duration="14711000" />
       <workItem from="1795080810157" duration="656000" />
-      <workItem from="1795602213535" duration="11975000" />
-    </task>
-    <task id="LOCAL-00077" summary="Funzioni di calcolo totali su campi bilancio">
-      <option name="closed" value="true" />
-      <created>1793961713143</created>
-      <option name="number" value="00077" />
-      <option name="presentableId" value="LOCAL-00077" />
-      <option name="project" value="LOCAL" />
-      <updated>1793961713143</updated>
+      <workItem from="1795602213535" duration="12075000" />
+      <workItem from="1795708504248" duration="4064000" />
     </task>
     <task id="LOCAL-00078" summary="Migliora gestione campi e numerazione interna">
       <option name="closed" value="true" />
@@ -707,7 +700,15 @@
       <option name="project" value="LOCAL" />
       <updated>1795703143165</updated>
     </task>
-    <option name="localTasksCounter" value="126" />
+    <task id="LOCAL-00126" summary="Fix arrotondamenti">
+      <option name="closed" value="true" />
+      <created>1795703537112</created>
+      <option name="number" value="00126" />
+      <option name="presentableId" value="LOCAL-00126" />
+      <option name="project" value="LOCAL" />
+      <updated>1795703537112</updated>
+    </task>
+    <option name="localTasksCounter" value="127" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -725,7 +726,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Fix rettifiche e taratura parametri" />
     <MESSAGE value="Implementa effetto CreditCollect" />
     <MESSAGE value="Corregge effetto globale crescita fatturato" />
     <MESSAGE value="Fix conversione parametri e inizializzazione" />
@@ -750,7 +750,8 @@
     <MESSAGE value="Arrotondamento in fase di copia" />
     <MESSAGE value="Fix varie" />
     <MESSAGE value="Fix crescita organica e bug minori" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix crescita organica e bug minori" />
+    <MESSAGE value="Fix arrotondamenti" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix arrotondamenti" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
