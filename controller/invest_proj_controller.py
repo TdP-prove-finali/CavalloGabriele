@@ -32,7 +32,7 @@ class InvestProjectController(AbstractController[InvestSimWindow, InvestmentProj
 
     def init(self):
         self.view.setWindowTitle("Nuovo progetto di investimento")
-        model = ItemListModel(list_data = [])
+        model = ItemListModel(list_data = [], mu=self.parent_model.company_data.cash_measure_unit)
         self.set_internal_pointer("model", model)
         self.view.ui.companyNameEdit.setText(self.parent_model.company_data.company_name)
         self.view.ui.lastAvYearsLabel.setText(str(self.parent_model.company_data.available_years))

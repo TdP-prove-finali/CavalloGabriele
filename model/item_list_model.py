@@ -5,6 +5,7 @@ from config.paths import project_rooted
 from dao.util import format_number
 from model.investment_item import AbstractInvestmentItem, EmployeeHireInvestment, FundingInvestment, FundingType, \
     AssetInvestment, AssetType, ProductivityImprovementInvestment
+from model.raw_company_data import CashMeasureUnit
 
 
 def prepare_icon(path):
@@ -22,33 +23,34 @@ def prepare_icon(path):
     return icon
 
 class ItemListModel(QtCore.QAbstractListModel):
-    def __init__(self, *args, list_data: list[AbstractInvestmentItem], **kwargs):
+    def __init__(self, *args, list_data: list[AbstractInvestmentItem], mu: CashMeasureUnit, **kwargs):
         super().__init__(*args, **kwargs)
         self.list_data = list_data
         self.tick = prepare_icon(project_rooted("app") / "resources" / "employee-salary-business-svgrepo-com.png")
         self.money = prepare_icon(project_rooted("app") / "resources" / "money.png")
         self.factory = prepare_icon(project_rooted("app") / "resources" / "factory.png")
         self.line_graph = prepare_icon(project_rooted("app") / "resources" / "line-graph.png")
+        self.mu = mu
 
     def data(self, index, role):
         if role == Qt.ItemDataRole.DisplayRole:
             item = self.list_data[index.row()]
             if isinstance(item, EmployeeHireInvestment):
-                return f"{item.title}, Ruolo: {item.role}, Stipendio: {format_number(item.total_monthly_cost)}€, Onboarding: {format_number(item.onboarding_cost)} ..."
+                return f"{item.title}, Ruolo: {item.role}, Stipendio: {format_number(item.total_monthly_cost)}{self.mu.__str__()}, \nOnboarding: {format_number(item.onboarding_cost)}{self.mu.__str__()} ..."
             elif isinstance(item, FundingInvestment):
                 if item.funding_type == FundingType.BANK:
                     s = "Bancario"
                 else:
                     s = "Versamento capitale sociale"
-                return f"Finanziamento: {item.title}, importo totale {format_number(item.total_import)}€, {s}"
+                return f"Finanziamento: {item.title}, importo totale {format_number(item.total_import)}{self.mu.__str__()}, {s}"
             elif isinstance(item, AssetInvestment):
                 if item.asset_type == AssetType.MATERIAL:
                     s = "Materiale"
                 else:
                     s = "Immateriale"
-                return f"Acquisto cespiti: {item.title}, importo totale {format_number(item.total_cost)}€, {s}"
+                return f"Acquisto cespiti: {item.title}, importo totale {format_number(item.total_cost)}{self.mu.__str__()}, {s}"
             elif isinstance(item, ProductivityImprovementInvestment):
-                return f"Efficientamento {item.title}, {format_number(item.total_cost)}€, riduzione annua: {item.yearly_op_cost_red * 100}%"
+                return f"Efficientamento {item.title}, {format_number(item.total_cost)}{self.mu.__str__()}, riduzione annua: {item.yearly_op_cost_red * 100}%"
 
         elif role == Qt.ItemDataRole.DecorationRole:
             item = self.list_data[index.row()]

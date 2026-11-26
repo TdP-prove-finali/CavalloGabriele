@@ -83,18 +83,6 @@ class StartupController(AbstractController[StartupWindow, Any, None]):
             msgBox.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose)
             msgBox.show()
             self.set_internal_pointer("msg-box", msgBox)
-        else:
-            status_bar = self._view.statusBar()
-            widget = self._view.data_status_widget
-            layout = widget.layout()
-
-            if layout is None:
-                layout = QHBoxLayout(widget)
-            icn = QLabel()
-            icn.setPixmap(QPixmap(project_rooted("app/resources/data-ok.png")).scaled(20, 20))
-            layout.addWidget(icn)
-            layout.addWidget(QLabel(str(len(briefs)) + " aziende importate"))
-            status_bar.addPermanentWidget(widget)
 
     def handleImportDialog(self):
         # Mostro un messaggio e apro una finestra di importazione
@@ -191,7 +179,6 @@ class StartupController(AbstractController[StartupWindow, Any, None]):
 
     @Slot(int)
     def on_progress(self, value):
-        print(value)
         self._view.ui.importStatusBar.setValue(value)
 
     @Slot()
